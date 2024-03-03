@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,24 +12,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylotteryapp.models.Primitiva
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,85 +46,90 @@ class MainActivity : ComponentActivity() {
                         ScannerViewModel(MyApp.appModule.scannerRepository, MyApp.appModule.realm)
                     }
                 )
-                App(viewModel = scannerViewModel)
+                val realmViewModel = viewModel<RealmViewModel>(
+                    factory = viewModelFactory {
+                        RealmViewModel(MyApp.appModule.realm)
+                    }
+                )
+
+                App(realmViewModel, scannerViewModel)
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun App(
-    viewModel: ScannerViewModel
-){
+    realmViewModel: RealmViewModel,
+    scannerViewModel: ScannerViewModel
+) {
 
-    val state = viewModel.state.value
-    val boletos by viewModel.boletos.collectAsState()
+    val boletos by realmViewModel.primitiva.collectAsState()
+    val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
 
-    
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+
+    Scaffold(
+        modifier = Modifier,
+        floatingActionButton = { FAB(scannerViewModel = scannerViewModel) },
+        floatingActionButtonPosition = FabPosition.End
     ) {
-        Card(
-            modifier = Modifier
-                .padding(16.dp)
-                .size(300.dp, 100.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFD1C4E9))
-        ) {
-            Text(text = state)
-        }
-        Button(
-            onClick = { viewModel.startScanning() },
-            modifier = Modifier.padding(top = 20.dp)
-        ) {
-            Text(text = "scann")
-        }
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(boletos) { boleto ->
-                BoletoItem(
-                    boleto = boleto,
+
+                val date = Date(boleto.fecha!!.epochSeconds *1000)
+                Card(
+                    onClick = { realmViewModel.deleteBoleto(boleto._id) },
                     modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(16.dp)
-                        .clickable {  }
-                )
+                        .size(320.dp, 200.dp)
+                ) {
+                    Column(modifier = Modifier,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                        Text(text =  "Tipo: ${boleto.tipo}")
+                        Text(text = "Nunero: ${boleto.numeroSerie}")
+                        Text(text = formatter.format(date))
+                        Text(text = "Combinaciones: ${boleto.combinaciones}")
+                        Text(text = "R= ${boleto.reintegro}")
+                        Text(text = "Precio: ${boleto.precio}")
+                        Text(text = "Premio: ${boleto.premio}")
+                    }
+                }
+
             }
         }
-
     }
+
 }
+
 @Composable
 fun BoletoItem(
-    boleto: Primitiva,
+    boleto: Boletos,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Card(
+        onClick = { /*TODO*/ },
         modifier = modifier
     ) {
-        Text(
-            text = boleto.numeroSerie.toString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-        Text(
-            text = boleto.precio.toString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-        Text(
-            text = boleto.fecha,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-        Text(
-            text = boleto.combinaciones.toString(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
+        boleto.primitiva.toString()
+    }
+}
+
+@Composable
+fun FAB(
+    scannerViewModel: ScannerViewModel
+) {
+    FloatingActionButton(
+        onClick = { scannerViewModel.startScanning() },
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text(text = "scann")
     }
 }
 

@@ -63,14 +63,19 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // coroutine
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //bar code scanner
-    implementation (libs.play.services.code.scanner)
+    implementation(libs.play.services.code.scanner)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // realm
     implementation(libs.library.base)
+    implementation(libs.library.sync)
+    implementation(libs.kotlinx.coroutines.core)
+
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -5,6 +5,9 @@ import com.example.mylotteryapp.data.ScannerRepositoryImpl
 import com.example.mylotteryapp.models.Bonoloto
 import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.domain.ScannerRepository
+import com.example.mylotteryapp.models.Boletos
+import com.example.mylotteryapp.models.ElGordo
+import com.example.mylotteryapp.models.EuroMillones
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
@@ -40,11 +43,20 @@ class AppmoduleImpl(
     }
 
     // Realm
-    override val realmConfig: RealmConfiguration
-        get() = RealmConfiguration.create(schema = setOf(Primitiva::class, Bonoloto::class))
+    override val realmConfig: RealmConfiguration by lazy {
+        RealmConfiguration.create(schema = setOf(
+            Boletos::class,
+            Primitiva::class,
+            Bonoloto::class,
+            ElGordo::class,
+            EuroMillones::class
 
+        ))
+    }
 
-    override val realm: Realm
-        get() = Realm.open(realmConfig)
+    override val realm: Realm by lazy {
+        Realm.open(realmConfig)
+    }
+
 
 }
