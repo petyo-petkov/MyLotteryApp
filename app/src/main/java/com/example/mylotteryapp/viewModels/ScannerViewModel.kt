@@ -40,7 +40,6 @@ class ScannerViewModel(
                         realm.write {
                             when (info?.get(1)) {
                                 "P=1" -> {
-                                    //copyToRealm(crearPrimitiva(data), UpdatePolicy.ALL)
                                     val primitiva = crearPrimitiva(data)
                                     val boleto = Boletos().apply {
                                         primitivas?.add(primitiva)

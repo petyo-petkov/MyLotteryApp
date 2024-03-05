@@ -3,7 +3,6 @@ package com.example.mylotteryapp.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.models.Boletos
-import com.example.mylotteryapp.models.Primitiva
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +15,6 @@ class RealmViewModel(
     private val realm: Realm
 ) : ViewModel() {
 
-
     val boletos = realm
         .query<Boletos>()
         .asFlow()
@@ -28,19 +26,6 @@ class RealmViewModel(
             SharingStarted.WhileSubscribed(),
             emptyList()
         )
-
-    val primitivas = realm
-        .query<Primitiva>()
-        .asFlow()
-        .map { results ->
-            results.list.toList()
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            emptyList()
-        )
-
 
     fun deleteBoleto(id: ObjectId) {
         viewModelScope.launch {
