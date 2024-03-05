@@ -1,12 +1,10 @@
 package com.example.mylotteryapp.crearBoletos
 
-import com.example.mylotteryapp.models.Boletos
-import com.example.mylotteryapp.models.Primitiva
+import com.example.mylotteryapp.models.Bonoloto
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmObject
 
-
-fun crearPrimitiva(data: String): Primitiva {
+fun crearBonoloto(data: String) : Bonoloto {
 
     val info = data.split(";")
     var numReintegro = 0
@@ -15,12 +13,12 @@ fun crearPrimitiva(data: String): Primitiva {
 
 
     info.filter { it.startsWith("R=") }
-        .forEach {
-            numReintegro = it.last().toString().toInt()
-        }
+    .forEach {
+        numReintegro = it.last().toString().toInt()
+    }
 
-    val primitiva = Primitiva().apply {
-        tipo = "Primitiva"
+    val bonoloto = Bonoloto().apply {
+        tipo = "Bonoloto"
         numeroSerie = info[0].slice(2..11).toLong()
         fecha = fechaToRealmInstant(fechaString)
         combinaciones = combi.toRealmList()
@@ -29,7 +27,6 @@ fun crearPrimitiva(data: String): Primitiva {
         premio = null
 
     }
-
-    return primitiva
+    return bonoloto
 
 }

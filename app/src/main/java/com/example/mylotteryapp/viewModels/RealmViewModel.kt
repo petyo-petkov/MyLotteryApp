@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.viewModels
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.models.Boletos
@@ -15,9 +14,22 @@ import org.mongodb.kbson.ObjectId
 
 class RealmViewModel(
     private val realm: Realm
-): ViewModel() {
+) : ViewModel() {
 
-    val primitiva = realm
+
+    val boletos = realm
+        .query<Boletos>()
+        .asFlow()
+        .map { results ->
+            results.list.toList()
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            emptyList()
+        )
+
+    val primitivas = realm
         .query<Primitiva>()
         .asFlow()
         .map { results ->
@@ -29,10 +41,11 @@ class RealmViewModel(
             emptyList()
         )
 
-    fun deleteBoleto(id: ObjectId){
+
+    fun deleteBoleto(id: ObjectId) {
         viewModelScope.launch {
             realm.writeBlocking {
-                val boleto = query<Primitiva>("_id==$0", id).find()
+                val boleto = query<Boletos>("_id==$0", id).find()
                 delete(boleto)
             }
 

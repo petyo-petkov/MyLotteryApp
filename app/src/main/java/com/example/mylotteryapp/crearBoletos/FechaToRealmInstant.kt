@@ -4,7 +4,7 @@ import io.realm.kotlin.types.RealmInstant
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-fun ConvertirFecha(date: String): RealmInstant {
+fun fechaToRealmInstant(date: String): RealmInstant {
 
     val meses = mapOf(
         "ENE" to "JAN",

@@ -5,11 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -26,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylotteryapp.models.Boletos
+import com.example.mylotteryapp.models.Bonoloto
+import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -64,10 +70,8 @@ fun App(
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel
 ) {
-
-    val boletos by realmViewModel.primitiva.collectAsState()
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
-
+    val boletos by realmViewModel.boletos.collectAsState()
 
     Scaffold(
         modifier = Modifier,
@@ -80,46 +84,30 @@ fun App(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(boletos) { boleto ->
-
-                val date = Date(boleto.fecha!!.epochSeconds *1000)
+            items(boletos) { boletos ->
                 Card(
-                    onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                    onClick = { realmViewModel.deleteBoleto(boletos._id) },
                     modifier = Modifier
-                        .size(320.dp, 200.dp)
+                        .sizeIn(minHeight = 200.dp, minWidth = 360.dp)
+                        .padding(8.dp)
                 ) {
-                    Column(modifier = Modifier,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                        Text(text =  "Tipo: ${boleto.tipo}")
-                        Text(text = "Nunero: ${boleto.numeroSerie}")
-                        Text(text = formatter.format(date))
-                        Text(text = "Combinaciones: ${boleto.combinaciones}")
-                        Text(text = "R= ${boleto.reintegro}")
-                        Text(text = "Precio: ${boleto.precio}")
-                        Text(text = "Premio: ${boleto.premio}")
+                    boletos.primitivas?.let { primitivas ->
+                        for (primitiva in primitivas) {
+                            PrimitivaItem(primitiva, formatter)
+                        }
+                    }
+                    boletos.bonolotos?.let { bonolotos ->
+                        for (bonoloto in bonolotos) {
+                            BonolotoItem(bonoloto, formatter)
+                        }
                     }
                 }
-
             }
         }
     }
 
 }
 
-@Composable
-fun BoletoItem(
-    boleto: Boletos,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        onClick = { /*TODO*/ },
-        modifier = modifier
-    ) {
-        boleto.primitiva.toString()
-    }
-}
 
 @Composable
 fun FAB(
@@ -131,5 +119,43 @@ fun FAB(
     ) {
         Text(text = "scann")
     }
+}
+
+@Composable
+fun PrimitivaItem(
+    boleto: Primitiva,
+    sdf: SimpleDateFormat,
+) {
+    val date = Date(boleto.fecha!!.epochSeconds * 1000)
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text(text = "Tipo: ${boleto.tipo}")
+        Text(text = "Fecha: ${sdf.format(date)}")
+        Text(text = "Combinaciones: ${boleto.combinaciones}")
+        Text(text = "Reintegro: ${boleto.reintegro}")
+        Text(text = "Precio: ${boleto.precio}")
+        Text(text = "Premio: ${boleto.premio}")
+    }
+
+}
+
+@Composable
+fun BonolotoItem(
+    boleto: Bonoloto,
+    sdf: SimpleDateFormat
+) {
+    val date = Date(boleto.fecha!!.epochSeconds * 1000)
+    Column(
+        modifier = Modifier.padding(16.dp),
+    ) {
+        Text(text = "Tipo: ${boleto.tipo}")
+        Text(text = "Fecha: ${sdf.format(date)}")
+        Text(text = "Combinaciones: ${boleto.combinaciones}")
+        Text(text = "Reintegro: ${boleto.reintegro}")
+        Text(text = "Precio: ${boleto.precio}")
+        Text(text = "Premio: ${boleto.premio}")
+    }
+
 }
 
