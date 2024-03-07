@@ -10,7 +10,7 @@ fun crearBonoloto(data: String): Bonoloto {
     val fechaString = info[2].substringAfter('=').slice(3..9)
     val fechaRealm = fechaToRealmInstant(fechaString)
     val numeroSorteosJugados = info[2].substringAfter('=').last().digitToInt()
-    val numReintegro = info[6].substringAfter("=").toInt()
+    val numReintegro = info[6].substringAfter("=")
     val partesCombinaciones = info[4].split(".").drop(1)
 
     val combinacionesJugadas = mutableListOf<String>()
@@ -25,7 +25,7 @@ fun crearBonoloto(data: String): Bonoloto {
         combinaciones = combinacionesJugadas.toRealmList()
         reintegro = numReintegro
         precio = precioBonoloto
-        premio = null
+        premio = 0.0
 
     }
     return bonoloto

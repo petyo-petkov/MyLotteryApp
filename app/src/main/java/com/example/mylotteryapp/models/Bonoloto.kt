@@ -14,7 +14,7 @@ class Bonoloto: RealmObject {
     var numeroSerie: Long = 0L
     var fecha: RealmInstant? = null
     var combinaciones: RealmList<String> = realmListOf()
-    var reintegro: Int = 0
+    var reintegro: String = ""
     var precio: Double = 0.0
     var premio: Double? = 0.0
     var esPremiado: Boolean? = false

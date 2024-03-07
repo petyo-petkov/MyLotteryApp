@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylotteryapp.models.Bonoloto
+import com.example.mylotteryapp.models.EuroMillones
 import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
@@ -95,6 +96,11 @@ fun App(
                             BonolotoItem(bonoloto, formatter)
                         }
                     }
+                    boletos.euroMillones?.let { euromillones ->
+                        for (euro in euromillones) {
+                            EuroMillonesItem(euro, formatter)
+                        }
+                    }
                 }
             }
         }
@@ -126,7 +132,9 @@ fun PrimitivaItem(
     ) {
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
-        Text(text = "Combinaciones: ${boleto.combinaciones}")
+        boleto.combinaciones.forEachIndexed { index, combi ->
+            Text(text = "Columna ${index + 1}: ${combi}")
+        }
         Text(text = "Reintegro: ${boleto.reintegro}")
         Text(text = "Precio: ${boleto.precio}")
         Text(text = "Premio: ${boleto.premio}")
@@ -147,10 +155,34 @@ fun BonolotoItem(
         Text(text = "Numero de serie: ${boleto.numeroSerie}")
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
-        boleto.combinaciones.forEachIndexed {index, combi ->
-            Text(text = "Columna ${index +1 }: ${combi}")
+        boleto.combinaciones.forEachIndexed { index, combi ->
+            Text(text = "Columna ${index + 1}: ${combi}")
         }
         Text(text = "Reintegro: ${boleto.reintegro}")
+        Text(text = "Precio: ${boleto.precio}")
+        Text(text = "Premio: ${boleto.premio}")
+    }
+
+}
+
+@Composable
+fun EuroMillonesItem(
+    boleto: EuroMillones,
+    sdf: SimpleDateFormat
+) {
+    val date = Date(boleto.fecha!!.epochSeconds * 1000)
+    Column(
+        modifier = Modifier.padding(16.dp),
+    ) {
+        Text(text = "Numero de serie: ${boleto.numeroSerie}")
+        Text(text = "Tipo: ${boleto.tipo}")
+        Text(text = "Fecha: ${sdf.format(date)}")
+        boleto.combinaciones.forEachIndexed { index, combi ->
+            boleto.estrellas.forEach { star ->
+                Text(text = "Apuesta ${index + 1}: ${combi}  \u2605 ${star}")
+            }
+        }
+        Text(text = "El Millon: ${boleto.elMillon}")
         Text(text = "Precio: ${boleto.precio}")
         Text(text = "Premio: ${boleto.premio}")
     }
