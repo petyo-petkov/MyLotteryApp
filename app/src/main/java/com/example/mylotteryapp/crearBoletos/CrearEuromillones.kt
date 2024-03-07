@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.crearBoletos
 
-import android.util.Log
 import com.example.mylotteryapp.models.EuroMillones
 import io.realm.kotlin.ext.toRealmList
 

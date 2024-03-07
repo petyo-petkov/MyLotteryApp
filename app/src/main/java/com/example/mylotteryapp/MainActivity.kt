@@ -133,7 +133,7 @@ fun PrimitivaItem(
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
         boleto.combinaciones.forEachIndexed { index, combi ->
-            Text(text = "Columna ${index + 1}: ${combi}")
+            Text(text = "Columna ${index + 1}: $combi")
         }
         Text(text = "Reintegro: ${boleto.reintegro}")
         Text(text = "Precio: ${boleto.precio}")
@@ -152,11 +152,10 @@ fun BonolotoItem(
     Column(
         modifier = Modifier.padding(16.dp),
     ) {
-        Text(text = "Numero de serie: ${boleto.numeroSerie}")
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
         boleto.combinaciones.forEachIndexed { index, combi ->
-            Text(text = "Columna ${index + 1}: ${combi}")
+            Text(text = "Columna ${index + 1}: $combi")
         }
         Text(text = "Reintegro: ${boleto.reintegro}")
         Text(text = "Precio: ${boleto.precio}")
@@ -174,12 +173,11 @@ fun EuroMillonesItem(
     Column(
         modifier = Modifier.padding(16.dp),
     ) {
-        Text(text = "Numero de serie: ${boleto.numeroSerie}")
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
         boleto.combinaciones.forEachIndexed { index, combi ->
             boleto.estrellas.forEach { star ->
-                Text(text = "Apuesta ${index + 1}: ${combi}  \u2605 ${star}")
+                Text(text = "Apuesta ${index + 1}: $combi  \u2605 $star")
             }
         }
         Text(text = "El Millon: ${boleto.elMillon}")
