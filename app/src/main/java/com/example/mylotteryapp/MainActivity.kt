@@ -130,6 +130,7 @@ fun PrimitivaItem(
         Text(text = "Reintegro: ${boleto.reintegro}")
         Text(text = "Precio: ${boleto.precio}")
         Text(text = "Premio: ${boleto.premio}")
+        Text(text = "Joker: ${boleto.joker}")
     }
 
 }
@@ -145,7 +146,9 @@ fun BonolotoItem(
     ) {
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
-        Text(text = "Combinaciones: ${boleto.combinaciones}")
+        boleto.combinaciones.forEachIndexed {index, combi ->
+            Text(text = "Columna ${index +1 }: ${combi}")
+        }
         Text(text = "Reintegro: ${boleto.reintegro}")
         Text(text = "Precio: ${boleto.precio}")
         Text(text = "Premio: ${boleto.premio}")

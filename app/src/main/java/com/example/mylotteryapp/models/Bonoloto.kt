@@ -10,7 +10,7 @@ import org.mongodb.kbson.ObjectId
 class Bonoloto: RealmObject {
     @PrimaryKey
     var _id: ObjectId = ObjectId()
-    var tipo: String = ""
+    var tipo: String = "Bonoloto"
     var numeroSerie: Long = 0L
     var fecha: RealmInstant? = null
     var combinaciones: RealmList<String> = realmListOf()
