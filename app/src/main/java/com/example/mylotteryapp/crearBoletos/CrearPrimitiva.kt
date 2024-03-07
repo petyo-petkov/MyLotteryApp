@@ -12,7 +12,7 @@ fun crearPrimitiva(data: String): Primitiva {
     var serialNumber = 0L
     var fechaString = ""
     var numeroSorteosJugados = 0
-    var combinacionesJugadas = mutableListOf<String>()
+    val combinacionesJugadas = mutableListOf<String>()
     var numReintegro = 0
     var precioPrimitiva = 0.0
     var jokerPrimitiva: String? = "NO"

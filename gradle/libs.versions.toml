@@ -9,7 +9,7 @@ kotlinxCoroutinesCore = "1.7.1"
 libraryBase = "1.11.0"
 lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.8.2"
-composeBom = "2024.02.01"
+composeBom = "2024.02.02"
 playServicesCodeScanner = "16.1.0"
 lifecycleViewmodelCompose = "2.7.0"
 

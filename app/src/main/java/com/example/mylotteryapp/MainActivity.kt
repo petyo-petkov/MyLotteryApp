@@ -144,6 +144,7 @@ fun BonolotoItem(
     Column(
         modifier = Modifier.padding(16.dp),
     ) {
+        Text(text = "Numero de serie: ${boleto.numeroSerie}")
         Text(text = "Tipo: ${boleto.tipo}")
         Text(text = "Fecha: ${sdf.format(date)}")
         boleto.combinaciones.forEachIndexed {index, combi ->
