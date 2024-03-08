@@ -1,9 +1,9 @@
 package com.example.mylotteryapp.crearBoletos
 
-import com.example.mylotteryapp.models.EuroMillones
+import com.example.mylotteryapp.models.ElGordo
 import io.realm.kotlin.ext.toRealmList
 
-fun crearEuromillones(data: String): EuroMillones {
+fun crearElGordo(data: String): ElGordo {
 
     val info = data.split(";")
     val serialNumber = info[0].substringAfter("=").takeLast(10).toLong()
@@ -11,25 +11,23 @@ fun crearEuromillones(data: String): EuroMillones {
     val fechaRealm = fechaToRealmInstant(fechaString)
     val numeroSorteosJugados = info[2].substringAfter("=").last().digitToInt()
     val partesCombinaciones = info[4].split(".").drop(1)
-    val stars = partesCombinaciones.map {
+    val clave = partesCombinaciones.map {
         it.substringAfter(":").chunked(2).joinToString(" ")
     }
     val combinacionesJugadas = mutableListOf<String>()
     combinacionesJugadas.addAll(partesCombinaciones.map {
-        it.substringAfter("=").chunked(2).dropLast(3).joinToString(" ")
+        it.substringAfter("=").chunked(2).dropLast(2).joinToString(" ")
     })
-    val numeroMillon = info[6].substringAfter(",").dropLast(1)
-    val precioEuromillones: Double = ((combinacionesJugadas.size * 2.5) * numeroSorteosJugados)
+    val precioEuromillones: Double = ((combinacionesJugadas.size * 1.5) * numeroSorteosJugados)
 
-    val euromillones = EuroMillones().apply {
+    val elGordo = ElGordo().apply {
         numeroSerie = serialNumber
         fecha = fechaRealm
         combinaciones = combinacionesJugadas.toRealmList()
-        estrellas = stars.toRealmList()
-        elMillon = numeroMillon
+        numeroClave = clave.toRealmList()
         precio = precioEuromillones
         premio = 0.0
 
     }
-    return euromillones
+    return elGordo
 }

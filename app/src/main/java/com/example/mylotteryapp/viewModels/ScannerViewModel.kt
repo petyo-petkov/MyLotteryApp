@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.crearBoletos.crearBonoloto
+import com.example.mylotteryapp.crearBoletos.crearElGordo
 import com.example.mylotteryapp.crearBoletos.crearEuromillones
 import com.example.mylotteryapp.crearBoletos.crearPrimitiva
 import com.example.mylotteryapp.domain.ScannerRepository
@@ -59,6 +60,13 @@ class ScannerViewModel(
                                     val euromillon = crearEuromillones(data)
                                     val boleto = Boletos().apply {
                                         euroMillones?.add(euromillon)
+                                    }
+                                    copyToRealm(boleto, UpdatePolicy.ALL)
+                                }
+                                "P=4" -> {
+                                    val gordo = crearElGordo(data)
+                                    val boleto = Boletos().apply {
+                                        gordos?.add(gordo)
                                     }
                                     copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
