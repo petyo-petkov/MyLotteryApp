@@ -158,7 +158,7 @@ class ScannerViewModel(
 
 private fun message(viewModelScope: CoroutineScope, context: Context) {
     viewModelScope.launch {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Main) {
             Toast.makeText(
                 context,
                 "Ya existe èste boleto",
