@@ -1,21 +1,33 @@
 package com.example.mylotteryapp.viewModels
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.crearBoletos.crearBonoloto
 import com.example.mylotteryapp.crearBoletos.crearElGordo
+import com.example.mylotteryapp.crearBoletos.crearEuroDreams
 import com.example.mylotteryapp.crearBoletos.crearEuromillones
 import com.example.mylotteryapp.crearBoletos.crearPrimitiva
 import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boletos
+import com.example.mylotteryapp.models.Bonoloto
+import com.example.mylotteryapp.models.ElGordo
+import com.example.mylotteryapp.models.EuroDreams
+import com.example.mylotteryapp.models.EuroMillones
+import com.example.mylotteryapp.models.Primitiva
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.ext.query
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ScannerViewModel(
     private val repo: ScannerRepository,
@@ -23,63 +35,135 @@ class ScannerViewModel(
 
     ) : ViewModel() {
 
-    private val _state = mutableStateOf("")
-    val state = _state
+    var bolet: Boletos? by mutableStateOf(null)
+        private set
 
-    fun startScanning() {
+    fun startScanning(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.startScanning()
                 .flowOn(Dispatchers.IO)
-                .catch { error ->
-                    Log.i("tag", "Error: ${error.message}")
-
-                }
-                .flowOn(Dispatchers.IO)
                 .collect { data ->
-                    val info = data?.split(";")
                     if (!data.isNullOrBlank()) {
-                        state.value = data
+                        Log.i("rawData", data)
+                        val info = data.split(";")
+
                         realm.write {
-                            when (info?.get(1)) {
+
+                            when (info[1]) {
                                 "P=1" -> {
                                     val primitiva = crearPrimitiva(data)
-                                    val boleto = Boletos().apply {
-                                        primitivas?.add(primitiva)
+                                    val bol =
+                                        realm.query<Primitiva>(
+                                            "numeroSerie==$0",
+                                            primitiva.numeroSerie
+                                        )
+                                            .find()
+                                    if (bol.isEmpty()) {
+                                        bolet?.primitivas?.add(primitiva)
+                                        val boleto = Boletos().apply {
+                                            primitivas?.add(primitiva)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=2" -> {
                                     val bonoloto = crearBonoloto(data)
-                                    val boleto = Boletos().apply {
-                                        bonolotos?.add(bonoloto)
+                                    val bol =
+                                        realm.query<Bonoloto>(
+                                            "numeroSerie==$0",
+                                            bonoloto.numeroSerie
+                                        )
+                                            .find()
+                                    if (bol.isEmpty()) {
+                                        bolet?.bonolotos?.add(bonoloto)
+                                        val boleto = Boletos().apply {
+                                            bonolotos?.add(bonoloto)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
+
                                 "P=7" -> {
                                     val euromillon = crearEuromillones(data)
-                                    val boleto = Boletos().apply {
-                                        euroMillones?.add(euromillon)
+                                    val bol =
+                                        realm.query<EuroMillones>(
+                                            "numeroSerie==$0",
+                                            euromillon.numeroSerie
+                                        ).find()
+                                    if (bol.isEmpty()) {
+                                        bolet?.euroMillones?.add(euromillon)
+                                        val boleto = Boletos().apply {
+                                            euroMillones?.add(euromillon)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
+
                                 "P=4" -> {
                                     val gordo = crearElGordo(data)
-                                    val boleto = Boletos().apply {
-                                        gordos?.add(gordo)
+                                    val bol =
+                                        realm.query<ElGordo>("numeroSerie==$0", gordo.numeroSerie)
+                                            .find()
+                                    if (bol.isEmpty()) {
+                                        bolet?.gordos?.add(gordo)
+                                        val boleto = Boletos().apply {
+                                            gordos?.add(gordo)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
+
                                 }
 
-                                else -> { }
-                            }
+                                "P=14" -> {
+                                    val dream = crearEuroDreams(data)
+                                    val bol =
+                                        realm.query<EuroDreams>(
+                                            "numeroSerie==$0",
+                                            dream.numeroSerie
+                                        )
+                                            .find()
+                                    if (bol.isEmpty()) {
+                                        bolet?.euroDreams?.add(dream)
+                                        val boleto = Boletos().apply {
+                                            euroDreams?.add(dream)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
 
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
+                                    }
+                                }
+
+                                else -> {}
+                            }
                         }
-                        Log.i("rawData", data)
                     }
                 }
         }
     }
-
 }
 
+private fun message(viewModelScope: CoroutineScope, context: Context) {
+    viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            Toast.makeText(
+                context,
+                "Ya existe èste boleto",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+}

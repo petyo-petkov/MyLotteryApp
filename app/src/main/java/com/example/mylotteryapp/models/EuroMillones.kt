@@ -1,15 +1,12 @@
 package com.example.mylotteryapp.models
 
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmInstant
 import io.realm.kotlin.types.RealmList
-import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.annotations.PrimaryKey
-import org.mongodb.kbson.ObjectId
 
-class EuroMillones: RealmObject {
-    @PrimaryKey
-    var _id: ObjectId = ObjectId()
+class EuroMillones: EmbeddedRealmObject {
+
     var tipo: String = "Euromillones"
     var numeroSerie: Long = 0L
     var fecha: RealmInstant? = null
@@ -18,5 +15,6 @@ class EuroMillones: RealmObject {
     var elMillon: String = ""
     var precio: Double = 0.0
     var premio: Double? = 0.0
-    var esPremiado: Boolean = false
+    var esPremiado: Boolean? = null
+
 }

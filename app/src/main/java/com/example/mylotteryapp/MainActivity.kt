@@ -22,12 +22,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylotteryapp.models.Bonoloto
-import com.example.mylotteryapp.models.ElGordo
-import com.example.mylotteryapp.models.EuroMillones
-import com.example.mylotteryapp.models.Primitiva
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -82,134 +80,132 @@ fun App(
         ) {
             items(boletos) { boletos ->
                 Card(
-                    onClick = { realmViewModel.deleteBoleto(boletos._id) },
+                    onClick = {
+                        realmViewModel.deleteBoleto(boletos._id)
+
+
+                    },
                     modifier = Modifier
                         .sizeIn(minHeight = 200.dp, minWidth = 360.dp)
                         .padding(8.dp)
                 ) {
-                    boletos.primitivas?.let { primitivas ->
-                        for (primitiva in primitivas) {
-                            PrimitivaItem(primitiva, formatter)
-                        }
-                    }
-                    boletos.bonolotos?.let { bonolotos ->
-                        for (bonoloto in bonolotos) {
-                            BonolotoItem(bonoloto, formatter)
-                        }
-                    }
-                    boletos.euroMillones?.let { euromillones ->
-                        for (euro in euromillones) {
-                            EuroMillonesItem(euro, formatter)
-                        }
-                    }
-                    boletos.gordos?.let { gordos ->
-                        for (gordo in gordos) {
-                            ElGoroItems(gordo, formatter)
-                        }
-                    }
+                    BoletoItem(boletos = boletos, sdf = formatter)
+
                 }
             }
         }
+
+
     }
 
 }
 
 
 @Composable
-fun FAB(
-    scannerViewModel: ScannerViewModel
-) {
+fun FAB(scannerViewModel: ScannerViewModel) {
+    val context = LocalContext.current
     FloatingActionButton(
-        onClick = { scannerViewModel.startScanning() },
-        modifier = Modifier.padding(16.dp)
+        onClick = { scannerViewModel.startScanning(context) },
     ) {
         Text(text = "scann")
     }
 }
 
+
 @Composable
-fun PrimitivaItem(
-    boleto: Primitiva,
+fun BoletoItem(
+    boletos: Boletos,
     sdf: SimpleDateFormat,
 ) {
-    val date = Date(boleto.fecha!!.epochSeconds * 1000)
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(text = "Tipo: ${boleto.tipo}")
-        Text(text = "Fecha: ${sdf.format(date)}")
-        boleto.combinaciones.forEachIndexed { index, combi ->
-            Text(text = "Columna ${index + 1}: $combi")
-        }
-        Text(text = "Reintegro: ${boleto.reintegro}")
-        Text(text = "Precio: ${boleto.precio}")
-        Text(text = "Premio: ${boleto.premio}")
-        Text(text = "Joker: ${boleto.joker}")
-    }
-
-}
-
-@Composable
-fun BonolotoItem(
-    boleto: Bonoloto,
-    sdf: SimpleDateFormat
-) {
-    val date = Date(boleto.fecha!!.epochSeconds * 1000)
-    Column(
-        modifier = Modifier.padding(16.dp),
-    ) {
-        Text(text = "Tipo: ${boleto.tipo}")
-        Text(text = "Fecha: ${sdf.format(date)}")
-        boleto.combinaciones.forEachIndexed { index, combi ->
-            Text(text = "Columna ${index + 1}: $combi")
-        }
-        Text(text = "Reintegro: ${boleto.reintegro}")
-        Text(text = "Precio: ${boleto.precio}")
-        Text(text = "Premio: ${boleto.premio}")
-    }
-
-}
-
-@Composable
-fun EuroMillonesItem(
-    boleto: EuroMillones,
-    sdf: SimpleDateFormat
-) {
-    val date = Date(boleto.fecha!!.epochSeconds * 1000)
-    Column(
-        modifier = Modifier.padding(16.dp),
-    ) {
-        Text(text = "Tipo: ${boleto.tipo}")
-        Text(text = "Fecha: ${sdf.format(date)}")
-        boleto.combinaciones.forEachIndexed { index, combi ->
-            boleto.estrellas.forEach { star ->
-                Text(text = "Apuesta ${index + 1}: $combi \u2605 $star")
+    boletos.primitivas?.let { primitivas ->
+        for (primitiva in primitivas) {
+            val date = Date(primitiva.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Tipo: ${primitiva.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                primitiva.combinaciones.forEachIndexed { index, combi ->
+                    Text(text = "Columna ${index + 1}: $combi")
+                }
+                Text(text = "Reintegro: ${primitiva.reintegro}")
+                Text(text = "Precio: ${primitiva.precio}")
+                Text(text = "Premio: ${primitiva.premio}")
+                Text(text = "Joker: ${primitiva.joker}")
             }
         }
-        Text(text = "El Millon: ${boleto.elMillon}")
-        Text(text = "Precio: ${boleto.precio}")
-        Text(text = "Premio: ${boleto.premio}")
     }
-
-}
-@Composable
-fun ElGoroItems(
-    boleto: ElGordo,
-    sdf: SimpleDateFormat
-) {
-    val date = Date(boleto.fecha!!.epochSeconds * 1000)
-    Column(
-        modifier = Modifier.padding(16.dp),
-    ) {
-        Text(text = "Tipo: ${boleto.tipo}")
-        Text(text = "Fecha: ${sdf.format(date)}")
-        boleto.combinaciones.forEachIndexed { index, combi ->
-            boleto.numeroClave.forEach { clave ->
-                Text(text = "Apuesta ${index + 1}: $combi + $clave")
+    boletos.bonolotos?.let { bonolotos ->
+        for (bonoloto in bonolotos) {
+            val date = Date(bonoloto.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "Tipo: ${bonoloto.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                bonoloto.combinaciones.forEachIndexed { index, combi ->
+                    Text(text = "Columna ${index + 1}: $combi")
+                }
+                Text(text = "Reintegro: ${bonoloto.reintegro}")
+                Text(text = "Precio: ${bonoloto.precio}")
+                Text(text = "Premio: ${bonoloto.premio}")
             }
         }
-        Text(text = "Precio: ${boleto.precio}")
-        Text(text = "Premio: ${boleto.premio}")
+    }
+    boletos.euroDreams?.let { dreams ->
+        for (dream in dreams) {
+            val date = Date(dream.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "Tipo: ${dream.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                dream.combinaciones.forEachIndexed { index, combi ->
+                    dream.dreams.forEach { dream ->
+                        Text(text = "Apuesta ${index + 1}: $combi + $dream")
+                    }
+                }
+                Text(text = "Precio: ${dream.precio}")
+                Text(text = "Premio: ${dream.premio}")
+            }
+        }
+    }
+    boletos.gordos?.let { gordos ->
+        for (gordo in gordos) {
+            val date = Date(gordo.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "Tipo: ${gordo.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                gordo.combinaciones.forEachIndexed { index, combi ->
+                    gordo.numeroClave.forEach { clave ->
+                        Text(text = "Apuesta ${index + 1}: $combi + $clave")
+                    }
+                }
+                Text(text = "Precio: ${gordo.precio}")
+                Text(text = "Premio: ${gordo.premio}")
+            }
+        }
+    }
+    boletos.euroMillones?.let { euromillones ->
+        for (euro in euromillones) {
+            val date = Date(euro.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "Tipo: ${euro.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                euro.combinaciones.forEachIndexed { index, combi ->
+                    euro.estrellas.forEach { star ->
+                        Text(text = "Apuesta ${index + 1}: $combi \u2605 $star")
+                    }
+                }
+                Text(text = "El Millon: ${euro.elMillon}")
+                Text(text = "Precio: ${euro.precio}")
+                Text(text = "Premio: ${euro.premio}")
+            }
+        }
     }
 
 }

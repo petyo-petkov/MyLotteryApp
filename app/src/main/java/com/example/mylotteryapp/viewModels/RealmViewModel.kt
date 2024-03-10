@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.models.Boletos
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -27,8 +28,17 @@ class RealmViewModel(
             emptyList()
         )
 
-    fun deleteBoleto(id: ObjectId) {
+
+    fun deleteAllBoletos() {
         viewModelScope.launch {
+            realm.write {
+                deleteAll()
+            }
+        }
+    }
+
+    fun deleteBoleto(id: ObjectId) {
+        viewModelScope.launch(Dispatchers.IO) {
             realm.writeBlocking {
                 val boleto = query<Boletos>("_id==$0", id).find()
                 delete(boleto)
@@ -36,5 +46,6 @@ class RealmViewModel(
 
         }
     }
+
 
 }

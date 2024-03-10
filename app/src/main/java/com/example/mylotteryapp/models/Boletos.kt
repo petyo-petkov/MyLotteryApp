@@ -7,11 +7,14 @@ import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
 class Boletos: RealmObject {
+
     @PrimaryKey
     var _id: ObjectId = ObjectId()
     var primitivas: RealmList<Primitiva>? = realmListOf()
     var bonolotos: RealmList<Bonoloto>? = realmListOf()
     var gordos: RealmList<ElGordo>? = realmListOf()
     var euroMillones: RealmList<EuroMillones>? = realmListOf()
+    var euroDreams: RealmList<EuroDreams>? = realmListOf()
+
 
 }

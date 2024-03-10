@@ -31,4 +31,3 @@ fun crearBonoloto(data: String): Bonoloto {
     return bonoloto
 
 }
-

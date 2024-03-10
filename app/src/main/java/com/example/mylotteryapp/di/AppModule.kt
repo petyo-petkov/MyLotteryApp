@@ -7,6 +7,7 @@ import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.ElGordo
+import com.example.mylotteryapp.models.EuroDreams
 import com.example.mylotteryapp.models.EuroMillones
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
@@ -22,6 +23,7 @@ interface AppModule {
     val scannerRepository: ScannerRepository
     val realmConfig: RealmConfiguration
     val realm: Realm
+
 }
 
 class AppmoduleImpl(
@@ -49,7 +51,8 @@ class AppmoduleImpl(
             Primitiva::class,
             Bonoloto::class,
             ElGordo::class,
-            EuroMillones::class
+            EuroMillones::class,
+            EuroDreams::class
 
         ))
     }
