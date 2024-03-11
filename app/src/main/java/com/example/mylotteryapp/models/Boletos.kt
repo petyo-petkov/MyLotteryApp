@@ -15,6 +15,6 @@ class Boletos: RealmObject {
     var gordos: RealmList<ElGordo>? = realmListOf()
     var euroMillones: RealmList<EuroMillones>? = realmListOf()
     var euroDreams: RealmList<EuroDreams>? = realmListOf()
-
+    var loterias: RealmList<LoteriaNacional>? = realmListOf()
 
 }

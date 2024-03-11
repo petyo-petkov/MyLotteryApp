@@ -82,8 +82,6 @@ fun App(
                 Card(
                     onClick = {
                         realmViewModel.deleteBoleto(boletos._id)
-
-
                     },
                     modifier = Modifier
                         .sizeIn(minHeight = 200.dp, minWidth = 360.dp)
@@ -94,12 +92,8 @@ fun App(
                 }
             }
         }
-
-
     }
-
 }
-
 
 @Composable
 fun FAB(scannerViewModel: ScannerViewModel) {
@@ -207,6 +201,25 @@ fun BoletoItem(
             }
         }
     }
-
+    boletos.loterias?.let { loterias ->
+        for (loteria in loterias) {
+            val date = Date(loteria.fecha!!.epochSeconds * 1000)
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "Tipo: ${loteria.tipo}")
+                Text(text = "Fecha: ${sdf.format(date)}")
+                Text(text = "Numero Loteria ${loteria.numero}")
+                Text(text = "Precio: ${loteria.precio}")
+                Text(text = "Premio: ${loteria.premio}")
+            }
+        }
+    }
 }
+
+
+
+
+
+
 

@@ -9,6 +9,7 @@ import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.ElGordo
 import com.example.mylotteryapp.models.EuroDreams
 import com.example.mylotteryapp.models.EuroMillones
+import com.example.mylotteryapp.models.LoteriaNacional
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
@@ -52,7 +53,8 @@ class AppmoduleImpl(
             Bonoloto::class,
             ElGordo::class,
             EuroMillones::class,
-            EuroDreams::class
+            EuroDreams::class,
+            LoteriaNacional::class
 
         ))
     }

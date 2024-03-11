@@ -12,6 +12,7 @@ import com.example.mylotteryapp.crearBoletos.crearBonoloto
 import com.example.mylotteryapp.crearBoletos.crearElGordo
 import com.example.mylotteryapp.crearBoletos.crearEuroDreams
 import com.example.mylotteryapp.crearBoletos.crearEuromillones
+import com.example.mylotteryapp.crearBoletos.crearLoteriaNacional
 import com.example.mylotteryapp.crearBoletos.crearPrimitiva
 import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boletos
@@ -19,6 +20,7 @@ import com.example.mylotteryapp.models.Bonoloto
 import com.example.mylotteryapp.models.ElGordo
 import com.example.mylotteryapp.models.EuroDreams
 import com.example.mylotteryapp.models.EuroMillones
+import com.example.mylotteryapp.models.LoteriaNacional
 import com.example.mylotteryapp.models.Primitiva
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
@@ -43,22 +45,21 @@ class ScannerViewModel(
             repo.startScanning()
                 .flowOn(Dispatchers.IO)
                 .collect { data ->
-                    if (!data.isNullOrBlank()) {
+                    if (!data.isNullOrBlank() && data.startsWith("A=")) {
                         Log.i("rawData", data)
                         val info = data.split(";")
-
                         realm.write {
-
                             when (info[1]) {
+
                                 "P=1" -> {
                                     val primitiva = crearPrimitiva(data)
-                                    val bol =
+                                    val bol =     //bol.isEmpty()
                                         realm.query<Primitiva>(
                                             "numeroSerie==$0",
                                             primitiva.numeroSerie
                                         )
                                             .find()
-                                    if (bol.isEmpty()) {
+                                    if (true) {
                                         bolet?.primitivas?.add(primitiva)
                                         val boleto = Boletos().apply {
                                             primitivas?.add(primitiva)
@@ -78,7 +79,7 @@ class ScannerViewModel(
                                             bonoloto.numeroSerie
                                         )
                                             .find()
-                                    if (bol.isEmpty()) {
+                                    if (true) {
                                         bolet?.bonolotos?.add(bonoloto)
                                         val boleto = Boletos().apply {
                                             bonolotos?.add(bonoloto)
@@ -97,7 +98,7 @@ class ScannerViewModel(
                                             "numeroSerie==$0",
                                             euromillon.numeroSerie
                                         ).find()
-                                    if (bol.isEmpty()) {
+                                    if (true) {
                                         bolet?.euroMillones?.add(euromillon)
                                         val boleto = Boletos().apply {
                                             euroMillones?.add(euromillon)
@@ -114,7 +115,7 @@ class ScannerViewModel(
                                     val bol =
                                         realm.query<ElGordo>("numeroSerie==$0", gordo.numeroSerie)
                                             .find()
-                                    if (bol.isEmpty()) {
+                                    if (true) {
                                         bolet?.gordos?.add(gordo)
                                         val boleto = Boletos().apply {
                                             gordos?.add(gordo)
@@ -135,7 +136,7 @@ class ScannerViewModel(
                                             dream.numeroSerie
                                         )
                                             .find()
-                                    if (bol.isEmpty()) {
+                                    if (true) {
                                         bolet?.euroDreams?.add(dream)
                                         val boleto = Boletos().apply {
                                             euroDreams?.add(dream)
@@ -147,13 +148,64 @@ class ScannerViewModel(
                                     }
                                 }
 
+                                "P=10" -> {
+                                    val loteri = crearLoteriaNacional(data)
+                                    val bol =
+                                        realm.query<LoteriaNacional>(
+                                            "numeroSerie==$0",
+                                            loteri.numeroSerie
+                                        )
+                                            .find()
+                                    if (true) {
+                                        bolet?.loterias?.add(loteri)
+                                        val boleto = Boletos().apply {
+                                            loterias?.add(loteri)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
+                                    }
+                                }
+
                                 else -> {}
                             }
                         }
-                    }
+                    } else if (!data.isNullOrBlank() && data.length == 20){
+                        realm.write {
+                            val loteri = crearLoteriaNacional(data)
+                            val bol =
+                                realm.query<LoteriaNacional>(
+                                    "numeroSerie==$0",
+                                    loteri.numeroSerie
+                                )
+                                    .find()
+                            if (true) {
+                                bolet?.loterias?.add(loteri)
+                                val boleto = Boletos().apply {
+                                    loterias?.add(loteri)
+                                }
+                                copyToRealm(boleto, UpdatePolicy.ALL)
+
+                            } else {
+                                message(CoroutineScope(Dispatchers.IO), context)
+                            }
+                        }
+                    } else { viewModelScope.launch {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                context,
+                                "Código no valido",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } }
+
                 }
         }
+
     }
+
 }
 
 private fun message(viewModelScope: CoroutineScope, context: Context) {
