@@ -12,7 +12,8 @@ import com.example.mylotteryapp.crearBoletos.crearBonoloto
 import com.example.mylotteryapp.crearBoletos.crearElGordo
 import com.example.mylotteryapp.crearBoletos.crearEuroDreams
 import com.example.mylotteryapp.crearBoletos.crearEuromillones
-import com.example.mylotteryapp.crearBoletos.crearLoteriaNacional
+import com.example.mylotteryapp.crearBoletos.crearLoteriaBarCode
+import com.example.mylotteryapp.crearBoletos.crearLoteriaQR
 import com.example.mylotteryapp.crearBoletos.crearPrimitiva
 import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boletos
@@ -149,7 +150,7 @@ class ScannerViewModel(
                                 }
 
                                 "P=10" -> {
-                                    val loteri = crearLoteriaNacional(data)
+                                    val loteri = crearLoteriaQR(data)
                                     val bol =
                                         realm.query<LoteriaNacional>(
                                             "numeroSerie==$0",
@@ -173,7 +174,7 @@ class ScannerViewModel(
                         }
                     } else if (!data.isNullOrBlank() && data.length == 20){
                         realm.write {
-                            val loteri = crearLoteriaNacional(data)
+                            val loteri = crearLoteriaBarCode(data)
                             val bol =
                                 realm.query<LoteriaNacional>(
                                     "numeroSerie==$0",
