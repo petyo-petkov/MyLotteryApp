@@ -48,7 +48,7 @@ fun ListBoletosItem(
     boletos: List<Boletos>,
     formatter: SimpleDateFormat,
     realmViewModel: RealmViewModel,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
 
@@ -61,7 +61,6 @@ fun ListBoletosItem(
                     val rotationState by animateFloatAsState(
                         targetValue = if (expandedState) 180f else 0f, label = ""
                     )
-
                     Card(
                         onClick = { expandedState = !expandedState },
                         modifier = Modifier
@@ -82,7 +81,7 @@ fun ListBoletosItem(
                             modifier = Modifier,
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
+                        ) {
                             Row(
                                 modifier = Modifier,
                                 horizontalArrangement = Arrangement.Center,
@@ -157,7 +156,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${primitiva.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick =  {realmViewModel.deleteBoleto(boleto.numeroSerieBoleto)} ,
                                         modifier = Modifier
                                     ) {
                                         Icon(
@@ -201,7 +200,7 @@ fun ListBoletosItem(
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White
                         )
-                        ) {
+                    ) {
                         Column(
                             modifier = Modifier,
                             verticalArrangement = Arrangement.Center,
@@ -281,7 +280,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${bonoloto.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick = {realmViewModel.deleteBoleto(boleto.numeroSerieBoleto)},
                                         modifier = Modifier
                                     ) {
                                         Icon(
@@ -399,7 +398,7 @@ fun ListBoletosItem(
                                         horizontalAlignment = Alignment.Start
                                     ) {
                                         euromillon.combinaciones.forEachIndexed { index, combi ->
-                                            euromillon.estrellas.forEach {star ->
+                                            euromillon.estrellas.forEach { star ->
                                                 Text("${index + 1}: $combi \u2605 $star")
                                             }
 
@@ -409,7 +408,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${euromillon.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick = {realmViewModel.deleteBoleto(boleto.numeroSerieBoleto)},
                                         modifier = Modifier
                                     ) {
                                         Icon(
@@ -527,7 +526,7 @@ fun ListBoletosItem(
                                         horizontalAlignment = Alignment.Start
                                     ) {
                                         gordo.combinaciones.forEachIndexed { index, combi ->
-                                            gordo.numeroClave.forEach {clave ->
+                                            gordo.numeroClave.forEach { clave ->
                                                 Text("${index + 1}: $combi + $clave")
                                             }
 
@@ -536,7 +535,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${gordo.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick = {realmViewModel.deleteBoleto(boleto.numeroSerieBoleto)},
                                         modifier = Modifier
                                     ) {
                                         Icon(
@@ -654,7 +653,7 @@ fun ListBoletosItem(
                                         horizontalAlignment = Alignment.Start
                                     ) {
                                         dream.combinaciones.forEachIndexed { index, combi ->
-                                            dream.dreams.forEach {numeroDream ->
+                                            dream.dreams.forEach { numeroDream ->
                                                 Text("${index + 1}: $combi + $numeroDream")
                                             }
 
@@ -663,7 +662,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${dream.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick = { realmViewModel.deleteBoleto(boleto.numeroSerieBoleto) },
                                         modifier = Modifier
                                     ) {
                                         Icon(
@@ -787,7 +786,7 @@ fun ListBoletosItem(
                                         Text("Premio: ${loteria.premio} ${Typography.euro}")
                                     }
                                     IconButton(
-                                        onClick = { realmViewModel.deleteBoleto(boleto._id) },
+                                        onClick = {realmViewModel.deleteBoleto(boleto.numeroSerieBoleto)},
                                         modifier = Modifier
                                     ) {
                                         Icon(

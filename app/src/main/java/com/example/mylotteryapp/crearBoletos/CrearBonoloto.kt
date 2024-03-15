@@ -6,7 +6,7 @@ import io.realm.kotlin.ext.toRealmList
 fun crearBonoloto(data: String): Bonoloto {
 
     val info = data.split(";")
-    val serialNumber = info[0].substringAfter('=').takeLast(10).toLong()
+    val serialNumber = info[0].substringAfter("=").takeLast(10).toLong()
     val fechaString = info[2].substringAfter('=').slice(3..9)
     val fechaRealm = fechaToRealmInstant(fechaString)
     val numeroSorteosJugados = info[2].substringAfter('=').last().digitToInt()

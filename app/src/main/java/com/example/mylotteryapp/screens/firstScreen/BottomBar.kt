@@ -13,21 +13,26 @@ import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 
 @Composable
-fun BottomBar(scannerViewModel: ScannerViewModel){
+fun BottomBar(
+    scannerViewModel: ScannerViewModel,
+
+) {
     BottomAppBar(
         actions = {
-        IconButton(onClick = { /* doSomething() */ }) {
-            Icon(Icons.Filled.Check, contentDescription = "Localized description")
-        }
-        IconButton(onClick = { /* doSomething() */ }) {
-            Icon(
-                Icons.Filled.Edit,
-                contentDescription = "Localized description",
-            )
-        }
-    },
+            IconButton(onClick = { /* doSomething() */ }) {
+                Icon(Icons.Filled.Check, contentDescription = "Localized description")
+            }
+            IconButton(onClick = { /* doSomething() */ }) {
+                Icon(
+                    Icons.Filled.Edit,
+                    contentDescription = "Localized description",
+                )
+            }
+
+
+        },
         modifier = Modifier,
-        floatingActionButton = { FAB(scannerViewModel )},
+        floatingActionButton = { FAB(scannerViewModel) },
         contentPadding = PaddingValues(horizontal = 30.dp)
 
     )
