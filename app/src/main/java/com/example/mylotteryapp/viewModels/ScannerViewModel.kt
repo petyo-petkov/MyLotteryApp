@@ -12,12 +12,16 @@ import com.example.mylotteryapp.crearBoletos.crearEuromillones
 import com.example.mylotteryapp.crearBoletos.crearLoteriaBarCode
 import com.example.mylotteryapp.crearBoletos.crearLoteriaQR
 import com.example.mylotteryapp.crearBoletos.crearPrimitiva
+import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boletos
+import com.example.mylotteryapp.models.Bonoloto
+import com.example.mylotteryapp.models.ElGordo
+import com.example.mylotteryapp.models.EuroDreams
+import com.example.mylotteryapp.models.EuroMillones
 import com.example.mylotteryapp.models.LoteriaNacional
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
-import io.realm.kotlin.exceptions.RealmException
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,96 +30,175 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ScannerViewModel(
-    private val repo: ScannerRepository,
+    private val scannerRepo: ScannerRepository,
+    private val realmRepo: RealmRepository,
     private val realm: Realm,
 
     ) : ViewModel() {
 
     fun startScanning(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.startScanning()
+            scannerRepo.startScanning()
                 .flowOn(Dispatchers.IO)
                 .collect { data ->
                     if (!data.isNullOrBlank() && data.startsWith("A=")) {
                         Log.i("rawData", data)
                         val info = data.split(";")
+
+                        when (info[1]) {
+                            "P=1" -> { crearPrimitiva(data, realm, realmRepo) }
+                            "P=2" -> { crearBonoloto(data, realm, realmRepo) }
+                            "P=7" -> { crearEuromillones(data, realm, realmRepo) }
+                            "P=4" -> { crearElGordo(data, realm, realmRepo) }
+                            "P=14" -> { crearEuroDreams(data, realm, realmRepo) }
+                            "P=10" -> { crearLoteriaQR(data, realm, realmRepo) }
+                        }
+                        /*
+
                         realm.write {
                             when (info[1]) {
 
                                 "P=1" -> {
                                     val primitiva = crearPrimitiva(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = primitiva.numeroSerie
-                                        fechaBoleto = primitiva.fecha
-                                        primitivas?.add(primitiva)
+                                    Boletos().apply { primitivas?.add(primitiva) }
+
+                                    val result = realm.query<Primitiva>(
+                                        "numeroSerie==$0",
+                                        primitiva.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = primitiva.fecha
+                                            primitivas?.add(primitiva)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=2" -> {
                                     val bonoloto = crearBonoloto(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = bonoloto.numeroSerie
-                                        fechaBoleto = bonoloto.fecha
-                                        bonolotos?.add(bonoloto)
+                                    Boletos().apply { bonolotos?.add(bonoloto) }
+
+                                    val result = realm.query<Bonoloto>(
+                                        "numeroSerie==$0",
+                                        bonoloto.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = bonoloto.fecha
+                                            bonolotos?.add(bonoloto)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=7" -> {
 
                                     val euromillon = crearEuromillones(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = euromillon.numeroSerie
-                                        fechaBoleto = euromillon.fecha
-                                        euroMillones?.add(euromillon)
+                                    Boletos().apply { euroMillones?.add(euromillon) }
+
+                                    val result = realm.query<EuroMillones>(
+                                        "numeroSerie==$0",
+                                        euromillon.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = euromillon.fecha
+                                            euroMillones?.add(euromillon)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=4" -> {
                                     val gordo = crearElGordo(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = gordo.numeroSerie
-                                        fechaBoleto = gordo.fecha
-                                        gordos?.add(gordo)
+                                    Boletos().apply { gordos?.add(gordo) }
+
+                                    val result = realm.query<ElGordo>(
+                                        "numeroSerie==$0",
+                                        gordo.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = gordo.fecha
+                                            gordos?.add(gordo)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=14" -> {
                                     val dream = crearEuroDreams(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = dream.numeroSerie
-                                        fechaBoleto = dream.fecha
-                                        euroDreams?.add(dream)
+                                    Boletos().apply { euroDreams?.add(dream) }
+
+                                    val result = realm.query<EuroDreams>(
+                                        "numeroSerie==$0",
+                                        dream.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = dream.fecha
+                                            euroDreams?.add(dream)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 "P=10" -> {
                                     val loteri = crearLoteriaQR(data)
-                                    val boleto = Boletos().apply {
-                                        numeroSerieBoleto = loteri.numeroSerie
-                                        fechaBoleto = loteri.fecha
-                                        loterias?.add(loteri)
+                                    Boletos().apply { loterias?.add(loteri) }
+
+                                    val result = realm.query<LoteriaNacional>(
+                                        "numeroSerie==$0",
+                                        loteri.numeroSerie
+                                    ).find()
+
+                                    if (result.isEmpty()) {
+                                        val boleto = Boletos().apply {
+                                            fechaBoleto = loteri.fecha
+                                            loterias?.add(loteri)
+                                        }
+                                        copyToRealm(boleto, UpdatePolicy.ALL)
+                                    } else {
+                                        message(CoroutineScope(Dispatchers.IO), context)
                                     }
-                                    copyToRealm(boleto, UpdatePolicy.ALL)
                                 }
 
                                 else -> {}
                             }
                         }
+
+                         */
+
                     } else if (!data.isNullOrBlank() && data.length == 20) {
-                        realm.write {
+
+                        crearLoteriaBarCode(data, realm, realmRepo)
+
+                        /*
+                                            realm.write {
                             val loteri = crearLoteriaBarCode(data)
-                            val bol =
-                                realm.query<LoteriaNacional>(
+                            Boletos().apply { loterias?.add(loteri) }
+
+                            val result = realm.query<LoteriaNacional>(
                                     "numeroSerie==$0",
-                                    loteri.numeroSerie
-                                )
-                                    .find()
-                            if (true) {
+                                    loteri.numeroSerie).find()
+
+                            if (result.isEmpty()) {
                                 Boletos().loterias?.add(loteri)
                                 val boleto = Boletos().apply {
                                     fechaBoleto = loteri.fecha
@@ -127,6 +210,10 @@ class ScannerViewModel(
                                 message(CoroutineScope(Dispatchers.IO), context)
                             }
                         }
+
+ */
+
+
                     } else {
                         viewModelScope.launch {
                             withContext(Dispatchers.Main) {
@@ -138,6 +225,8 @@ class ScannerViewModel(
                             }
                         }
                     }
+
+
 
                 }
         }

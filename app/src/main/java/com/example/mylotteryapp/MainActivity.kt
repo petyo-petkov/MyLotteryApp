@@ -21,12 +21,19 @@ class MainActivity : ComponentActivity() {
             MyLotteryAppTheme {
                 val scannerViewModel = viewModel<ScannerViewModel>(
                     factory = viewModelFactory {
-                        ScannerViewModel(MyApp.appModule.scannerRepository, MyApp.appModule.realm)
+                        ScannerViewModel(
+                            MyApp.appModule.scannerRepository,
+                            MyApp.appModule.realmRepository,
+                            MyApp.appModule.realm,
+                           )
                     }
                 )
                 val realmViewModel = viewModel<RealmViewModel>(
                     factory = viewModelFactory {
-                        RealmViewModel(MyApp.appModule.realm)
+                        RealmViewModel(
+                            MyApp.appModule.realm,
+                            MyApp.appModule.realmRepository
+                        )
                     }
                 )
 

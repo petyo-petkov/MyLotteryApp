@@ -1,10 +1,15 @@
 package com.example.mylotteryapp.crearBoletos
 
+import android.util.Log
+import com.example.mylotteryapp.domain.RealmRepository
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.Primitiva
+import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.toRealmList
 
 
-fun crearPrimitiva(data: String): Primitiva {
+suspend fun crearPrimitiva(data: String, realm: Realm, realmRepo: RealmRepository) {
 
     val info = data.split(";")
     val serialNumber = info[0].substringAfter("=").takeLast(10).toLong()
@@ -17,14 +22,14 @@ fun crearPrimitiva(data: String): Primitiva {
 
     val combinacionesJugadas = mutableListOf<String>()
     combinacionesJugadas.addAll(partesCombinaciones.map {
-        it.substringAfter("=").chunked(2).joinToString(" ") })
+        it.substringAfter("=").chunked(2).joinToString(" ")
+    })
 
     val precioPrimitiva: Double = if (jokerPrimitiva != "NO") {
         (((combinacionesJugadas.size * 1.0) + 1) * numeroSorteosJugados)
     } else {
         ((combinacionesJugadas.size * 1.0) * numeroSorteosJugados)
     }
-
     val primitiva = Primitiva().apply {
         numeroSerie = serialNumber
         fecha = fechaRealm
@@ -35,5 +40,17 @@ fun crearPrimitiva(data: String): Primitiva {
         joker = jokerPrimitiva
 
     }
-    return primitiva
+    Boletos().apply { primitivas?.add(primitiva) }
+    val result = realm.query<Primitiva>("numeroSerie==$0", primitiva.numeroSerie).find()
+
+    if (result.isEmpty()) {
+        val boleto = Boletos().apply {
+            fechaBoleto = primitiva.fecha
+            primitivas?.add(primitiva)
+        }
+        realmRepo.insertarBoleto(boleto)
+    } else {
+        Log.i("primitiva", "ya existe primitiva")
+    }
+
 }

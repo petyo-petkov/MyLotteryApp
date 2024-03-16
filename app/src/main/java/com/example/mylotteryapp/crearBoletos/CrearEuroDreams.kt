@@ -1,9 +1,14 @@
 package com.example.mylotteryapp.crearBoletos
 
+import android.util.Log
+import com.example.mylotteryapp.domain.RealmRepository
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.EuroDreams
+import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.toRealmList
 
-fun crearEuroDreams(data: String): EuroDreams {
+suspend fun crearEuroDreams(data: String, realm: Realm, realmRepo: RealmRepository) {
 
     val info = data.split(";")
     val serialNumber = info[0].substringAfter("=").takeLast(10).toLong()
@@ -31,6 +36,17 @@ fun crearEuroDreams(data: String): EuroDreams {
         precio = precioEuromillones
         premio = 0.0
     }
-    return dreams
+    Boletos().apply { euroDreams?.add(dreams) }
+    val result = realm.query<EuroDreams>("numeroSerie==$0", dreams.numeroSerie).find()
+
+    if (result.isEmpty()) {
+        val boleto = Boletos().apply {
+            fechaBoleto = dreams.fecha
+            euroDreams?.add(dreams)
+        }
+        realmRepo.insertarBoleto(boleto)
+    } else {
+        Log.i("primitiva", "ya existe primitiva")
+    }
 }
 

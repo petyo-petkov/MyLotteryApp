@@ -27,7 +27,7 @@ class ScannerRepositoryImpl(
                 .addOnCanceledListener { }
                 .addOnFailureListener {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Toast.makeText(context, "codigo no compatible o ya existe", Toast.LENGTH_LONG)
+                    Toast.makeText(context, "Escaneado fallido", Toast.LENGTH_LONG)
                         .show()
                 }
             awaitClose { }

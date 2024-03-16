@@ -1,22 +1,39 @@
 package com.example.mylotteryapp.screens.firstScreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 
 @Composable
 fun BottomBar(
     scannerViewModel: ScannerViewModel,
+    realmViewModel: RealmViewModel
 
 ) {
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
     BottomAppBar(
         actions = {
             IconButton(onClick = { /* doSomething() */ }) {
@@ -28,6 +45,13 @@ fun BottomBar(
                     contentDescription = "Localized description",
                 )
             }
+            IconButton(onClick = { showDialog = true } ) {
+                Icon(
+                    Icons.Filled.Delete,
+                    contentDescription = "Localized description",
+                    tint = Color.Red
+                )
+            }
 
 
         },
@@ -36,4 +60,14 @@ fun BottomBar(
         contentPadding = PaddingValues(horizontal = 30.dp)
 
     )
+
+    DialogoBorrar(
+        show = showDialog,
+        onDismiss = { showDialog = false },
+        onConfirm = realmViewModel::deleteAllBoletos,
+        mensaje = "Borrar todos los boletos?"
+    )
+
+
 }
+

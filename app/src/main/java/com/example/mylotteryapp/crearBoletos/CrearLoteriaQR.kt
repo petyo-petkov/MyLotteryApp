@@ -1,8 +1,13 @@
 package com.example.mylotteryapp.crearBoletos
 
+import android.util.Log
+import com.example.mylotteryapp.domain.RealmRepository
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.LoteriaNacional
+import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 
-fun crearLoteriaQR(data: String): LoteriaNacional {
+suspend fun crearLoteriaQR(data: String, realm: Realm, realmRepo: RealmRepository) {
 
 
     val info = data.split(";")
@@ -15,7 +20,7 @@ fun crearLoteriaQR(data: String): LoteriaNacional {
 
     val precioLoteria = precioLoteriaNacional(fechaString)
 
-     return LoteriaNacional().apply {
+     val loteria = LoteriaNacional().apply {
         numeroSerie = serialNumber
         fecha = fechaRealm
         numero = numeroLoteria
@@ -24,6 +29,18 @@ fun crearLoteriaQR(data: String): LoteriaNacional {
         precio = precioLoteria
         premio = 0.0
         esPremiado = null
+    }
+    Boletos().apply { loterias?.add(loteria) }
+    val result = realm.query<LoteriaNacional>("numeroSerie==$0", loteria.numeroSerie).find()
+
+    if (result.isEmpty()) {
+        val boleto = Boletos().apply {
+            fechaBoleto = loteria.fecha
+            loterias?.add(loteria)
+        }
+        realmRepo.insertarBoleto(boleto)
+    } else {
+        Log.i("loteria", "ya existe boleto")
     }
 
 }

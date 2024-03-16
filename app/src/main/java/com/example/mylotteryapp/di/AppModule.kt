@@ -1,7 +1,9 @@
 package com.example.mylotteryapp.di
 
 import android.content.Context
+import com.example.mylotteryapp.data.RealmRepositoryImpl
 import com.example.mylotteryapp.data.ScannerRepositoryImpl
+import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Bonoloto
 import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.domain.ScannerRepository
@@ -24,6 +26,7 @@ interface AppModule {
     val scannerRepository: ScannerRepository
     val realmConfig: RealmConfiguration
     val realm: Realm
+    val realmRepository: RealmRepository
 
 }
 
@@ -62,6 +65,11 @@ class AppmoduleImpl(
     override val realm: Realm by lazy {
         Realm.open(realmConfig)
     }
+
+    override val realmRepository: RealmRepository by lazy {
+        RealmRepositoryImpl(realm)
+    }
+
 
 
 }

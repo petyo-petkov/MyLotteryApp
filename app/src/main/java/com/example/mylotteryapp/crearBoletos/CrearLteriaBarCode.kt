@@ -1,11 +1,16 @@
 package com.example.mylotteryapp.crearBoletos
 
+import android.util.Log
+import com.example.mylotteryapp.domain.RealmRepository
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.LoteriaNacional
+import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-fun crearLoteriaBarCode(data: String): LoteriaNacional {
+suspend fun crearLoteriaBarCode(data: String, realm: Realm, realmRepo: RealmRepository) {
 
     val formatter = SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH)
     val fechaInicio = Calendar.getInstance()
@@ -31,7 +36,7 @@ fun crearLoteriaBarCode(data: String): LoteriaNacional {
     val fechaRealm = fechaToRealmInstant(fechaString)
     val fechaLoteria = precioLoteriaNacional(fechaString)
 
-    return LoteriaNacional().apply {
+    val loteria = LoteriaNacional().apply {
         numeroSerie = serialNumber
         fecha = fechaRealm
         numero = numeroLoteria
@@ -40,5 +45,17 @@ fun crearLoteriaBarCode(data: String): LoteriaNacional {
         precio = fechaLoteria
         premio = 0.0
         esPremiado = null
+    }
+    Boletos().apply { loterias?.add(loteria) }
+    val result = realm.query<LoteriaNacional>("numeroSerie==$0", loteria.numeroSerie).find()
+
+    if (result.isEmpty()) {
+        val boleto = Boletos().apply {
+            fechaBoleto = loteria.fecha
+            loterias?.add(loteria)
+        }
+        realmRepo.insertarBoleto(boleto)
+    } else {
+        Log.i("loteria", "ya existe boleto")
     }
 }

@@ -1,22 +1,24 @@
 package com.example.mylotteryapp.viewModels
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boletos
 import io.realm.kotlin.Realm
-import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 
 class RealmViewModel(
-    private val realm: Realm
+    private val realm: Realm,
+    private val realmRepo: RealmRepository
 ) : ViewModel() {
-
-    val boletos = realm
+/*
+    val boletos1 = realm
         .query<Boletos>()
         .asFlow()
         .map { results ->
@@ -29,33 +31,35 @@ class RealmViewModel(
             emptyList()
         )
 
+ */
 
+    var boletos by mutableStateOf(emptyList<Boletos>())
 
-    fun deleteAllBoletos() {
+    init {
         viewModelScope.launch {
-            realm.write {
-                deleteAll()
+            realmRepo.getBoletos().collect{
+                boletos = it
             }
         }
     }
 
-    fun deleteBoleto(numeroSerieBoleto: Long) {
+
+
+    fun deleteAllBoletos() {
+        viewModelScope.launch {
+            realmRepo.deleteAll()
+        }
+    }
+
+    fun deleteBoleto(id: ObjectId) {
         viewModelScope.launch(Dispatchers.IO) {
-            realm.writeBlocking {
-                val boleto = query<Boletos>("numeroSerieBoleto == $0", numeroSerieBoleto).find()
-                delete(boleto)
-            }
+            realmRepo.deleteBoleto(id)
         }
     }
 
     fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
         viewModelScope.launch {
-            realm.writeBlocking {
-                val fechasPtimitiva = realm
-                    .query<Boletos>("primitivas.fecha == $0", startDay, endDay)
-                    .find()
-
-            }
+           realmRepo.rangoFechas(startDay, endDay)
         }
     }
 
