@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -24,39 +21,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import kotlin.math.exp
 import kotlin.text.Typography.euro
 
 @Composable
-fun TopBar() {
+fun TopBar(realmViewModel: RealmViewModel) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = ShapeDefaults.ExtraSmall,
-        //colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
-
-            ) {
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Nah
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(50.dp)
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    .background(color = MaterialTheme.colorScheme.tertiary),
             ) {
 
             }
+            // Info
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(50.dp)
+                    .size(62.dp)
                     .background(color = MaterialTheme.colorScheme.secondaryContainer),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Gastado: 54 $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    text = "Gastado: ${realmViewModel.gastado} $euro",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
 
                 VerticalDivider(
                     modifier = Modifier.padding(vertical = 6.dp),
@@ -75,6 +75,7 @@ fun TopBar() {
                 Text("Balance: 254 $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
 
             }
+            HorizontalDivider(color = Color.Black, thickness = 0.4.dp)
         }
     }
 

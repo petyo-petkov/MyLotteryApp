@@ -15,4 +15,6 @@ interface RealmRepository {
 
     suspend fun deleteAll()
 
+    suspend fun getPrecios(): Flow<Double>
+
 }

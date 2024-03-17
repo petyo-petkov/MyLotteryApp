@@ -1,20 +1,14 @@
 package com.example.mylotteryapp.screens.firstScreen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,9 +24,10 @@ import com.example.mylotteryapp.viewModels.ScannerViewModel
 fun BottomBar(
     scannerViewModel: ScannerViewModel,
     realmViewModel: RealmViewModel
-
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showDialog2 by rememberSaveable { mutableStateOf(false) }
+    val selected = realmViewModel.selectedCard
 
     BottomAppBar(
         actions = {
@@ -45,12 +40,21 @@ fun BottomBar(
                     contentDescription = "Localized description",
                 )
             }
-            IconButton(onClick = { showDialog = true } ) {
+            IconButton(onClick = { showDialog = true }) {
                 Icon(
                     Icons.Filled.Delete,
                     contentDescription = "Localized description",
                     tint = Color.Red
                 )
+            }
+            if (selected) {
+                IconButton(onClick = { showDialog2 = true }) {
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = "Localized description",
+                        tint = Color.Red
+                    )
+                }
             }
 
 
@@ -66,6 +70,12 @@ fun BottomBar(
         onDismiss = { showDialog = false },
         onConfirm = realmViewModel::deleteAllBoletos,
         mensaje = "Borrar todos los boletos?"
+    )
+    DialogoBorrar(
+        show = showDialog2,
+        onDismiss = { showDialog2 = false },
+        onConfirm = { showDialog2 = false },
+        mensaje = " Borrar el boleto selecionado ?"
     )
 
 

@@ -4,8 +4,9 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,26 +33,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
+import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.Bonoloto
+import com.example.mylotteryapp.screens.firstScreen.DialogoBorrar
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemBonoloto(
     bonoloto: Bonoloto,
     formatter: SimpleDateFormat,
+    realmViewModel: RealmViewModel,
+    boleto: Boletos
 
-    ) {
+) {
     val date = Date(bonoloto.fecha!!.epochSeconds * 1000)
+    var showDialog by remember { mutableStateOf(false) }
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
-    Box(
+    var selected by remember { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
+
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
@@ -56,7 +74,26 @@ fun ItemBonoloto(
                     easing = FastOutSlowInEasing
                 )
             )
-            .clickable { expandedState = !expandedState }
+            .combinedClickable(
+                onClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    expandedState = !expandedState
+                          },
+                onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    selected = !selected
+                },
+
+                ),
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(containerColor =
+        if (!selected){
+            MaterialTheme.colorScheme.surface
+        } else {
+            MaterialTheme.colorScheme.tertiary
+        }
+
+        )
     ) {
         Column(
             modifier = Modifier,
@@ -137,7 +174,7 @@ fun ItemBonoloto(
                         Text("Premio: ${bonoloto.premio} ${Typography.euro}")
                     }
                     IconButton(
-                        onClick = {  },
+                        onClick = { showDialog = true },
                         modifier = Modifier
                     ) {
                         Icon(
@@ -146,9 +183,13 @@ fun ItemBonoloto(
                             tint = Color.Red
                         )
                     }
-
-
                 }
+                DialogoBorrar(
+                    show = showDialog,
+                    onDismiss = { showDialog = false },
+                    onConfirm = { realmViewModel.deleteBoleto(boleto._id) },
+                    mensaje = " Borrar boleto Bonoloto ?"
+                )
             }
         }
     }

@@ -25,17 +25,26 @@ fun ListBoletosItem(
     realmViewModel: RealmViewModel,
     paddingValues: PaddingValues,
 ) {
+    realmViewModel.getBoletos()
+    realmViewModel.getPrecios()
+
     val boletos = realmViewModel.boletos
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
 
     LazyColumn(modifier = Modifier.padding(paddingValues)) {
 
-        for (boleto in boletos) {
+        boletos.forEach { boleto ->
 
             boleto.primitivas?.let { primitivas ->
                 items(primitivas) { primitiva ->
 
-                    ItemPrimitiva(primitiva = primitiva, formatter = formatter)
+                    ItemPrimitiva(
+                        primitiva = primitiva,
+                        formatter = formatter,
+                        realmViewModel = realmViewModel,
+                        boleto = boleto,
+
+                        )
 
                     HorizontalDivider(
                         modifier = Modifier,
@@ -48,7 +57,12 @@ fun ListBoletosItem(
             boleto.bonolotos?.let { bonolotos ->
                 items(bonolotos) { bonoloto ->
 
-                    ItemBonoloto(bonoloto = bonoloto, formatter = formatter)
+                    ItemBonoloto(
+                        bonoloto = bonoloto,
+                        formatter = formatter,
+                        realmViewModel,
+                        boleto
+                    )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -62,7 +76,12 @@ fun ListBoletosItem(
             boleto.euroMillones?.let { euromillones ->
                 items(euromillones) { euromillon ->
 
-                    ItemEuromillones(euromillon = euromillon, formatter = formatter)
+                    ItemEuromillones(
+                        euromillon,
+                        formatter,
+                        realmViewModel,
+                        boleto
+                    )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -76,7 +95,12 @@ fun ListBoletosItem(
             boleto.gordos?.let { gordos ->
                 items(gordos) { gordo ->
 
-                    ItemElGordo(gordo = gordo, formatter = formatter)
+                    ItemElGordo(
+                        gordo = gordo,
+                        formatter = formatter,
+                        realmViewModel,
+                        boleto
+                    )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -90,7 +114,12 @@ fun ListBoletosItem(
             boleto.euroDreams?.let { euroDreams ->
                 items(euroDreams) { dream ->
 
-                    ItemEuroDreams(dream = dream, formatter = formatter)
+                    ItemEuroDreams(
+                        dream = dream,
+                        formatter = formatter,
+                        realmViewModel,
+                        boleto
+                    )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -104,7 +133,12 @@ fun ListBoletosItem(
             boleto.loterias?.let { loterias ->
                 items(loterias) { loteria ->
 
-                    ItemLoterias(loteria = loteria, formatter = formatter)
+                    ItemLoterias(
+                        loteria = loteria,
+                        formatter = formatter,
+                        realmViewModel = realmViewModel,
+                        boleto = boleto
+                    )
 
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -118,4 +152,5 @@ fun ListBoletosItem(
 
     }
 }
+
 

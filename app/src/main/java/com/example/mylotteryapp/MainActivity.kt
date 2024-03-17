@@ -31,13 +31,13 @@ class MainActivity : ComponentActivity() {
                 val realmViewModel = viewModel<RealmViewModel>(
                     factory = viewModelFactory {
                         RealmViewModel(
-                            MyApp.appModule.realm,
                             MyApp.appModule.realmRepository
                         )
                     }
                 )
 
                 FirstMainActivity(realmViewModel, scannerViewModel)
+
             }
         }
     }

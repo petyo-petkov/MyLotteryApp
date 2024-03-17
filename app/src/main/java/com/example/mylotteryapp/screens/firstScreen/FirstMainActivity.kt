@@ -22,7 +22,7 @@ fun FirstMainActivity(
 
     Scaffold(
         modifier = Modifier,
-        topBar = { TopBar() },
+        topBar = { TopBar(realmViewModel) },
         bottomBar = { BottomBar(scannerViewModel, realmViewModel) },
 
         ) {
@@ -37,7 +37,7 @@ fun FirstMainActivity(
 
             ListBoletosItem(
                 realmViewModel = realmViewModel,
-                paddingValues = it,
+                paddingValues = it
             )
         }
 
