@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boletos
 import com.example.mylotteryapp.models.EuroDreams
-import com.example.mylotteryapp.screens.firstScreen.DialogoBorrar
+import com.example.mylotteryapp.screens.firstScreen.DialogoPremio
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -55,7 +56,6 @@ fun ItemEuroDreams(
     boleto: Boletos
     ) {
 
-    var showDialog by remember { mutableStateOf(false) }
     val date = Date(dream.fecha!!.epochSeconds * 1000)
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
@@ -63,6 +63,7 @@ fun ItemEuroDreams(
     )
     var selected by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
+    var show by rememberSaveable { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -81,6 +82,8 @@ fun ItemEuroDreams(
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     selected = !selected
+                    realmViewModel.selectedCard = selected
+                    realmViewModel.boleto = boleto
                 }
             ),
         shape = RoundedCornerShape(0.dp),
@@ -88,7 +91,7 @@ fun ItemEuroDreams(
         if (!selected){
             MaterialTheme.colorScheme.surface
         } else {
-            MaterialTheme.colorScheme.tertiary
+            MaterialTheme.colorScheme.errorContainer
         }
 
         )
@@ -156,8 +159,8 @@ fun ItemEuroDreams(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 96.dp, end = 12.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
+                    verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Column(
@@ -169,30 +172,23 @@ fun ItemEuroDreams(
                             dream.dreams.forEach { numeroDream ->
                                 Text("${index + 1}: $combi + $numeroDream")
                             }
-
-
                         }
                         Text("Premio: ${dream.premio} ${Typography.euro}")
                     }
                     IconButton(
-                        onClick = { showDialog = true },
+                        onClick = { show = true },
                         modifier = Modifier
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Delete,
+                            imageVector = Icons.Filled.Edit,
                             contentDescription = null,
-                            tint = Color.Red
+                            tint = Color.Black
                         )
                     }
                 }
-                DialogoBorrar(
-                    show = showDialog ,
-                    onDismiss = { showDialog = false },
-                    onConfirm = { realmViewModel.deleteBoleto(boleto._id) },
-                    mensaje = "Borrar boleto Euro Dreams ?"
-                )
+
             }
         }
     }
-
+    DialogoPremio(show = show, onDismiss = { show = false }, onConfirm = { show = true })
 }

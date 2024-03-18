@@ -26,7 +26,6 @@ fun BottomBar(
     realmViewModel: RealmViewModel
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
-    var showDialog2 by rememberSaveable { mutableStateOf(false) }
     val selected = realmViewModel.selectedCard
 
     BottomAppBar(
@@ -47,17 +46,6 @@ fun BottomBar(
                     tint = Color.Red
                 )
             }
-            if (selected) {
-                IconButton(onClick = { showDialog2 = true }) {
-                    Icon(
-                        Icons.Filled.Favorite,
-                        contentDescription = "Localized description",
-                        tint = Color.Red
-                    )
-                }
-            }
-
-
         },
         modifier = Modifier,
         floatingActionButton = { FAB(scannerViewModel) },
@@ -71,13 +59,6 @@ fun BottomBar(
         onConfirm = realmViewModel::deleteAllBoletos,
         mensaje = "Borrar todos los boletos?"
     )
-    DialogoBorrar(
-        show = showDialog2,
-        onDismiss = { showDialog2 = false },
-        onConfirm = { showDialog2 = false },
-        mensaje = " Borrar el boleto selecionado ?"
-    )
-
 
 }
 

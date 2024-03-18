@@ -2,17 +2,13 @@ package com.example.mylotteryapp.viewModels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boletos
 import io.realm.kotlin.types.RealmInstant
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.mongodb.kbson.ObjectId
 
@@ -23,7 +19,10 @@ class RealmViewModel(
     var selectedCard by mutableStateOf(false)
 
     var boletos by mutableStateOf(emptyList<Boletos>())
+    var boleto: Boletos? by mutableStateOf(Boletos())
+
     var gastado by mutableStateOf(0.0)
+    var premio by mutableStateOf(0.0)
 
 
     fun getBoletos() {
@@ -60,6 +59,12 @@ class RealmViewModel(
     fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.rangoFechas(startDay, endDay)
+        }
+    }
+
+    fun insertBoleto(boleto: Boletos){
+        viewModelScope.launch {
+            realmRepo.insertarBoleto(boleto)
         }
     }
 
