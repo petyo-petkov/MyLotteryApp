@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.domain.RealmRepository
-import com.example.mylotteryapp.models.Boletos
+import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,11 +18,11 @@ class RealmViewModel(
 
     var selectedCard by mutableStateOf(false)
 
-    var boletos by mutableStateOf(emptyList<Boletos>())
-    var boleto: Boletos? by mutableStateOf(Boletos())
+    var boletos by mutableStateOf(emptyList<Boleto>())
+    var boleto: Boleto? by mutableStateOf(Boleto())
 
     var gastado by mutableStateOf(0.0)
-    var premio by mutableStateOf(0.0)
+    //var ganado by mutableStateOf(0.0)
 
 
     fun getBoletos() {
@@ -41,6 +41,14 @@ class RealmViewModel(
             }
         }
     }
+
+//    fun getPremio() {
+//        viewModelScope.launch {
+//            realmRepo.getPremio().collect{
+//                ganado = it
+//            }
+//        }
+//    }
 
     fun deleteAllBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -62,7 +70,7 @@ class RealmViewModel(
         }
     }
 
-    fun insertBoleto(boleto: Boletos){
+    fun insertBoleto(boleto: Boleto){
         viewModelScope.launch {
             realmRepo.insertarBoleto(boleto)
         }

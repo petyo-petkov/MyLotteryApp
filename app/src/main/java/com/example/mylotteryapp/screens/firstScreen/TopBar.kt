@@ -83,7 +83,7 @@ fun TopBar(realmViewModel: RealmViewModel) {
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "${gastado} $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(text = "$gastado $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
 
                 Text("$ganado $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
 
