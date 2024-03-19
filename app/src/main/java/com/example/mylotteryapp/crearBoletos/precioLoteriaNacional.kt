@@ -8,7 +8,6 @@ import java.util.Locale
 fun precioLoteriaNacional(fechaLoteria: String): Double {
 
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-
     val fecha = Date((fechaToRealmInstant(fechaLoteria)).epochSeconds * 1000)
     val fechaFormateada = formatter.format(fecha)
 
@@ -19,16 +18,26 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
 
     val diaSemana = calendario.get(Calendar.DAY_OF_WEEK)
     val dia = calendario.get(Calendar.DAY_OF_MONTH)
+    val mes = calendario.get(Calendar.MONTH)
+    var precio = 0.0
 
-    val precio = when (diaSemana) {
-        Calendar.THURSDAY -> 3.0
-        Calendar.SATURDAY -> {
-            if (dia in 15..28) {
-                15.0
-            } else  { 6.0 }
-        }
-        else -> { 0.1 }
+    if (diaSemana == Calendar.THURSDAY) {
+        precio = 3.0
     }
+    if (diaSemana == Calendar.SATURDAY) {
+        if (dia in 17..25) {
+            precio = 15.0
+        }else{
+            precio = 6.0
+        }
+    }
+    if (dia == 6 && mes == 0) {
+        precio = 20.0
+    }
+    if (dia == 22 && mes == 11){
+        precio = 20.0
+    }
+
     return precio
 }
 

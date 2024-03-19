@@ -4,14 +4,8 @@ import android.content.Context
 import com.example.mylotteryapp.data.RealmRepositoryImpl
 import com.example.mylotteryapp.data.ScannerRepositoryImpl
 import com.example.mylotteryapp.domain.RealmRepository
-import com.example.mylotteryapp.models.Bonoloto
-import com.example.mylotteryapp.models.Primitiva
 import com.example.mylotteryapp.domain.ScannerRepository
-import com.example.mylotteryapp.models.Boletos
-import com.example.mylotteryapp.models.ElGordo
-import com.example.mylotteryapp.models.EuroDreams
-import com.example.mylotteryapp.models.EuroMillones
-import com.example.mylotteryapp.models.LoteriaNacional
+import com.example.mylotteryapp.models.Boleto
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
@@ -51,14 +45,7 @@ class AppmoduleImpl(
     // Realm
     override val realmConfig: RealmConfiguration by lazy {
         RealmConfiguration.create(schema = setOf(
-            Boletos::class,
-            Primitiva::class,
-            Bonoloto::class,
-            ElGordo::class,
-            EuroMillones::class,
-            EuroDreams::class,
-            LoteriaNacional::class
-
+            Boleto::class
         ))
     }
 
@@ -69,7 +56,5 @@ class AppmoduleImpl(
     override val realmRepository: RealmRepository by lazy {
         RealmRepositoryImpl(realm)
     }
-
-
 
 }

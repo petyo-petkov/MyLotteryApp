@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.firstScreen.itemsBoletos
+package com.example.mylotteryapp.screens.firstScreen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -40,29 +40,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
-import com.example.mylotteryapp.models.Boletos
-import com.example.mylotteryapp.models.EuroDreams
-import com.example.mylotteryapp.screens.firstScreen.DialogoPremio
+import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemEuroDreams(
-    dream: EuroDreams,
+fun ItemBoleto(
+    boleto: Boleto,
     formatter: SimpleDateFormat,
     realmViewModel: RealmViewModel,
-    boleto: Boletos
-    ) {
 
-    val date = Date(dream.fecha!!.epochSeconds * 1000)
+    ) {
+    val date = Date(boleto.fecha!!.epochSeconds * 1000)
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
     var selected by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
+
     var show by rememberSaveable { mutableStateOf(false) }
 
     Card(
@@ -87,12 +85,13 @@ fun ItemEuroDreams(
                 }
             ),
         shape = RoundedCornerShape(0.dp),
-        colors = CardDefaults.cardColors(containerColor =
-        if (!selected){
-            MaterialTheme.colorScheme.surface
-        } else {
-            MaterialTheme.colorScheme.errorContainer
-        }
+        colors = CardDefaults.cardColors(
+            containerColor =
+            if (!selected) {
+                MaterialTheme.colorScheme.surface
+            } else {
+                MaterialTheme.colorScheme.errorContainer
+            }
 
         )
 
@@ -102,7 +101,6 @@ fun ItemEuroDreams(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Row(
                 modifier = Modifier,
                 horizontalArrangement = Arrangement.Center,
@@ -115,7 +113,35 @@ fun ItemEuroDreams(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.euro_dreams),
+                        painter = when (boleto.tipo) {
+                            "Primitiva" -> {
+                                painterResource(id = R.drawable.la_primitiva)
+                            }
+
+                            "Bonoloto" -> {
+                                painterResource(id = R.drawable.bonoloto)
+                            }
+
+                            "Euromillones" -> {
+                                painterResource(id = R.drawable.euromillones)
+                            }
+
+                            "El Gordo" -> {
+                                painterResource(id = R.drawable.el_godo)
+                            }
+
+                            "Euro Dreams" -> {
+                                painterResource(id = R.drawable.euro_dreams)
+                            }
+
+                            "Loteria Nacional" -> {
+                                painterResource(id = R.drawable.loteria_nacional)
+                            }
+
+                            else -> {
+                                painterResource(id = R.drawable.ic_launcher_foreground)
+                            }
+                        },
                         contentDescription = null
                     )
                 }
@@ -133,12 +159,12 @@ fun ItemEuroDreams(
                         fontSize = 12.sp,
                     )
                     Text(
-                        text = dream.tipo,
+                        text = boleto.tipo,
                         modifier = Modifier,
                         fontSize = 20.sp,
                     )
                     Text(
-                        text = "${dream.precio} ${Typography.euro}",
+                        text = "${boleto.precio} ${Typography.euro}",
                         modifier = Modifier,
                         fontSize = 12.sp,
 
@@ -153,6 +179,7 @@ fun ItemEuroDreams(
                         .weight(1f)
                         .padding(horizontal = 16.dp)
                         .rotate(rotationState)
+
                 )
             }
             if (expandedState) {
@@ -168,12 +195,65 @@ fun ItemEuroDreams(
                             .weight(1f),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        dream.combinaciones.forEachIndexed { index, combi ->
-                            dream.dreams.forEach { numeroDream ->
-                                Text("${index + 1}: $combi + $numeroDream")
+                        when (boleto.tipo) {
+                            "Primitiva" -> {
+                                boleto.combinaciones.forEachIndexed { index, combi ->
+                                    Text("${index + 1}: $combi")
+                                }
+                                Text("Reintegro: ${boleto.reintegro}")
+                                Text("Joker: ${boleto.joker}")
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            "Bonoloto" -> {
+                                boleto.combinaciones.forEachIndexed { index, combi ->
+                                    Text("${index + 1}: $combi")
+                                }
+                                Text("Reintegro: ${boleto.reintegro}")
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            "Euromillones" -> {
+                                boleto.combinaciones.forEachIndexed { index, combi ->
+                                    boleto.estrellas.forEach { star ->
+                                        Text("${index + 1}: $combi \u2605 $star")
+                                    }
+                                }
+                                Text("El Millon: ${boleto.numeroElMillon}")
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            "El Gordo" -> {
+                                boleto.combinaciones.forEachIndexed { index, combi ->
+                                    boleto.numeroClave.forEach { clave ->
+                                        Text("${index + 1}: $combi + $clave")
+                                    }
+                                }
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            "Euro Dreams" -> {
+                                boleto.combinaciones.forEachIndexed { index, combi ->
+                                    boleto.dreams.forEach { numeroDream ->
+                                        Text("${index + 1}: $combi + $numeroDream")
+                                    }
+                                }
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            "Loteria Nacional" -> {
+                                Text("Numero: ${boleto.numeroLoteria}")
+                                Text("Serie: ${boleto.serieLoteria}")
+                                Text("Sorteo: ${boleto.sorteoLoteria}")
+                                Text("Premio: ${boleto.premio} ${Typography.euro}")
+                            }
+
+                            else -> {
+                                Text(text = "")
                             }
                         }
-                        Text("Premio: ${dream.premio} ${Typography.euro}")
+
+
                     }
                     IconButton(
                         onClick = { show = true },
@@ -188,7 +268,21 @@ fun ItemEuroDreams(
                 }
 
             }
+
         }
     }
-    DialogoPremio(show = show, onDismiss = { show = false }, onConfirm = { show = true })
+    DialogoPremio(
+        show = show,
+        onDismiss = { show = false },
+        onConfirm = {
+
+
+                show = false
+
+
+        }
+
+    )
+
 }
+
