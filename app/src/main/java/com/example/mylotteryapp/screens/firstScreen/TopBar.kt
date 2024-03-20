@@ -37,7 +37,7 @@ fun TopBar(realmViewModel: RealmViewModel) {
     val selected = realmViewModel.selectedCard
     val boleto = realmViewModel.boleto
     val gastado = realmViewModel.gastado
-    val ganado = 0.0
+    val ganado = realmViewModel.ganado
     val balance = ganado - gastado
 
     Card(
@@ -92,7 +92,7 @@ fun TopBar(realmViewModel: RealmViewModel) {
                     color = if (balance <= 0) {
                         Color.Red
                     } else {
-                           Color.Green
+                           Color.Black
                     },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,

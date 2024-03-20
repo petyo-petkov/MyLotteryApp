@@ -51,9 +51,9 @@ fun ItemBoleto(
     boleto: Boleto,
     formatter: SimpleDateFormat,
     realmViewModel: RealmViewModel,
+) {
 
-    ) {
-    val date = Date(boleto.fecha!!.epochSeconds * 1000)
+    val date = Date(boleto.fecha.epochSeconds * 1000)
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
@@ -274,11 +274,10 @@ fun ItemBoleto(
     DialogoPremio(
         show = show,
         onDismiss = { show = false },
-        onConfirm = {
+        onConfirm = {valor ->
 
-
-                show = false
-
+            realmViewModel.updatePremio(boleto, valor)
+            show = false
 
         }
 

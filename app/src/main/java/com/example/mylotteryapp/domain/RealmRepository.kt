@@ -11,12 +11,15 @@ interface RealmRepository {
 
     suspend fun insertarBoleto(boleto: Boleto)
 
+    suspend fun updatePremio(boleto: Boleto, valor: Double)
+
     suspend fun deleteBoleto(id: ObjectId)
 
     suspend fun deleteAll()
 
     suspend fun getPrecios(): Flow<Double>
 
-   // suspend fun getPremio(): Flow<Double>
+    suspend fun getPremio(): Flow<Double>
+
 
 }

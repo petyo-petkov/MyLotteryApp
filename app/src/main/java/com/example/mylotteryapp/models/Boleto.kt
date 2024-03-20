@@ -13,9 +13,9 @@ class Boleto : RealmObject {
     var _id: ObjectId = ObjectId()
     var tipo: String = ""
     var numeroSerie: Long = 0L
-    var fecha: RealmInstant? = null
+    var fecha: RealmInstant = RealmInstant.MIN
     var precio: Double = 0.0
-    var premio: Double? = 0.0
+    var premio: Double? = null
 
     var combinaciones: RealmList<String> = realmListOf()
     var reintegro: String? = ""

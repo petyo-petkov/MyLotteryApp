@@ -35,11 +35,12 @@ import com.example.mylotteryapp.models.Boleto
 fun DialogoPremio(
     show: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: (Double) -> Unit,
 
     ) {
-    var valor by remember { mutableStateOf(" ") }
-    val premio by remember { derivedStateOf { valor.toDouble() } }
+    var valor by remember { mutableStateOf("") }
+    val premio by remember { derivedStateOf { if (valor.isNotEmpty()) valor.toDouble() else 0.0 } }
+
 
     AnimatedVisibility(
         visible = show,
@@ -98,7 +99,7 @@ fun DialogoPremio(
                         Text("Cancelar")
                     }
                     TextButton(
-                        onClick = { onConfirm() },
+                        onClick = { onConfirm(premio) },
                         modifier = Modifier.padding(0.dp),
 
                         ) {

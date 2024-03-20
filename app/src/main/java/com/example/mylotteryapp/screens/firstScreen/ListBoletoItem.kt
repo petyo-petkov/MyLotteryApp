@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import io.realm.kotlin.Realm
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,7 +22,7 @@ fun ListBoletosItem(
 ) {
     realmViewModel.getBoletos()
     realmViewModel.getPrecios()
-   // realmViewModel.getPremio()
+    realmViewModel.getPremio()
 
     val boletos = realmViewModel.boletos
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }

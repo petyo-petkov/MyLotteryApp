@@ -22,7 +22,7 @@ class RealmViewModel(
     var boleto: Boleto? by mutableStateOf(Boleto())
 
     var gastado by mutableStateOf(0.0)
-    //var ganado by mutableStateOf(0.0)
+    var ganado by mutableStateOf(0.0)
 
 
     fun getBoletos() {
@@ -42,13 +42,13 @@ class RealmViewModel(
         }
     }
 
-//    fun getPremio() {
-//        viewModelScope.launch {
-//            realmRepo.getPremio().collect{
-//                ganado = it
-//            }
-//        }
-//    }
+    fun getPremio() {
+        viewModelScope.launch {
+            realmRepo.getPremio().collect{
+                ganado = it
+            }
+        }
+    }
 
     fun deleteAllBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -73,6 +73,11 @@ class RealmViewModel(
     fun insertBoleto(boleto: Boleto){
         viewModelScope.launch {
             realmRepo.insertarBoleto(boleto)
+        }
+    }
+    fun updatePremio(boleto: Boleto, valor: Double) {
+        viewModelScope.launch {
+            realmRepo.updatePremio(boleto, valor)
         }
     }
 
