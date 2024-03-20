@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import io.realm.kotlin.Realm
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

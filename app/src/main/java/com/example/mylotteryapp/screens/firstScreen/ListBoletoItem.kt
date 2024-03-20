@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import io.realm.kotlin.Realm
 import java.text.SimpleDateFormat
 import java.util.Locale
 
