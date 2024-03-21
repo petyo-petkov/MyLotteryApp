@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens.firstScreen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,8 +15,9 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ListBoletosItem(
+fun ListBoletos(
     realmViewModel: RealmViewModel,
     paddingValues: PaddingValues,
 ) {
@@ -27,10 +29,15 @@ fun ListBoletosItem(
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
 
 
-    LazyColumn(modifier = Modifier.padding(paddingValues)) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(paddingValues)
 
-        items(boletos) {boleto ->
+    ) {
+        items(boletos, key = { it.numeroSerie }) { boleto ->
+
             ItemBoleto(boleto = boleto, formatter = formatter, realmViewModel = realmViewModel)
+
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 thickness = 0.5.dp,
@@ -38,7 +45,9 @@ fun ListBoletosItem(
             )
         }
 
+
     }
+
 }
 
 

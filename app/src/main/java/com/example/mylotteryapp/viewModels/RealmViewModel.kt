@@ -26,7 +26,7 @@ class RealmViewModel(
 
 
     fun getBoletos() {
-        viewModelScope.launch() {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getBoletos().collect {
                 boletos = it
             }
@@ -35,7 +35,7 @@ class RealmViewModel(
     }
 
     fun getPrecios() {
-        viewModelScope.launch() {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getPrecios().collect{
                 gastado = it
             }
@@ -43,7 +43,7 @@ class RealmViewModel(
     }
 
     fun getPremio() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getPremio().collect{
                 ganado = it
             }
@@ -76,7 +76,7 @@ class RealmViewModel(
         }
     }
     fun updatePremio(boleto: Boleto, valor: Double) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.updatePremio(boleto, valor)
         }
     }

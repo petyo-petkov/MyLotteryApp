@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -45,94 +44,78 @@ fun TopBar(realmViewModel: RealmViewModel) {
             .fillMaxWidth(),
         shape = ShapeDefaults.ExtraSmall,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
+
+        // Nah
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(50.dp)
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
         ) {
-            // Nah
+            // Vacio
+        }
+        // Info
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(64.dp)
+                .background(color = MaterialTheme.colorScheme.secondaryContainer),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            InfoColumn(text1 = "Gastado", text2 = "$gastado $euro")
+            InfoColumn(text1 = "Ganado", text2 = "$ganado $euro")
+            InfoColumn(text1 = "Balance", text2 = "$balance $euro")
+
+        }
+        HorizontalDivider(color = Color.Black, thickness = 0.4.dp)
+
+        if (selected) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .size(50.dp)
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
+                IconButton(onClick = { showDialog = true }
 
-            }
-            // Info
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(32.dp)
-                    .background(color = MaterialTheme.colorScheme.secondaryContainer),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(text = "Gastado", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-
-                Text("Ganado", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-
-                Text("Balance", fontSize = 16.sp, fontWeight = FontWeight.Medium )
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(32.dp)
-                    .background(color = MaterialTheme.colorScheme.secondaryContainer),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "$gastado $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-
-                Text("$ganado $euro", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-
-                Text(
-                    "$balance $euro",
-                    color = if (balance <= 0) {
-                        Color.Red
-                    } else {
-                           Color.Black
-                    },
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        tint = Color.Red
                     )
 
-            }
-            HorizontalDivider(color = Color.Black, thickness = 0.4.dp)
-
-            if (selected) {
-                Row(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.errorContainer)
-                        .fillMaxWidth()
-                        .padding(2.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    IconButton(onClick = { showDialog = true }
-
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = Color.Red
-                        )
-
-                    }
                 }
-                DialogoBorrar(
-                    show = showDialog,
-                    onDismiss = { showDialog = false },
-                    onConfirm = {
-                        realmViewModel.deleteBoleto(boleto!!._id)
-                        realmViewModel.boleto = null
-                        realmViewModel.selectedCard = false
-                    },
-                    mensaje = "Borrar boleto seleccionado ?"
-                )
             }
+            DialogoBorrar(
+                show = showDialog,
+                onDismiss = { showDialog = false },
+                onConfirm = {
+                    realmViewModel.deleteBoleto(boleto!!._id)
+                    realmViewModel.boleto = null
+                    realmViewModel.selectedCard = false
+                },
+                mensaje = "Borrar boleto seleccionado ?"
+            )
+
         }
+    }
+
+}
+
+@Composable
+fun InfoColumn(
+    text1: String, text2: String
+) {
+    Column(
+        modifier = Modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text1, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        Text(text2, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+
     }
 
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import io.realm.kotlin.internal.platform.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -60,8 +62,8 @@ fun ItemBoleto(
     )
     var selected by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
-
     var show by rememberSaveable { mutableStateOf(false) }
+
 
     Card(
         modifier = Modifier
@@ -113,35 +115,56 @@ fun ItemBoleto(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = when (boleto.tipo) {
-                            "Primitiva" -> {
-                                painterResource(id = R.drawable.la_primitiva)
-                            }
+                        painter = loadImage(
+                            when (boleto.tipo) {
+                                "Primitiva" -> R.drawable.la_primitiva
 
-                            "Bonoloto" -> {
-                                painterResource(id = R.drawable.bonoloto)
-                            }
+                                "Bonoloto" -> R.drawable.bonoloto
 
-                            "Euromillones" -> {
-                                painterResource(id = R.drawable.euromillones)
-                            }
+                                "Euromillones" -> R.drawable.euromillones
 
-                            "El Gordo" -> {
-                                painterResource(id = R.drawable.el_godo)
-                            }
+                                "El Gordo" -> R.drawable.el_godo
 
-                            "Euro Dreams" -> {
-                                painterResource(id = R.drawable.euro_dreams)
-                            }
+                                "Euro Dreams" -> R.drawable.euro_dreams
 
-                            "Loteria Nacional" -> {
-                                painterResource(id = R.drawable.loteria_nacional)
-                            }
+                                "Loteria Nacional" -> R.drawable.loteria_nacional
 
-                            else -> {
-                                painterResource(id = R.drawable.ic_launcher_foreground)
+                                else -> R.drawable.ic_launcher_foreground
                             }
-                        },
+                            /*
+                            painter = when(boleto.tipo) {
+                                "Primitiva" -> {
+                                    painterResource(id = R.drawable.la_primitiva)
+                                }
+
+                                "Bonoloto" -> {
+                                    painterResource(id = R.drawable.bonoloto)
+                                }
+
+                                "Euromillones" -> {
+                                    painterResource(id = R.drawable.euromillones)
+                                }
+
+                                "El Gordo" -> {
+                                    painterResource(id = R.drawable.el_godo)
+                                }
+
+                                "Euro Dreams" -> {
+                                    painterResource(id = R.drawable.euro_dreams)
+                                }
+
+                                "Loteria Nacional" -> {
+                                    painterResource(id = R.drawable.loteria_nacional)
+                                }
+
+                                else -> {
+                                    painterResource(id = R.drawable.ic_launcher_foreground)
+                                }
+                            },
+                            contentDescription = null
+
+                             */
+                        ),
                         contentDescription = null
                     )
                 }
@@ -183,89 +206,7 @@ fun ItemBoleto(
                 )
             }
             if (expandedState) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        when (boleto.tipo) {
-                            "Primitiva" -> {
-                                boleto.combinaciones.forEachIndexed { index, combi ->
-                                    Text("${index + 1}: $combi")
-                                }
-                                Text("Reintegro: ${boleto.reintegro}")
-                                Text("Joker: ${boleto.joker}")
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            "Bonoloto" -> {
-                                boleto.combinaciones.forEachIndexed { index, combi ->
-                                    Text("${index + 1}: $combi")
-                                }
-                                Text("Reintegro: ${boleto.reintegro}")
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            "Euromillones" -> {
-                                boleto.combinaciones.forEachIndexed { index, combi ->
-                                    boleto.estrellas.forEach { star ->
-                                        Text("${index + 1}: $combi \u2605 $star")
-                                    }
-                                }
-                                Text("El Millon: ${boleto.numeroElMillon}")
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            "El Gordo" -> {
-                                boleto.combinaciones.forEachIndexed { index, combi ->
-                                    boleto.numeroClave.forEach { clave ->
-                                        Text("${index + 1}: $combi + $clave")
-                                    }
-                                }
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            "Euro Dreams" -> {
-                                boleto.combinaciones.forEachIndexed { index, combi ->
-                                    boleto.dreams.forEach { numeroDream ->
-                                        Text("${index + 1}: $combi + $numeroDream")
-                                    }
-                                }
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            "Loteria Nacional" -> {
-                                Text("Numero: ${boleto.numeroLoteria}")
-                                Text("Serie: ${boleto.serieLoteria}")
-                                Text("Sorteo: ${boleto.sorteoLoteria}")
-                                Text("Premio: ${boleto.premio} ${Typography.euro}")
-                            }
-
-                            else -> {
-                                Text(text = "")
-                            }
-                        }
-
-
-                    }
-                    IconButton(
-                        onClick = { show = true },
-                        modifier = Modifier
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                }
+                ExpandedContent(boleto = boleto , onConfirm = { show = true })
 
             }
 
@@ -274,14 +215,33 @@ fun ItemBoleto(
     DialogoPremio(
         show = show,
         onDismiss = { show = false },
-        onConfirm = {valor ->
-
+        onConfirm = { valor ->
             realmViewModel.updatePremio(boleto, valor)
             show = false
-
+            expandedState = !expandedState
         }
-
     )
 
 }
+
+
+// Funcioón para cargar imagenes optimizada
+@Composable
+fun loadImage(imageResourceId: Int): Painter {
+    // ImagenCache simple usando una WeakReference para evitar fugas de memoria
+    val imageCache = remember { mutableMapOf<Int, WeakReference<Painter>>() }
+
+    val cachedImage = imageCache[imageResourceId]?.get()
+    if (cachedImage != null) {
+        return cachedImage
+    } else {
+        val painter = painterResource(id = imageResourceId)
+        imageCache[imageResourceId] = WeakReference(painter)
+        return painter
+    }
+}
+
+
+
+
 
