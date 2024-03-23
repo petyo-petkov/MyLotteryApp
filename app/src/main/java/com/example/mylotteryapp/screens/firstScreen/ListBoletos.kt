@@ -1,10 +1,10 @@
 package com.example.mylotteryapp.screens.firstScreen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -15,11 +15,11 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListBoletos(
     realmViewModel: RealmViewModel,
     paddingValues: PaddingValues,
+    onListEndChange: (Boolean) -> Unit
 ) {
     realmViewModel.getBoletos()
     realmViewModel.getPrecios()
@@ -27,11 +27,16 @@ fun ListBoletos(
 
     val boletos = realmViewModel.boletos
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
-
+    val scrollState = rememberLazyListState()
+    val isListAtEnd =
+        scrollState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == boletos.lastIndex
+    onListEndChange(isListAtEnd)
 
     LazyColumn(
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(paddingValues),
+        state = scrollState
+
 
     ) {
         items(boletos, key = { it.numeroSerie }) { boleto ->
@@ -45,8 +50,8 @@ fun ListBoletos(
             )
         }
 
-
     }
+
 
 }
 

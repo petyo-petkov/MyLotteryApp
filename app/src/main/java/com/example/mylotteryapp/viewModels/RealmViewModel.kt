@@ -24,7 +24,6 @@ class RealmViewModel(
     var gastado by mutableStateOf(0.0)
     var ganado by mutableStateOf(0.0)
 
-
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getBoletos().collect {
