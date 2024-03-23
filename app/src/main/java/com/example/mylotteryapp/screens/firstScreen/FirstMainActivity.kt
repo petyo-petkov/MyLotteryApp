@@ -25,7 +25,11 @@ fun FirstMainActivity(
         modifier = Modifier,
         topBar = { TopBar(realmViewModel) },
         floatingActionButton = {
-            FAB(scannerViewModel = scannerViewModel, realmViewModel = realmViewModel, isListAtEnd = isListAtEnd)
+            FAB(
+                scannerViewModel = scannerViewModel,
+                realmViewModel = realmViewModel,
+                isListAtEnd = isListAtEnd
+            )
         },
         floatingActionButtonPosition = FabPosition.Center
 
@@ -37,7 +41,7 @@ fun FirstMainActivity(
             onListEndChange = { newValue -> // Callback desde ListBoletos
                 isListAtEnd = newValue
             }
-            )
+        )
 
     }
 }

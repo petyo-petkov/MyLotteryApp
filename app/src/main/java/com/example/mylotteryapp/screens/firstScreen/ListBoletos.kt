@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens.firstScreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@SuppressLint("FrequentlyChangedStateReadInComposition")
 @Composable
 fun ListBoletos(
     realmViewModel: RealmViewModel,
@@ -28,8 +30,7 @@ fun ListBoletos(
     val boletos = realmViewModel.boletos
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val scrollState = rememberLazyListState()
-    val isListAtEnd =
-        scrollState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == boletos.lastIndex
+    val isListAtEnd = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == boletos.lastIndex
     onListEndChange(isListAtEnd)
 
     LazyColumn(
