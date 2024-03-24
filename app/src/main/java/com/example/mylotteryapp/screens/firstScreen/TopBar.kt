@@ -50,7 +50,7 @@ fun TopBar(realmViewModel: RealmViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .size(50.dp)
-                .background(color = MaterialTheme.colorScheme.primaryContainer),
+                .background(color = MaterialTheme.colorScheme.tertiary),
         ) {
             // Vacio
         }
@@ -59,7 +59,7 @@ fun TopBar(realmViewModel: RealmViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .size(64.dp)
-                .background(color = MaterialTheme.colorScheme.secondaryContainer),
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {

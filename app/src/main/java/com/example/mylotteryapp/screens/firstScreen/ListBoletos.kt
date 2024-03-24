@@ -16,12 +16,12 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@SuppressLint("FrequentlyChangedStateReadInComposition")
+@SuppressLint("FrequentlyChangedStateReadInComposition", "UnrememberedMutableState")
 @Composable
 fun ListBoletos(
     realmViewModel: RealmViewModel,
     paddingValues: PaddingValues,
-    onListEndChange: (Boolean) -> Unit
+
 ) {
     realmViewModel.getBoletos()
     realmViewModel.getPrecios()
@@ -29,16 +29,13 @@ fun ListBoletos(
 
     val boletos = realmViewModel.boletos
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
-    val scrollState = rememberLazyListState()
-    val isListAtEnd = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == boletos.lastIndex
-    onListEndChange(isListAtEnd)
+    val listState = rememberLazyListState()
+
 
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues),
-        state = scrollState
-
-
+        state = listState
     ) {
         items(boletos, key = { it.numeroSerie }) { boleto ->
 
@@ -50,10 +47,7 @@ fun ListBoletos(
                 color = Color.Black
             )
         }
-
     }
 
-
 }
-
 

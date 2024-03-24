@@ -1,6 +1,7 @@
 package com.example.mylotteryapp.viewModels
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -17,12 +18,16 @@ class RealmViewModel(
 ) : ViewModel() {
 
     var selectedCard by mutableStateOf(false)
+    var isExpanded by mutableStateOf(false)
+
 
     var boletos by mutableStateOf(emptyList<Boleto>())
+    var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
     var boleto: Boleto? by mutableStateOf(Boleto())
 
-    var gastado by mutableStateOf(0.0)
-    var ganado by mutableStateOf(0.0)
+    var gastado by mutableDoubleStateOf(0.0)
+    var ganado by mutableDoubleStateOf(0.0)
+
 
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,7 +40,7 @@ class RealmViewModel(
 
     fun getPrecios() {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getPrecios().collect{
+            realmRepo.getPrecios().collect {
                 gastado = it
             }
         }
@@ -43,7 +48,7 @@ class RealmViewModel(
 
     fun getPremio() {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getPremio().collect{
+            realmRepo.getPremio().collect {
                 ganado = it
             }
         }
@@ -66,14 +71,18 @@ class RealmViewModel(
     fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.rangoFechas(startDay, endDay)
+                .collect{
+                    boletosEnRangoDeFechas = it
+                }
         }
     }
 
-    fun insertBoleto(boleto: Boleto){
+    fun insertBoleto(boleto: Boleto) {
         viewModelScope.launch {
             realmRepo.insertarBoleto(boleto)
         }
     }
+
     fun updatePremio(boleto: Boleto, valor: Double) {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.updatePremio(boleto, valor)

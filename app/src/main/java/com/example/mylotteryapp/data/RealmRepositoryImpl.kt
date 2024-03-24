@@ -34,14 +34,22 @@ class RealmRepositoryImpl(
     }
 
     override fun getBoletos(): Flow<List<Boleto>> {
-        return realm.query<Boleto>().asFlow().map { it.list.sortedByDescending { it.fecha } }
+        return realm.query<Boleto>().asFlow().map { result ->
+            result.list.sortedByDescending { boleto ->
+                boleto.fecha
+            }
+        }
     }
 
     override fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>> {
         return realm.query<Boleto>(
-            "fechaBoleto BETWEEN $0 AND $1", startDay, endDay
+            "fecha BETWEEN { $0 , $1 }", startDay, endDay
         )
-            .asFlow().map { it.list }
+            .asFlow().map { result ->
+                result.list.sortedByDescending { boleto ->
+                    boleto.fecha
+                }
+            }
     }
 
 

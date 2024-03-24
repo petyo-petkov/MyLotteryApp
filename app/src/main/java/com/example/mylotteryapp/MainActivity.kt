@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyLotteryAppTheme {
+            MyLotteryAppTheme(darkTheme = false) {
                 val scannerViewModel = viewModel<ScannerViewModel>(
                     factory = viewModelFactory {
                         ScannerViewModel(

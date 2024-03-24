@@ -75,6 +75,7 @@ fun ItemBoleto(
                 onClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     isExpanded = !isExpanded
+                    realmViewModel.isExpanded = isExpanded
                 },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -183,6 +184,7 @@ fun ItemBoleto(
             realmViewModel.updatePremio(boleto, valor)
             show = false
             isExpanded = !isExpanded
+            realmViewModel.isExpanded = isExpanded
         }
     )
 
@@ -192,7 +194,6 @@ fun ItemBoleto(
 // Funcioón para cargar imagenes optimizada
 @Composable
 fun loadImage(imageResourceId: Int): Painter {
-    // ImagenCache simple usando una WeakReference para evitar fugas de memoria
     val imageCache = remember { mutableMapOf<Int, WeakReference<Painter>>() }
 
     val cachedImage = imageCache[imageResourceId]?.get()
