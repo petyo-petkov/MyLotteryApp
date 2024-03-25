@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.screens.firstScreen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -18,65 +17,76 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mylotteryapp.crearBoletos.fechaToRealmInstant
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun datePicker(){
+fun RangoDeFechasDialog(
+    realmViewModel: RealmViewModel,
+    openDatePickerDialog: Boolean,
+    formatter: SimpleDateFormat,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+){
 
-    // DatePicker
-    var openDialog by rememberSaveable { mutableStateOf(false) }
-    val formatter = remember { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
 
     val startYear = Calendar.getInstance().get(Calendar.YEAR).minus(3)
     val endYear = Calendar.getInstance().get(Calendar.YEAR).plus(1)
-    val state = rememberDateRangePickerState(yearRange = startYear..endYear )
+    val state = rememberDateRangePickerState(yearRange = startYear..endYear)
 
-    val startDay by remember(openDialog) { derivedStateOf { state.selectedStartDateMillis } }
-    val endDay by remember(openDialog) { derivedStateOf { state.selectedEndDateMillis } }
+    val startDayString = state.selectedStartDateMillis?.let { Date(it) }
+        ?.let { formatter.format(it) }
+    val endDayString = state.selectedEndDateMillis?.let { Date(it) }
+        ?.let { formatter.format(it) }
 
+    val startDay = startDayString?.let { fechaToRealmInstant(it) }
+    val endDay = endDayString?.let { fechaToRealmInstant(it) }
+
+    // DatePicker
     AnimatedVisibility(
-        visible = openDialog,
+        visible = openDatePickerDialog,
         enter = slideInVertically(),
         exit = slideOutVertically()
     ) {
 
         DatePickerDialog(
             onDismissRequest = {
-                openDialog = false
+                onDismiss()
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        openDialog = false
+                        onDismiss()
+                        if (startDay != null && endDay != null) {
+                            realmViewModel.sortByDates(startDay, endDay)
+                        }
+                        onConfirm()
+
+                        state.setSelection(startDateMillis = null, endDateMillis = null)
+
                     },
                     enabled = state.selectedEndDateMillis != null
                 ) {
-                    Text(text = "Ok", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(text = "Ok", color = MaterialTheme.colorScheme.onSurface)
                 }
             },
             modifier = Modifier,
             dismissButton = {
                 TextButton(
                     onClick = {
-                        openDialog = false
+                        onDismiss()
                         state.setSelection(startDateMillis = null, endDateMillis = null)
                     }
                 ) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Cancel", color = MaterialTheme.colorScheme.onSurface)
                 }
             },
             shape = ShapeDefaults.ExtraLarge,
@@ -89,8 +99,8 @@ fun datePicker(){
                 modifier = Modifier.weight(1f),
                 showModeToggle = false,
                 colors = DatePickerDefaults.colors(
-                    todayContentColor = MaterialTheme.colorScheme.onPrimary,
-                    todayDateBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    todayContentColor = MaterialTheme.colorScheme.error,
+                    todayDateBorderColor = MaterialTheme.colorScheme.error,
                     selectedDayContainerColor = MaterialTheme.colorScheme.secondary,
                     dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.secondary,
                     dayInSelectionRangeContentColor = MaterialTheme.colorScheme.onPrimary
