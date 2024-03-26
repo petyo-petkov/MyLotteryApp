@@ -1,20 +1,19 @@
 package com.example.mylotteryapp.screens.firstScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,58 +25,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import kotlin.text.Typography.euro
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(realmViewModel: RealmViewModel) {
+fun TopBar(
+    realmViewModel: RealmViewModel,
+    boletos: List<Boleto>
+) {
 
     var showDialog by remember { mutableStateOf(false) }
     val selected = realmViewModel.selectedCard
+
     val boleto = realmViewModel.boleto
-    val gastado = realmViewModel.gastado
-    val ganado = realmViewModel.ganado
+
+    var gastado = 0.0
+    var ganado = 0.0
+
+    boletos.forEach {
+        gastado += it.precio
+        it.premio?.let { ganado += it }
+    }
+
     val balance = ganado - gastado
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = ShapeDefaults.ExtraSmall,
-    ) {
-
-        // Nah
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(50.dp)
-                .background(color = MaterialTheme.colorScheme.tertiary),
-        ) {
-            // Vacio
-        }
-        // Info
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(64.dp)
-                .background(color = MaterialTheme.colorScheme.primaryContainer),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            InfoColumn(text1 = "Gastado", text2 = "$gastado $euro")
-            InfoColumn(text1 = "Ganado", text2 = "$ganado $euro")
-            InfoColumn(text1 = "Balance", text2 = "$balance $euro")
-
-        }
-        HorizontalDivider(color = Color.Black, thickness = 0.4.dp)
-
-        if (selected) {
+    TopAppBar(
+        title = {
             Row(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.errorContainer)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { showDialog = true }
+                InfoColumn(text1 = "Gastado", text2 = "$gastado $euro")
+                InfoColumn(text1 = "Ganado", text2 = "$ganado $euro")
+                InfoColumn(text1 = "Balance", text2 = "$balance $euro")
+
+            }
+
+        },
+        modifier = Modifier,
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        actions = {
+            if (selected) {
+                IconButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.padding(end = 8.dp)
 
                 ) {
                     Icon(
@@ -88,19 +82,18 @@ fun TopBar(realmViewModel: RealmViewModel) {
 
                 }
             }
-            DialogoBorrar(
-                show = showDialog,
-                onDismiss = { showDialog = false },
-                onConfirm = {
-                    realmViewModel.deleteBoleto(boleto!!._id)
-                    realmViewModel.boleto = null
-                    realmViewModel.selectedCard = false
-                },
-                mensaje = "Borrar boleto seleccionado ?"
-            )
-
         }
-    }
+    )
+    DialogoBorrar(
+        show = showDialog,
+        onDismiss = { showDialog = false },
+        onConfirm = {
+            realmViewModel.deleteBoleto(boleto._id)
+           // realmViewModel.boleto = null
+            realmViewModel.selectedCard = false
+        },
+        mensaje = "Borrar boleto seleccionado ?"
+    )
 
 }
 

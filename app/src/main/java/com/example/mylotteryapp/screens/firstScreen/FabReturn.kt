@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens.firstScreen
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
@@ -20,7 +21,10 @@ fun FabReturn(pagerState: PagerState, realmViewModel: RealmViewModel) {
     FloatingActionButton(
         onClick = {
             coroutine.launch {
-                pagerState.scrollToPage(0)
+                pagerState.animateScrollToPage(
+                    page = 0,
+                    animationSpec = tween(durationMillis = 500)
+                )
             }
             realmViewModel.boletosEnRangoDeFechas = emptyList()
 

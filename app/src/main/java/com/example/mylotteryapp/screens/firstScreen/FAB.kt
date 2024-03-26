@@ -89,12 +89,12 @@ fun FAB(
                     shape = ButtonDefaults.elevatedShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor =
-                        MaterialTheme.colorScheme.tertiary
+                        MaterialTheme.colorScheme.surfaceVariant
                     ),
                     elevation = ButtonDefaults.elevatedButtonElevation(4.dp)
 
                 ) {
-                    Icon(Icons.Filled.Add, null)
+                    Icon(Icons.Filled.Add, null, tint = Color.Black)
                 }
 
                 IconButton(
@@ -134,7 +134,10 @@ fun FAB(
         onDismiss = { showDatePickerDialog = false },
         onConfirm = {
             coroutine.launch {
-                pagerState.scrollToPage(1)
+                pagerState.animateScrollToPage(
+                    page = 1,
+                    animationSpec = tween(durationMillis = 500)
+                )
             }
             showBottomSheet = false
         }

@@ -23,7 +23,7 @@ class RealmViewModel(
 
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
-    var boleto: Boleto? by mutableStateOf(Boleto())
+    var boleto: Boleto by mutableStateOf(Boleto())
 
     var gastado by mutableDoubleStateOf(0.0)
     var ganado by mutableDoubleStateOf(0.0)
