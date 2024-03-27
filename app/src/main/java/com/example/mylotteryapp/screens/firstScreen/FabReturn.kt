@@ -14,12 +14,18 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FabReturn(pagerState: PagerState, realmViewModel: RealmViewModel) {
+fun FabReturn(
+    pagerState: PagerState,
+    realmViewModel: RealmViewModel,
+    //onNavigateToPage: () -> Unit
+
+) {
 
     val coroutine = rememberCoroutineScope()
 
     FloatingActionButton(
         onClick = {
+            //onNavigateToPage()
             coroutine.launch {
                 pagerState.animateScrollToPage(
                     page = 0,

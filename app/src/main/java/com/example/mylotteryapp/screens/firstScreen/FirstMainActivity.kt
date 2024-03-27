@@ -25,62 +25,47 @@ fun FirstMainActivity(
     )
     HorizontalPager(state = pagerState) { page ->
 
-            when(page){
+        Scaffold(
+            modifier = Modifier,
+            topBar = {
+                val boletosToShow = when (page) {
+                    0 -> realmViewModel.boletos
+                    else -> realmViewModel.boletosEnRangoDeFechas
+                }
+                TopBar(realmViewModel = realmViewModel, boletos = boletosToShow)
+            },
+            floatingActionButton = {
+                when (page) {
+                    0 -> FAB(
+                        scannerViewModel = scannerViewModel,
+                        realmViewModel = realmViewModel,
+                        pagerState = pagerState
+                    )
 
-                0 -> {
-                    val boletos = realmViewModel.boletos
-                    Scaffold(
-                        modifier = Modifier,
-                        topBar = { TopBar(
-                            realmViewModel = realmViewModel,
-                            boletos = boletos
-                        ) },
-                        floatingActionButton = {
-                            FAB(
-                                scannerViewModel = scannerViewModel,
-                                realmViewModel = realmViewModel,
-                                pagerState = pagerState
-                            )
-                        },
-                        floatingActionButtonPosition = FabPosition.Center
-
-                    ) {
-
-                        ListBoletos(
-                            realmViewModel = realmViewModel,
-                            paddingValues = it,
-                            boletos = boletos
-                        )
-
-                    }
+                    else -> FabReturn(pagerState, realmViewModel)
                 }
 
-                1 -> {
-                    val boletos = realmViewModel.boletosEnRangoDeFechas
-                    Scaffold(
-                        modifier = Modifier,
-                        topBar = { TopBar(
-                            realmViewModel = realmViewModel,
-                            boletos = boletos
-
-                        ) },
-                        floatingActionButton = { FabReturn(pagerState, realmViewModel) },
-                        floatingActionButtonPosition = FabPosition.End
-
-                    ) {
-
-                        ListBoletos(
-                            realmViewModel = realmViewModel,
-                            paddingValues = it,
-                            boletos = boletos
-                        )
-
-                    }
-
-                }
-                else -> error("No se ha definido una página para el índice $page")
-
+            },
+            floatingActionButtonPosition =
+            when (page) {
+                0 -> FabPosition.Center
+                else -> FabPosition.End
             }
+
+        ) {
+
+            ListBoletos(
+                realmViewModel = realmViewModel,
+                paddingValues = it,
+                boletos = when (page) {
+                    0 -> realmViewModel.boletos
+                    else -> realmViewModel.boletosEnRangoDeFechas
+                }
+
+            )
+
+        }
 
     }
 }
+

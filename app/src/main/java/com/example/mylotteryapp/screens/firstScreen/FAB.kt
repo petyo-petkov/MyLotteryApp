@@ -43,7 +43,8 @@ import java.util.Locale
 fun FAB(
     scannerViewModel: ScannerViewModel,
     realmViewModel: RealmViewModel,
-    pagerState: PagerState
+    pagerState: PagerState,
+    //onNavigateToPage: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
@@ -133,6 +134,7 @@ fun FAB(
         formatter = formatter,
         onDismiss = { showDatePickerDialog = false },
         onConfirm = {
+           // onNavigateToPage()
             coroutine.launch {
                 pagerState.animateScrollToPage(
                     page = 1,
