@@ -43,8 +43,7 @@ import java.util.Locale
 fun FAB(
     scannerViewModel: ScannerViewModel,
     realmViewModel: RealmViewModel,
-    pagerState: PagerState,
-    //onNavigateToPage: () -> Unit
+    pagerState: PagerState
 ) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
@@ -72,6 +71,7 @@ fun FAB(
             onClick = {},
             modifier = Modifier,
             shape = AbsoluteRoundedCornerShape(30.dp),
+            containerColor = MaterialTheme.colorScheme.primary
         ) {
             Row(
                 modifier = Modifier,
@@ -82,7 +82,7 @@ fun FAB(
                     onClick = { showBottomSheet = true },
                     modifier = Modifier
                 ) {
-                    Icon(Icons.Filled.Menu, null)
+                    Icon(Icons.Filled.Menu, null, tint = Color.Black)
                 }
                 ElevatedButton(
                     onClick = { scannerViewModel.startScanning(context) },
@@ -90,7 +90,7 @@ fun FAB(
                     shape = ButtonDefaults.elevatedShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor =
-                        MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.tertiary
                     ),
                     elevation = ButtonDefaults.elevatedButtonElevation(4.dp)
 
@@ -134,7 +134,6 @@ fun FAB(
         formatter = formatter,
         onDismiss = { showDatePickerDialog = false },
         onConfirm = {
-           // onNavigateToPage()
             coroutine.launch {
                 pagerState.animateScrollToPage(
                     page = 1,

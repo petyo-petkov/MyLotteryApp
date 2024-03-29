@@ -7,8 +7,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import kotlinx.coroutines.launch
 
@@ -16,16 +18,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun FabReturn(
     pagerState: PagerState,
-    realmViewModel: RealmViewModel,
-    //onNavigateToPage: () -> Unit
-
+    realmViewModel: RealmViewModel
 ) {
 
     val coroutine = rememberCoroutineScope()
 
     FloatingActionButton(
         onClick = {
-            //onNavigateToPage()
             coroutine.launch {
                 pagerState.animateScrollToPage(
                     page = 0,
@@ -35,7 +34,12 @@ fun FabReturn(
             realmViewModel.boletosEnRangoDeFechas = emptyList()
 
         }
+        , containerColor = MaterialTheme.colorScheme.tertiary
     ) {
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            tint = Color.Black
+        )
     }
 }

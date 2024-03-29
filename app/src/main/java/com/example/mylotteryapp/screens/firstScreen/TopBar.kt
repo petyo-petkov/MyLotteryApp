@@ -66,7 +66,7 @@ fun TopBar(
 
         },
         modifier = Modifier,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
         actions = {
             if (selected) {
                 IconButton(
@@ -89,7 +89,6 @@ fun TopBar(
         onDismiss = { showDialog = false },
         onConfirm = {
             realmViewModel.deleteBoleto(boleto._id)
-           // realmViewModel.boleto = null
             realmViewModel.selectedCard = false
         },
         mensaje = "Borrar boleto seleccionado ?"

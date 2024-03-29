@@ -8,6 +8,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.mylotteryapp.screens.pantallaPrincipal.PrincipalScreen
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 
@@ -20,11 +21,11 @@ fun FirstMainActivity(
 ) {
 
     val pagerState = rememberPagerState(
-        pageCount = { 2 },
+        pageCount = { 3 },
         initialPageOffsetFraction = 0f
     )
     HorizontalPager(state = pagerState) { page ->
-
+/*
         Scaffold(
             modifier = Modifier,
             topBar = {
@@ -65,6 +66,71 @@ fun FirstMainActivity(
             )
 
         }
+
+ */
+        when (page) {
+
+            0 -> {
+                PrincipalScreen(scannerViewModel, realmViewModel)
+            }
+
+            1 -> {
+                Scaffold(
+                    modifier = Modifier,
+                    topBar = {
+                        TopBar(
+                            realmViewModel = realmViewModel,
+                            boletos = realmViewModel.boletos
+                        )
+                    },
+                    floatingActionButton = {
+                        FAB(
+                            scannerViewModel = scannerViewModel,
+                            realmViewModel = realmViewModel,
+                            pagerState = pagerState
+                        )
+                    },
+                    floatingActionButtonPosition = FabPosition.Center
+
+                ) {
+
+                    ListBoletos(
+                        realmViewModel = realmViewModel,
+                        paddingValues = it,
+                        boletos = realmViewModel.boletos
+
+                    )
+
+                }
+            }
+
+            2 -> {
+                Scaffold(
+                    modifier = Modifier,
+                    topBar = {
+                        TopBar(
+                            realmViewModel = realmViewModel,
+                            boletos = realmViewModel.boletosEnRangoDeFechas
+                        )
+                    },
+                    floatingActionButton = {
+                        FabReturn(pagerState = pagerState, realmViewModel = realmViewModel)
+                    },
+                    floatingActionButtonPosition = FabPosition.End
+
+                ) {
+
+                    ListBoletos(
+                        realmViewModel = realmViewModel,
+                        paddingValues = it,
+                        boletos = realmViewModel.boletosEnRangoDeFechas
+
+                    )
+
+                }
+            }
+        }
+
 
     }
 }

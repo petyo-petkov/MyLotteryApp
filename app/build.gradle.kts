@@ -74,6 +74,12 @@ dependencies {
     implementation(libs.library.sync)
     implementation(libs.kotlinx.coroutines.core)
 
+    // Charts
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m2)
+    implementation(libs.vico.compose.m3)
+    implementation(libs.vico.core)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

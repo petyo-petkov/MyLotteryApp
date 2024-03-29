@@ -71,15 +71,9 @@ class RealmViewModel(
     fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.rangoFechas(startDay, endDay)
-                .collect{
+                .collect {
                     boletosEnRangoDeFechas = it
                 }
-        }
-    }
-
-    fun insertBoleto(boleto: Boleto) {
-        viewModelScope.launch {
-            realmRepo.insertarBoleto(boleto)
         }
     }
 
