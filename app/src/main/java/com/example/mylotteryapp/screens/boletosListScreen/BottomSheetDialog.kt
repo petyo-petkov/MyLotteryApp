@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.firstScreen
+package com.example.mylotteryapp.screens.boletosListScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

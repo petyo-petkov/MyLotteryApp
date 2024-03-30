@@ -12,5 +12,5 @@ val Pink40 = Color(0xFFC5CAE9)
 
 
 val primo = Color(0xFF90CAF9)
-val secundario = Color(0xFFEDE7F6)
+val secundario = Color(0xFFF5F4F2)
 val tercero = Color(0xFFFFF9C4)

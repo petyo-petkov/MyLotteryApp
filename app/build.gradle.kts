@@ -1,8 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //id("io.realm.kotlin")
     alias(libs.plugins.io.realm.kotlin)
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+}
+
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
 }
 
 android {
@@ -79,6 +90,9 @@ dependencies {
     implementation(libs.vico.compose.m2)
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
+
+    implementation(libs.core)
+    ksp(libs.ksp.v200beta01)
 
 
     testImplementation(libs.junit)

@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.firstScreen
+package com.example.mylotteryapp.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -66,7 +66,7 @@ fun TopBar(
 
         },
         modifier = Modifier,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
         actions = {
             if (selected) {
                 IconButton(
@@ -84,6 +84,8 @@ fun TopBar(
             }
         }
     )
+
+
     DialogoBorrar(
         show = showDialog,
         onDismiss = { showDialog = false },

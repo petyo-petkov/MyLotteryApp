@@ -1,14 +1,12 @@
-package com.example.mylotteryapp.screens.firstScreen
+package com.example.mylotteryapp.screens.boletosListScreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,21 +29,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import kotlinx.coroutines.launch
+import com.ramcosta.composedestinations.generated.destinations.BoletosByDatesDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FAB(
     scannerViewModel: ScannerViewModel,
     realmViewModel: RealmViewModel,
-    pagerState: PagerState
+    navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
-    val coroutine = rememberCoroutineScope()
 
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
@@ -134,12 +131,7 @@ fun FAB(
         formatter = formatter,
         onDismiss = { showDatePickerDialog = false },
         onConfirm = {
-            coroutine.launch {
-                pagerState.animateScrollToPage(
-                    page = 1,
-                    animationSpec = tween(durationMillis = 500)
-                )
-            }
+            navigator.navigate(BoletosByDatesDestination)
             showBottomSheet = false
         }
     )

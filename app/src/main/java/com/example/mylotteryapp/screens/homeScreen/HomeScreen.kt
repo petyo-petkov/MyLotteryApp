@@ -1,6 +1,5 @@
-package com.example.mylotteryapp.screens.pantallaPrincipal
+package com.example.mylotteryapp.screens.homeScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -17,29 +19,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.BoletosListScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.round
 import kotlin.text.Typography.euro
 
-
+@Destination<RootGraph>(start = true)
 @Composable
-
-fun PrincipalScreen(
-    scannerViewModel: ScannerViewModel,
+fun HomeScreen(
+    navigator: DestinationsNavigator,
     realmViewModel: RealmViewModel,
+    scannerViewModel: ScannerViewModel
 ) {
-    realmViewModel.getBoletos()
-    realmViewModel.getPrecios()
-    realmViewModel.getPremio()
 
-    val context = LocalContext.current
     val boletos = realmViewModel.boletos
 
     var gastado = 0.0
@@ -53,7 +55,7 @@ fun PrincipalScreen(
     val balance = ganado - gastado
     val balancePercent = (balance / ((ganado + gastado) / 2)) * 100
 
-    val color = if (balance >= 0){
+    val color = if (balance >= 0) {
         Color(0xFF00C853)
     } else {
         Color.Red
@@ -61,19 +63,14 @@ fun PrincipalScreen(
 
     Scaffold(
         modifier = Modifier,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { scannerViewModel.startScanning(context) },
-                containerColor = MaterialTheme.colorScheme.tertiary
-            ) {
-                Icon(Icons.Filled.Add, null, tint = Color.Black)
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = { FABHome(navigator, scannerViewModel ) },
+        floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 
     ) {
-
+        realmViewModel.getBoletos()
+        realmViewModel.getPrecios()
+        realmViewModel.getPremio()
 
         Column(
             modifier = Modifier
@@ -109,14 +106,14 @@ fun PrincipalScreen(
             ) {
 
                 SmallCard(
-                    title = "Balance en $euro",
+                    title = "Balance $euro",
                     content = "$balance $euro",
                     color = color
 
                 )
                 SmallCard(
-                    title = "Balanceen en %",
-                    content = "${round(balancePercent * 10) /10} %",
+                    title = "Balance %",
+                    content = "${round(balancePercent * 10) / 10} %",
                     color = color
                 )
             }

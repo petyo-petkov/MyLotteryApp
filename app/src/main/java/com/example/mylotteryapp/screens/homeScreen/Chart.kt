@@ -1,12 +1,9 @@
-package com.example.mylotteryapp.screens.pantallaPrincipal
+package com.example.mylotteryapp.screens.homeScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.rememberAxisLabelComponent
@@ -39,7 +36,7 @@ fun LineChartDark() {
 
     CartesianChartHost(
         modifier = Modifier
-            .padding(2.dp)
+            .padding(4.dp)
         ,
         chart =
         rememberCartesianChart(
@@ -61,7 +58,7 @@ fun LineChartDark() {
                     ),
 
                 ),
-                axisValueOverrider = AxisValueOverrider.fixed(maxY = 4f, maxX = 4f),
+                axisValueOverrider = AxisValueOverrider.fixed(),
             ),
             startAxis = rememberStartAxis(label = rememberAxisLabelComponent(Color.Black)),
             bottomAxis = rememberBottomAxis(label = rememberAxisLabelComponent(color = Color.Black))

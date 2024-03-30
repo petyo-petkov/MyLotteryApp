@@ -17,6 +17,7 @@ class RealmViewModel(
     private val realmRepo: RealmRepository
 ) : ViewModel() {
 
+
     var selectedCard by mutableStateOf(false)
     var isExpanded by mutableStateOf(false)
 
@@ -27,6 +28,8 @@ class RealmViewModel(
 
     var gastado by mutableDoubleStateOf(0.0)
     var ganado by mutableDoubleStateOf(0.0)
+
+
 
 
     fun getBoletos() {

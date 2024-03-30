@@ -1,11 +1,13 @@
 [versions]
 agp = "8.5.0-alpha02"
+core = "2.0.0-beta01"
 kotlin = "1.9.22"
 coreKtx = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 kotlinxCoroutinesCore = "1.8.0"
+kspVersion = "2.0.0-beta01"
 libraryBase = "1.11.0"
 lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.8.2"
@@ -17,6 +19,7 @@ vico = "2.0.0-alpha.13"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
+core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -31,6 +34,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+ksp-v200beta01 = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "kspVersion" }
 library-base = { module = "io.realm.kotlin:library-base", version.ref = "libraryBase" }
 library-sync = { module = "io.realm.kotlin:library-sync", version.ref = "libraryBase" }
 play-services-code-scanner = { module = "com.google.android.gms:play-services-code-scanner", version.ref = "playServicesCodeScanner" }
@@ -45,4 +49,3 @@ vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 io-realm-kotlin = { id = "io.realm.kotlin", version.ref = "libraryBase"}
-

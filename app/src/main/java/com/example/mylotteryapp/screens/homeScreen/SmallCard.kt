@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.pantallaPrincipal
+package com.example.mylotteryapp.screens.homeScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +34,7 @@ fun SmallCard(title: String, content:String, color: Color) {
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = title,

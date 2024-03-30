@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.firstScreen
+package com.example.mylotteryapp.screens
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
