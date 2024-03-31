@@ -174,7 +174,10 @@ fun ItemBoleto(
             }
 
             if (isExpanded) {
-                ExpandedContent(boleto = boleto , onConfirm = { show = true })
+                ExpandedContent(
+                    boleto = boleto ,
+                    onConfirm = { show = true },
+                    realmViewModel = realmViewModel)
 
             }
         }

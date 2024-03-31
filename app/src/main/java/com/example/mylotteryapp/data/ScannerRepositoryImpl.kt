@@ -14,11 +14,9 @@ class ScannerRepositoryImpl(
     private val context: Context
 
 ): ScannerRepository {
-
     override fun startScanning(): Flow<String?> {
         return callbackFlow {
             scanner.startScan()
-
                 .addOnSuccessListener { barcode ->
                     launch {
                         send(barcode.rawValue)
@@ -33,4 +31,5 @@ class ScannerRepositoryImpl(
             awaitClose { }
         }
     }
+
 }

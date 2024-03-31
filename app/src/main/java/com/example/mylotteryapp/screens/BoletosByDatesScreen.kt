@@ -19,7 +19,7 @@ fun BoletosByDates(
         modifier = Modifier,
         topBar = {
             TopBar(
-                realmViewModel = realmViewModel,
+
                 boletos = realmViewModel.boletosEnRangoDeFechas
             )
         },

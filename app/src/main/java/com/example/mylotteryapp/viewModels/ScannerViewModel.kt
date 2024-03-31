@@ -3,6 +3,10 @@ package com.example.mylotteryapp.viewModels
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotApplyResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.crearBoletos.crearBoleto
@@ -23,6 +27,7 @@ class ScannerViewModel(
     private val realm: Realm,
 
     ) : ViewModel() {
+
     fun startScanning(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             scannerRepo.startScanning()
@@ -41,7 +46,9 @@ class ScannerViewModel(
                         }
 
                     }
+
                 }
+
         }
     }
 }

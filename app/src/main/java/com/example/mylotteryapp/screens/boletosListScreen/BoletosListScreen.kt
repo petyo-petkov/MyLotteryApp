@@ -1,12 +1,8 @@
 package com.example.mylotteryapp.screens.boletosListScreen
 
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylotteryapp.MyApp
-import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -27,20 +23,19 @@ fun BoletosListScreen(
         modifier = Modifier,
         topBar = {
             TopBar(
-                realmViewModel = realmViewModel,
                 boletos = realmViewModel.boletos
             )
         },
-        floatingActionButton = {
-            FAB(
-                scannerViewModel = scannerViewModel,
-                realmViewModel = realmViewModel,
+        bottomBar = {
+            BoletosListBottomBar(
+                realmViewModel,
+                scannerViewModel,
                 navigator
             )
         },
-        floatingActionButtonPosition = FabPosition.Center
 
     ) {
+
 
         ListBoletos(
             realmViewModel = realmViewModel,
@@ -49,4 +44,5 @@ fun BoletosListScreen(
 
         )
     }
+
 }

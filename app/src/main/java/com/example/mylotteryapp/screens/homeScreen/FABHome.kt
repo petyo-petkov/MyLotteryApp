@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 import com.ramcosta.composedestinations.generated.destinations.BoletosListScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun FABHome(
@@ -28,7 +31,7 @@ fun FABHome(
     scannerViewModel: ScannerViewModel
 ) {
     val context = LocalContext.current
-
+    val coroutine = rememberCoroutineScope()
 
     ExtendedFloatingActionButton(
         onClick = { },
@@ -44,8 +47,12 @@ fun FABHome(
             ElevatedButton(
                 onClick = {
                     scannerViewModel.startScanning(context)
-                    navigator.navigate(BoletosListScreenDestination)
 
+                    coroutine.launch {
+                        delay(300)
+                        navigator.navigate(BoletosListScreenDestination)
+
+                    }
 
                 },
                 modifier = Modifier.padding(horizontal = 0.dp, vertical = 0.dp),
