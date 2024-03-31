@@ -35,7 +35,7 @@ fun ExpandedContent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
@@ -105,11 +105,12 @@ fun ExpandedContent(
         }
         Column(
             modifier = Modifier,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             IconButton(
                 onClick = { showDialog = true },
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier
 
             ) {
                 Icon(

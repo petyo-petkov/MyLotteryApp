@@ -101,9 +101,9 @@ fun RangoDeFechasDialog(
                 colors = DatePickerDefaults.colors(
                     todayContentColor = MaterialTheme.colorScheme.error,
                     todayDateBorderColor = MaterialTheme.colorScheme.error,
-                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
-                    dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.tertiary,
-                    dayInSelectionRangeContentColor = MaterialTheme.colorScheme.primary
+                    selectedDayContainerColor = MaterialTheme.colorScheme.onSurface,
+                    dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.onSurface,
+                    dayInSelectionRangeContentColor = MaterialTheme.colorScheme.secondary
                 ),
                 title = {
                     Text(

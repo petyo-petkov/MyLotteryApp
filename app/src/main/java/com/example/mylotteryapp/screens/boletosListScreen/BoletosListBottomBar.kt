@@ -90,7 +90,7 @@ fun BoletosListBottomBar(
             }
         },
         containerColor = MaterialTheme.colorScheme.primary,
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp)
 
 
     )

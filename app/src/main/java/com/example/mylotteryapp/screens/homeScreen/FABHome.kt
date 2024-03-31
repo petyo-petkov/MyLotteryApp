@@ -36,7 +36,7 @@ fun FABHome(
     ExtendedFloatingActionButton(
         onClick = { },
         modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.secondary
+        containerColor = MaterialTheme.colorScheme.primary
     ) {
         Row(
             modifier = Modifier,

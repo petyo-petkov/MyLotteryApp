@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
@@ -74,10 +76,10 @@ fun DialogoPremio(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         colors = OutlinedTextFieldDefaults
                             .colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                                focusedLeadingIconColor = MaterialTheme.colorScheme.secondary,
-                                focusedPlaceholderColor = MaterialTheme.colorScheme.secondary
+                                focusedBorderColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                focusedLeadingIconColor = Color.Black,
+                                focusedPlaceholderColor = Color.Black
                             )
                     )
 
@@ -93,6 +95,7 @@ fun DialogoPremio(
                     TextButton(
                         onClick = { onDismiss() },
                         modifier = Modifier.padding(0.dp),
+                        colors = ButtonDefaults.buttonColors(contentColor = Color.Black)
 
                         ) {
                         Text("Cancelar")
@@ -100,6 +103,7 @@ fun DialogoPremio(
                     TextButton(
                         onClick = { onConfirm(premio) },
                         modifier = Modifier.padding(0.dp),
+                        colors = ButtonDefaults.buttonColors(contentColor = Color.Black)
 
                         ) {
                         Text("Confirmar")
