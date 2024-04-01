@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -44,8 +45,9 @@ fun BottomSheetDialog(
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { onDismiss() },
-            sheetState = sheetState
-
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) {
 //            var selectedTipo by remember { mutableStateOf(false) }
 //            var selectedFecha by remember { mutableStateOf(false) }
@@ -84,6 +86,9 @@ fun BottomSheetDialog(
                         } else {
                             null
                         },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.background
+                        )
                     )
                     FilterChip(
                         onClick = { ganadoChip() },
@@ -102,6 +107,9 @@ fun BottomSheetDialog(
                         } else {
                             null
                         },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.background
+                        )
                     )
                     FilterChip(
                         onClick = { precioChip() },
@@ -120,6 +128,9 @@ fun BottomSheetDialog(
                         } else {
                             null
                         },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.background
+                        )
                     )
                 }
 

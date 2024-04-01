@@ -68,7 +68,9 @@ fun FABHome(
             }
 
             IconButton(
-                onClick = { navigator.navigate(BoletosListScreenDestination) },
+                onClick = {
+                    navigator.navigate(BoletosListScreenDestination)
+                },
                 modifier = Modifier
             ) {
                 Icon(

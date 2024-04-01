@@ -89,7 +89,7 @@ fun ItemBoleto(
         colors = CardDefaults.cardColors(
             containerColor =
             if (!selected) {
-                MaterialTheme.colorScheme.secondary
+                MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.errorContainer
             },

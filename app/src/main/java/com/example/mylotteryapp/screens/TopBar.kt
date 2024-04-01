@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +21,8 @@ import kotlin.text.Typography.euro
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    boletos: List<Boleto>
+    boletos: List<Boleto>,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
 
     var gastado = 0.0
@@ -32,6 +34,8 @@ fun TopBar(
     }
 
     val balance = ganado - gastado
+
+
 
     TopAppBar(
         title = {
@@ -48,7 +52,8 @@ fun TopBar(
 
         },
         modifier = Modifier,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        scrollBehavior = scrollBehavior
     )
 }
 

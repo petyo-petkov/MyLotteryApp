@@ -11,6 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFFC5CAE9)
 
 
-val primo = Color(0xFFFFFDE7)
+val primo = Color(0xFFFFF3E0)
 val secundario = Color(0xFFF5F4F2)
 val tercero = Color(0xFFFFF59D)
