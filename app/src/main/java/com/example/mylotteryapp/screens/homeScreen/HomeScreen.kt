@@ -47,7 +47,8 @@ fun HomeScreen(
     val balancePercent = (balance / ((ganado + gastado) / 2)) * 100
 
     val color = if (balance >= 0) {
-        Color(0xFF00C853)
+        Color(0xFF558B2F)
+        //Color.Black
     } else {
         Color.Red
     }
@@ -117,7 +118,7 @@ fun HomeScreen(
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-                //LineChartDark()
+
                 BarChar()
 
             }

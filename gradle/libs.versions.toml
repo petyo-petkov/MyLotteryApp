@@ -14,7 +14,7 @@ activityCompose = "1.8.2"
 composeBom = "2024.03.00"
 playServicesCodeScanner = "16.1.0"
 lifecycleViewmodelCompose = "2.7.0"
-vico = "2.0.0-alpha.13"
+vico = "2.0.0-alpha.14"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
