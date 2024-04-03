@@ -26,12 +26,9 @@ fun ListBoletos(
 
 ) {
     realmViewModel.getBoletos()
-    realmViewModel.getPrecios()
-    realmViewModel.getPremio()
 
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val listState = rememberLazyListState()
-
 
     LazyColumn(
         modifier = Modifier

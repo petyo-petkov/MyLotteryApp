@@ -29,7 +29,8 @@ fun BoletosByDates(
             TopBar(
 
                 boletos = realmViewModel.boletosEnRangoDeFechas,
-                scrollBehavior
+                scrollBehavior,
+                realmViewModel
             )
         },
         floatingActionButton = {

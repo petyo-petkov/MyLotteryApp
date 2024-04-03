@@ -28,8 +28,7 @@ class RealmViewModel(
 
     var gastado by mutableDoubleStateOf(0.0)
     var ganado by mutableDoubleStateOf(0.0)
-
-
+    var balance by mutableDoubleStateOf(0.0)
 
 
     fun getBoletos() {
@@ -41,19 +40,20 @@ class RealmViewModel(
 
     }
 
-    fun getPrecios() {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getPrecios().collect {
-                gastado = it
-            }
+    fun getPremioPrecioBalance(boletos: List<Boleto>) {
+        viewModelScope.launch {
+            realmRepo.getPremioPrecioBalance(boletos)
+                .collect { (ganadoFlow,gastadoFlow, balanceFlow) ->
+                    gastado = gastadoFlow
+                    ganado = ganadoFlow
+                    balance = balanceFlow
+                }
         }
     }
 
-    fun getPremio() {
+    fun updatePremio(boleto: Boleto, valor: Double) {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getPremio().collect {
-                ganado = it
-            }
+            realmRepo.updatePremio(boleto, valor)
         }
     }
 
@@ -63,7 +63,6 @@ class RealmViewModel(
 
         }
     }
-
 
     fun deleteBoleto(id: ObjectId) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -80,11 +79,15 @@ class RealmViewModel(
         }
     }
 
-    fun updatePremio(boleto: Boleto, valor: Double) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.updatePremio(boleto, valor)
-        }
-    }
+    fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): Double {
 
+        val boletos = realmRepo.balanceMes(primerDia, ultimoDia)
+        val ganado = boletos.sumOf { it.premio }
+        val gastado = boletos.sumOf { it.precio }
+        val balance = ganado - gastado
+
+        return balance
+
+    }
 
 }

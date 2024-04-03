@@ -16,26 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import kotlin.text.Typography.euro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     boletos: List<Boleto>,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    realmViewModel: RealmViewModel
 ) {
+    realmViewModel.getPremioPrecioBalance(boletos)
 
-    var gastado = 0.0
-    var ganado = 0.0
-
-    boletos.forEach {
-        gastado += it.precio
-        it.premio?.let { ganado += it }
-    }
-
-    val balance = ganado - gastado
-
-
+    val ganado = realmViewModel.ganado
+    val gastado = realmViewModel.gastado
+    val balance = realmViewModel.balance
 
     TopAppBar(
         title = {

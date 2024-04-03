@@ -23,7 +23,6 @@ class RealmRepositoryImpl(
     }
 
     override suspend fun updatePremio(boleto: Boleto, valor: Double) {
-
         realm.writeBlocking {
             val queryBoleto = query<Boleto>("_id==$0", boleto._id).first().find()
             queryBoleto?.apply {
@@ -52,7 +51,11 @@ class RealmRepositoryImpl(
             }
     }
 
-
+    override fun balanceMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
+        return realm.query<Boleto>(
+            "fecha BETWEEN { $0 , $1 }", primerDia, ultimoDia
+        ).find()
+    }
 
     override suspend fun deleteBoleto(id: ObjectId) {
         realm.write {
@@ -69,21 +72,11 @@ class RealmRepositoryImpl(
         realm.write { deleteAll() }
     }
 
-    override suspend fun getPrecios(): Flow<Double> = flow {
-        var gastado = 0.0
-        realm.writeBlocking {
-            val boleto = realm.query<Boleto>().find()
-            boleto.forEach { gastado += it.precio }
-        }
-        emit(gastado)
-    }
+    override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {
+        val ganadoFlow = boletos.sumOf { it.premio }
+        val gastadoFlow = boletos.sumOf { it.precio }
+        val balanceFlow = ganadoFlow - gastadoFlow
 
-    override suspend fun getPremio(): Flow<Double> = flow {
-        var ganado = 0.0
-        realm.writeBlocking {
-            val boleto = realm.query<Boleto>().find()
-            boleto.forEach{ ganado += it.premio!! }
-        }
-        emit(ganado)
+        emit(Triple(ganadoFlow, gastadoFlow, balanceFlow))
     }
 }

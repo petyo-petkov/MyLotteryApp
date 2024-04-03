@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,37 +33,31 @@ fun HomeScreen(
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel
 ) {
-
-    val boletos = realmViewModel.boletos
-
-    var gastado = 0.0
-    var ganado = 0.0
-
-    boletos.forEach {
-        gastado += it.precio
-        it.premio?.let { ganado += it }
-    }
-
-    val balance = ganado - gastado
-    val balancePercent = (balance / ((ganado + gastado) / 2)) * 100
-
-    val color = if (balance >= 0) {
-        Color(0xFF558B2F)
-        //Color.Black
-    } else {
-        Color.Red
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = { FABHome(navigator, scannerViewModel ) },
+        floatingActionButton = { FABHome(navigator, scannerViewModel) },
         floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 
     ) {
         realmViewModel.getBoletos()
-        realmViewModel.getPrecios()
-        realmViewModel.getPremio()
+
+        val boletos = realmViewModel.boletos
+
+        realmViewModel.getPremioPrecioBalance(boletos)
+
+        val gastado = realmViewModel.gastado
+        val ganado = realmViewModel.ganado
+        val balance = realmViewModel.balance
+        val balancePercent = (balance / ((ganado + gastado) / 2)) * 100
+
+        val color = if (balance >= 0) {
+            Color(0xFF558B2F)
+            //Color.Black
+        } else {
+            Color.Red
+        }
+
 
         Column(
             modifier = Modifier
@@ -119,10 +114,10 @@ fun HomeScreen(
                 shadowElevation = 6.dp
             ) {
 
-                BarChar()
+                    BarChar(realmViewModel)
+
 
             }
-
 
 
         }

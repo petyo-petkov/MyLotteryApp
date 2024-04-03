@@ -25,6 +25,8 @@ fun BoletosListScreen(
     scannerViewModel: ScannerViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val boletos = realmViewModel.boletos
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -32,8 +34,9 @@ fun BoletosListScreen(
         ,
         topBar = {
             TopBar(
-                boletos = realmViewModel.boletos,
-                scrollBehavior
+                boletos = boletos,
+                scrollBehavior,
+                realmViewModel
             )
         },
         bottomBar = {
@@ -51,7 +54,7 @@ fun BoletosListScreen(
         ListBoletos(
             realmViewModel = realmViewModel,
             paddingValues = it,
-            boletos = realmViewModel.boletos
+            boletos = boletos
 
         )
     }
