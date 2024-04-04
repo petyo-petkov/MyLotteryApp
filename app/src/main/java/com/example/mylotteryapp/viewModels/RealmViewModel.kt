@@ -41,7 +41,7 @@ class RealmViewModel(
     }
 
     fun getPremioPrecioBalance(boletos: List<Boleto>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getPremioPrecioBalance(boletos)
                 .collect { (ganadoFlow,gastadoFlow, balanceFlow) ->
                     gastado = gastadoFlow

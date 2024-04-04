@@ -46,14 +46,13 @@ fun BarChar(realmViewModel: RealmViewModel) {
         val endDate = calendar.time
         val endDay = fechaToRealmInstant(dateFormat.format(endDate))
 
-        val monthName = SimpleDateFormat("MMM", Locale.getDefault()).format(startDate)
+        val monthName = SimpleDateFormat("MMM", Locale.ENGLISH).format(startDate)
 
         val balance = realmViewModel.getMounthBalance(startDay, endDay)
         data[monthName] = balance
     }
 
     val labelListKey = remember { ExtraStore.Key<List<String>>() }
-
     val modelProducer = remember { CartesianChartModelProducer.build() }
     modelProducer.tryRunTransaction {
         columnSeries { series(data.values) }

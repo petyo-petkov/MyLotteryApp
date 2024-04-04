@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -53,7 +54,13 @@ fun DialogoPremio(
             onDismissRequest = { onDismiss() },
             modifier = Modifier.padding(16.dp)
         ) {
-            Card(modifier = Modifier) {
+            Card(
+                modifier = Modifier,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

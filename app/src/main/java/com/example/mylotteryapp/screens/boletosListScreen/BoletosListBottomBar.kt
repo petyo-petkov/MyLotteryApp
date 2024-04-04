@@ -25,7 +25,6 @@ import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 import com.ramcosta.composedestinations.generated.destinations.BoletosByDatesDestination
-import com.ramcosta.composedestinations.generated.destinations.BoletosListScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.text.SimpleDateFormat
@@ -58,10 +57,8 @@ fun BoletosListBottomBar(
             IconButton(onClick = {
                 navigator.popBackStack()
                 navigator.navigate(HomeScreenDestination)
-
-
-
-            }) {
+            }
+            ) {
                 Icon(
                     imageVector =
                     Icons.AutoMirrored.Filled.ArrowBack,

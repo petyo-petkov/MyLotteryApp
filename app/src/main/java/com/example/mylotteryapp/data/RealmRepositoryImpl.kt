@@ -73,6 +73,7 @@ class RealmRepositoryImpl(
     }
 
     override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {
+
         val ganadoFlow = boletos.sumOf { it.premio }
         val gastadoFlow = boletos.sumOf { it.precio }
         val balanceFlow = ganadoFlow - gastadoFlow
