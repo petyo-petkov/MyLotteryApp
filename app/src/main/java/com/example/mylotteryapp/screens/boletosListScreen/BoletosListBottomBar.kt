@@ -40,8 +40,7 @@ fun BoletosListBottomBar(
 
     val context = LocalContext.current
 
-    var showDialogBorrarAll by rememberSaveable { mutableStateOf(false) }
-    var showDialogBorrarSel by rememberSaveable { mutableStateOf(false) }
+    var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
 // Bottom Sheet
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -77,9 +76,7 @@ fun BoletosListBottomBar(
                     tint = Color.Black
                 )
             }
-            IconButton(onClick = {
-                showDialogBorrarAll = true
-            }
+            IconButton(onClick = { showDialogBorrar = true }
 
             ) {
                 Icon(
@@ -107,8 +104,8 @@ fun BoletosListBottomBar(
 
     )
     DialogoBorrar(
-        show = showDialogBorrarAll,
-        onDismiss = { showDialogBorrarAll = false },
+        show = showDialogBorrar,
+        onDismiss = { showDialogBorrar = false },
         onConfirm = {
             if (realmViewModel.selecionados) {
                 realmViewModel.deleteSelecionados()
