@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -62,8 +63,6 @@ fun ItemBoleto(
     val haptics = LocalHapticFeedback.current
     var show by rememberSaveable { mutableStateOf(false) }
 
-
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,6 +82,7 @@ fun ItemBoleto(
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     selected = !selected
                     realmViewModel.isSelected(boleto, selected)
+                    realmViewModel.selecionados = selected
 
 
 

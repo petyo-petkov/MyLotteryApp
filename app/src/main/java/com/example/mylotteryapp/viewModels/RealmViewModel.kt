@@ -18,6 +18,7 @@ class RealmViewModel(
 ) : ViewModel() {
 
     var isExpanded by mutableStateOf(false)
+    var selecionados by mutableStateOf(false)
 
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())

@@ -40,7 +40,8 @@ fun BoletosListBottomBar(
 
     val context = LocalContext.current
 
-    var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
+    var showDialogBorrarAll by rememberSaveable { mutableStateOf(false) }
+    var showDialogBorrarSel by rememberSaveable { mutableStateOf(false) }
 
 // Bottom Sheet
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -51,6 +52,7 @@ fun BoletosListBottomBar(
 // DatePicker
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val formatter = remember { SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH) }
+
 
     BottomAppBar(
         actions = {
@@ -75,21 +77,16 @@ fun BoletosListBottomBar(
                     tint = Color.Black
                 )
             }
-            IconButton(onClick = { showDialogBorrar = true }) {
+            IconButton(onClick = {
+                showDialogBorrarAll = true
+            }
+
+            ) {
                 Icon(
                     imageVector =
                     Icons.Filled.Delete,
                     contentDescription = null,
                     tint = Color.Red
-                )
-            }
-
-            IconButton(onClick = { realmViewModel.deleteSelecionados() }) {
-                Icon(
-                    imageVector =
-                    Icons.Filled.Delete,
-                    contentDescription = null,
-                    tint = Color.Black
                 )
             }
 
@@ -110,12 +107,19 @@ fun BoletosListBottomBar(
 
     )
     DialogoBorrar(
-        show = showDialogBorrar,
-        onDismiss = { showDialogBorrar = false },
-        onConfirm = realmViewModel::deleteAllBoletos,
-        mensaje = "Borrar todos los boletos?"
-    )
+        show = showDialogBorrarAll,
+        onDismiss = { showDialogBorrarAll = false },
+        onConfirm = {
+            if (realmViewModel.selecionados) {
+                realmViewModel.deleteSelecionados()
+                realmViewModel.selecionados = false
+            }
+            else realmViewModel.deleteAllBoletos()
 
+        },
+        mensaje = if (realmViewModel.selecionados) "Borrar boletos selecionados"
+        else "Borrar todos los boletos?"
+    )
     BottomSheetDialog(
         showBottomSheet = showBottomSheet,
         selectedTipo = selectedTipo,

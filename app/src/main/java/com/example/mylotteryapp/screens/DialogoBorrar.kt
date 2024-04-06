@@ -39,8 +39,8 @@ fun DialogoBorrar(
                 }
             },
             title = { Text(text = "Borrar") },
-            text = { Text(text = mensaje
-            ) }
+            text = { Text(text = mensaje) },
+            containerColor = MaterialTheme.colorScheme.primary
         )
     }
 }
