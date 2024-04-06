@@ -30,7 +30,6 @@ fun ListBoletos(
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val listState = rememberLazyListState()
 
-
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues),

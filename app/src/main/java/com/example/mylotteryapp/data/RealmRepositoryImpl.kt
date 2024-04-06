@@ -5,7 +5,6 @@ import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
-import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +27,7 @@ class RealmRepositoryImpl(
             val queryBoleto = query<Boleto>("_id==$0", boleto._id).first().find()
             queryBoleto?.apply {
                 premio = valor
+                if (valor != 0.0) esPremiado = true
             }
 
         }
