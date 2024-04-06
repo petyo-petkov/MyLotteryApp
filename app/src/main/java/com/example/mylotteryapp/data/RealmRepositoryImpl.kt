@@ -5,6 +5,7 @@ import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,17 @@ class RealmRepositoryImpl(
 
         }
     }
+
+    override suspend fun isSelected(boleto: Boleto, valor: Boolean) {
+        realm.writeBlocking {
+            val query = query<Boleto>("_id==$0", boleto._id).first().find()
+            query?.apply {
+                isSelected = valor
+            }
+        }
+    }
+
+
 
     override fun getBoletos(): Flow<List<Boleto>> {
         return realm.query<Boleto>().asFlow().map { result ->
@@ -70,6 +82,14 @@ class RealmRepositoryImpl(
 
     override suspend fun deleteAll() {
         realm.write { deleteAll() }
+    }
+
+    override suspend fun deleteSelecionados() {
+        realm.writeBlocking {
+           val query = query<Boleto>("isSelected == $0", true).find()
+            delete(query)
+
+        }
     }
 
     override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {

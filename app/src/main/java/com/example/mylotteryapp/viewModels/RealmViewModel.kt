@@ -3,6 +3,7 @@ package com.example.mylotteryapp.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,10 +18,7 @@ class RealmViewModel(
     private val realmRepo: RealmRepository
 ) : ViewModel() {
 
-
-    var selectedCard by mutableStateOf(false)
     var isExpanded by mutableStateOf(false)
-
 
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
@@ -63,6 +61,11 @@ class RealmViewModel(
 
         }
     }
+    fun deleteSelecionados(){
+        viewModelScope.launch {
+            realmRepo.deleteSelecionados()
+        }
+    }
 
     fun deleteBoleto(id: ObjectId) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -87,6 +90,14 @@ class RealmViewModel(
         val balance = ganado - gastado
 
         return balance
+
+    }
+
+    fun isSelected(boleto: Boleto, valor: Boolean){
+        viewModelScope.launch {
+           realmRepo.isSelected(boleto, valor)
+
+        }
 
     }
 

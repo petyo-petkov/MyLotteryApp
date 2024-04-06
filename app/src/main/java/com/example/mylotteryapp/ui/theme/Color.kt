@@ -11,6 +11,7 @@ val Pink80 = Color(0xFFEFB8C8)
 //val Pink40 = Color(0xFFC5CAE9)
 
 
-val primo = Color(0xFFF1F8E9)
-val secundario = Color(0xFFF5F4F2)
-val tercero = Color(0xFFFFF59D)
+val primo = Color(0xFFE8F5E9)
+val secundario = Color(0xFFFFAB91)
+//val secundario = Color(0xFFA5D6A7)
+val tercero = Color(0xFF81C784)

@@ -30,6 +30,7 @@ fun ListBoletos(
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val listState = rememberLazyListState()
 
+
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues),
@@ -37,14 +38,19 @@ fun ListBoletos(
     ) {
         items(boletos, key = { it.numeroSerie }) { boleto ->
 
-            ItemBoleto(boleto = boleto, formatter = formatter, realmViewModel = realmViewModel)
+                ItemBoleto(
+                    boleto = boleto,
+                    formatter = formatter,
+                    realmViewModel = realmViewModel,
+                    )
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    thickness = 0.5.dp,
+                    color = Color.Black
+                )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 4.dp),
-                thickness = 0.5.dp,
-                color = Color.Black
-            )
         }
+
     }
 
 }

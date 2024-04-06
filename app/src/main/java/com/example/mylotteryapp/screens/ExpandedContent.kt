@@ -140,10 +140,7 @@ fun ExpandedContent(
     DialogoBorrar(
         show = showDialog,
         onDismiss = { showDialog = false },
-        onConfirm = {
-            realmViewModel.deleteBoleto(boleto._id)
-            realmViewModel.selectedCard = false
-        },
+        onConfirm = { realmViewModel.deleteBoleto(boleto._id) },
         mensaje = "Borrar boleto seleccionado ?"
     )
 

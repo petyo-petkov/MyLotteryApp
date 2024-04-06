@@ -35,7 +35,7 @@ fun SmallCard(title: String, content:String, color: Color) {
                 .fillMaxSize()
                 .padding(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Text(
                 text = title,

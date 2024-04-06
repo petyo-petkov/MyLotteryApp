@@ -61,7 +61,7 @@ fun SortByDatesBottomBar(
             }
         },
         modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.tertiary,
         contentPadding = PaddingValues(horizontal = 8.dp)
 
     )

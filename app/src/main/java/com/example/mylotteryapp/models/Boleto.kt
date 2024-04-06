@@ -16,6 +16,7 @@ class Boleto : RealmObject {
     var fecha: RealmInstant = RealmInstant.MIN
     var precio: Double = 0.0
     var premio: Double = 0.0
+    var isSelected: Boolean? = false
 
     var combinaciones: RealmList<String> = realmListOf()
     var reintegro: String? = ""

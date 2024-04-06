@@ -1,6 +1,7 @@
 package com.example.mylotteryapp.screens.boletosListScreen
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -82,18 +83,28 @@ fun BoletosListBottomBar(
                     tint = Color.Red
                 )
             }
+
+            IconButton(onClick = { realmViewModel.deleteSelecionados() }) {
+                Icon(
+                    imageVector =
+                    Icons.Filled.Delete,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            }
+
         },
         modifier = Modifier,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { scannerViewModel.startScanning(context) },
-                modifier = Modifier,
-                containerColor = MaterialTheme.colorScheme.tertiary
+                modifier = Modifier.padding(end = 0.dp),
+                containerColor = MaterialTheme.colorScheme.secondary
             ) {
                 Icon(Icons.Filled.Add, null, tint = Color.Black)
             }
         },
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.tertiary,
         contentPadding = PaddingValues(horizontal = 8.dp)
 
 

@@ -29,12 +29,12 @@ private val LightColorScheme = lightColorScheme(
 
 
 
-    background = Color(0xFFC5E1A5),
-    surface = Color(0xFFDCEDC8),
+    background = Color(0xFFA5D6A7),
+    surface = Color(0xFFA5D6A7),
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
+    onBackground = Color(0xFFE8F5E9),
     onSurface = Color(0xFF1C1B1F),
 
 )
@@ -59,7 +59,7 @@ fun MyLotteryAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.tertiary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
         }
     }

@@ -51,8 +51,8 @@ fun ItemBoleto(
     boleto: Boleto,
     formatter: SimpleDateFormat,
     realmViewModel: RealmViewModel,
-) {
 
+    ) {
     val date = Date(boleto.fecha.epochSeconds * 1000)
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
@@ -61,6 +61,7 @@ fun ItemBoleto(
     var selected by remember { mutableStateOf(false) }
     val haptics = LocalHapticFeedback.current
     var show by rememberSaveable { mutableStateOf(false) }
+
 
 
     Card(
@@ -81,8 +82,10 @@ fun ItemBoleto(
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     selected = !selected
-                    realmViewModel.selectedCard = selected
-                    realmViewModel.boleto = boleto
+                    realmViewModel.isSelected(boleto, selected)
+
+
+
                 }
             ),
         shape = RoundedCornerShape(0.dp),
@@ -94,9 +97,7 @@ fun ItemBoleto(
                 MaterialTheme.colorScheme.errorContainer
             },
             contentColor = Color.Black
-
         )
-
     ) {
         Column(
             modifier = Modifier,
@@ -175,9 +176,10 @@ fun ItemBoleto(
 
             if (isExpanded) {
                 ExpandedContent(
-                    boleto = boleto ,
+                    boleto = boleto,
                     onConfirm = { show = true },
-                    realmViewModel = realmViewModel)
+                    realmViewModel = realmViewModel
+                )
 
             }
         }

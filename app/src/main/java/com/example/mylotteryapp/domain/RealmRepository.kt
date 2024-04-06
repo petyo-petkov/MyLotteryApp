@@ -15,9 +15,13 @@ interface RealmRepository {
 
     suspend fun updatePremio(boleto: Boleto, valor: Double)
 
+    suspend fun isSelected(boleto: Boleto, valor: Boolean)
+
     suspend fun deleteBoleto(id: ObjectId)
 
     suspend fun deleteAll()
+
+    suspend fun deleteSelecionados()
 
     suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>>
 

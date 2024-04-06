@@ -36,8 +36,9 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        floatingActionButton = { FABHome(navigator, scannerViewModel) },
-        floatingActionButtonPosition = FabPosition.Center,
+//        floatingActionButton = { FABHome(navigator, scannerViewModel) },
+//        floatingActionButtonPosition = FabPosition.Center,
+        bottomBar = { HomeScreenBottomBar(scannerViewModel, navigator) },
         containerColor = MaterialTheme.colorScheme.background
 
     ) {
@@ -64,7 +65,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(paddingValues = it)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(68.dp),
+            verticalArrangement = Arrangement.spacedBy(48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -110,16 +111,13 @@ fun HomeScreen(
             Surface(
                 modifier = Modifier
                     .size(380.dp, 240.dp),
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onBackground,
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-
                     BarChar(realmViewModel)
 
-
             }
-
 
         }
     }
