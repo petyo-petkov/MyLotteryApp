@@ -25,10 +25,10 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
         precio = 3.0
     }
     if (diaSemana == Calendar.SATURDAY) {
-        if (dia in 17..25) {
-            precio = 15.0
+        precio = if (dia in 17..25) {
+            15.0
         }else{
-            precio = 6.0
+            6.0
         }
     }
     if (dia == 6 && mes == 0) {

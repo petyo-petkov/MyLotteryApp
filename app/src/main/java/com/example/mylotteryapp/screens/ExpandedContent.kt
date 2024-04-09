@@ -6,36 +6,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.models.Boleto
-import com.example.mylotteryapp.viewModels.RealmViewModel
 
 @Composable
 fun ExpandedContent(
-    realmViewModel: RealmViewModel,
     boleto: Boleto,
     onConfirm: () -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
@@ -108,18 +100,18 @@ fun ExpandedContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
-
-            }
+//            IconButton(
+//                onClick = { showDialog = true },
+//                modifier = Modifier
+//
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Default.Delete,
+//                    contentDescription = null,
+//                    tint = Color.Red
+//                )
+//
+//            }
 
 
             IconButton(
@@ -137,11 +129,5 @@ fun ExpandedContent(
 
     }
 
-    DialogoBorrar(
-        show = showDialog,
-        onDismiss = { showDialog = false },
-        onConfirm = { realmViewModel.deleteBoleto(boleto._id) },
-        mensaje = "Borrar boleto seleccionado ?"
-    )
 
 }

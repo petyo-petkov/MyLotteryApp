@@ -177,9 +177,7 @@ fun ItemBoleto(
                 ExpandedContent(
                     boleto = boleto,
                     onConfirm = { show = true },
-                    realmViewModel = realmViewModel
                 )
-
             }
         }
     }

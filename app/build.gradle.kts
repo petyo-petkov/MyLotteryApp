@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
 
+
     implementation(libs.core)
     implementation(libs.androidx.material3.android)
     ksp(libs.ksp.v200beta01)

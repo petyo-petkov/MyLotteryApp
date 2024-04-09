@@ -76,15 +76,17 @@ fun BoletosListBottomBar(
                     tint = Color.Black
                 )
             }
-            IconButton(onClick = { showDialogBorrar = true }
 
-            ) {
-                Icon(
-                    imageVector =
-                    Icons.Filled.Delete,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
+            if (realmViewModel.selecionados){
+                IconButton(onClick = { showDialogBorrar = true }
+                ) {
+                    Icon(
+                        imageVector =
+                        Icons.Filled.Delete,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
             }
 
         },
@@ -107,17 +109,13 @@ fun BoletosListBottomBar(
         show = showDialogBorrar,
         onDismiss = { showDialogBorrar = false },
         onConfirm = {
-            if (realmViewModel.selecionados) {
-                realmViewModel.deleteSelecionados()
-                realmViewModel.selecionados = false
-            }
-            else realmViewModel.deleteAllBoletos()
-
+            realmViewModel.deleteSelecionados()
+            realmViewModel.selecionados = false
         },
-        mensaje = if (realmViewModel.selecionados) "Borrar boletos selecionados"
-        else "Borrar todos los boletos?"
+        mensaje = "Borrar boletos selecionados"
     )
     BottomSheetDialog(
+        realmViewModel,
         showBottomSheet = showBottomSheet,
         selectedTipo = selectedTipo,
         selectedPrecio = selectedPrecio,
