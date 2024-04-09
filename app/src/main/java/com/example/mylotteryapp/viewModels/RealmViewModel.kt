@@ -11,18 +11,17 @@ import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.mongodb.kbson.ObjectId
 
 class RealmViewModel(
     private val realmRepo: RealmRepository
 ) : ViewModel() {
 
     var isExpanded by mutableStateOf(false)
-    var selecionados by mutableStateOf(false)
 
+    var boleto: Boleto by mutableStateOf(Boleto())
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
-    var boleto: Boleto by mutableStateOf(Boleto())
+    var boletosSelecionados by mutableStateOf(emptyList<Boleto>())
 
     var gastado by mutableDoubleStateOf(0.0)
     var ganado by mutableDoubleStateOf(0.0)
@@ -41,43 +40,10 @@ class RealmViewModel(
     fun getPremioPrecioBalance(boletos: List<Boleto>) {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getPremioPrecioBalance(boletos)
-                .collect { (ganadoFlow,gastadoFlow, balanceFlow) ->
+                .collect { (ganadoFlow, gastadoFlow, balanceFlow) ->
                     gastado = gastadoFlow
                     ganado = ganadoFlow
                     balance = balanceFlow
-                }
-        }
-    }
-
-    fun updatePremio(boleto: Boleto, valor: Double) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.updatePremio(boleto, valor)
-        }
-    }
-
-    fun deleteAllBoletos() {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.deleteAll()
-
-        }
-    }
-    fun deleteSelecionados(){
-        viewModelScope.launch {
-            realmRepo.deleteSelecionados()
-        }
-    }
-
-    fun deleteBoleto(id: ObjectId) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.deleteBoleto(id)
-        }
-    }
-
-    fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.rangoFechas(startDay, endDay)
-                .collect {
-                    boletosEnRangoDeFechas = it
                 }
         }
     }
@@ -93,12 +59,49 @@ class RealmViewModel(
 
     }
 
-    fun isSelected(boleto: Boleto, valor: Boolean){
+    fun getSelected() {
+        viewModelScope.launch(Dispatchers.IO) {
+            realmRepo.getSelected().collect {
+                boletosSelecionados = it
+            }
+        }
+    }
+
+    fun isSelected(boleto: Boleto, valor: Boolean) {
         viewModelScope.launch {
-           realmRepo.isSelected(boleto, valor)
+            realmRepo.updateIsSelected(boleto, valor)
 
         }
 
     }
+
+    fun updatePremio(boleto: Boleto, valor: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            realmRepo.updatePremio(boleto, valor)
+        }
+    }
+
+    fun deleteAllBoletos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            realmRepo.deleteAll()
+
+        }
+    }
+
+    fun deleteSelecionados() {
+        viewModelScope.launch {
+            realmRepo.deleteSelecionados()
+        }
+    }
+
+    fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
+        viewModelScope.launch(Dispatchers.IO) {
+            realmRepo.rangoFechas(startDay, endDay)
+                .collect {
+                    boletosEnRangoDeFechas = it
+                }
+        }
+    }
+
 
 }

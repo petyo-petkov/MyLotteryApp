@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,7 +24,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun SortByDatesBottomBar(
     navigator: DestinationsNavigator,
     realmViewModel: RealmViewModel
-){
+) {
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
     BottomAppBar(
@@ -43,22 +42,18 @@ fun SortByDatesBottomBar(
                     tint = Color.Black
                 )
             }
-            IconButton(onClick = {  }) {
-                Icon(
-                    imageVector =
-                    Icons.Filled.Menu,
-                    contentDescription = null,
-                    tint = Color.Black
-                )
+
+            if (realmViewModel.boletosSelecionados.isNotEmpty()) {
+                IconButton(onClick = { showDialogBorrar = true }) {
+                    Icon(
+                        imageVector =
+                        Icons.Filled.Delete,
+                        contentDescription = null,
+                        tint = Color.Red
+                    )
+                }
             }
-            IconButton(onClick = { showDialogBorrar = true }) {
-                Icon(
-                    imageVector =
-                    Icons.Filled.Delete,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
-            }
+
         },
         modifier = Modifier,
         containerColor = MaterialTheme.colorScheme.tertiary,
@@ -68,8 +63,10 @@ fun SortByDatesBottomBar(
     DialogoBorrar(
         show = showDialogBorrar,
         onDismiss = { showDialogBorrar = false },
-        onConfirm = realmViewModel::deleteAllBoletos,
-        mensaje = "Borrar todos los boletos?"
+        onConfirm = {
+            realmViewModel.deleteSelecionados()
+        },
+        mensaje = "Borrar boletos?"
     )
 
 }

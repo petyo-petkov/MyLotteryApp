@@ -38,6 +38,8 @@ fun BoletosListBottomBar(
     navigator: DestinationsNavigator
 ) {
 
+    realmViewModel.getSelected()
+
     val context = LocalContext.current
 
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
@@ -77,7 +79,7 @@ fun BoletosListBottomBar(
                 )
             }
 
-            if (realmViewModel.selecionados){
+            if (realmViewModel.boletosSelecionados.isNotEmpty()){
                 IconButton(onClick = { showDialogBorrar = true }
                 ) {
                     Icon(
@@ -110,7 +112,6 @@ fun BoletosListBottomBar(
         onDismiss = { showDialogBorrar = false },
         onConfirm = {
             realmViewModel.deleteSelecionados()
-            realmViewModel.selecionados = false
         },
         mensaje = "Borrar boletos selecionados"
     )

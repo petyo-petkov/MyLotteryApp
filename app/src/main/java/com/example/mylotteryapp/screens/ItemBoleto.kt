@@ -81,10 +81,6 @@ fun ItemBoleto(
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     selected = !selected
                     realmViewModel.isSelected(boleto, selected)
-                    realmViewModel.selecionados = selected
-
-
-
                 }
             ),
         shape = RoundedCornerShape(0.dp),

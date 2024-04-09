@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.data
 
-import android.util.Log
 import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.Realm
@@ -10,7 +9,6 @@ import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import org.mongodb.kbson.ObjectId
 
 class RealmRepositoryImpl(
     private val realm: Realm
@@ -33,7 +31,7 @@ class RealmRepositoryImpl(
         }
     }
 
-    override suspend fun isSelected(boleto: Boleto, valor: Boolean) {
+    override suspend fun updateIsSelected(boleto: Boleto, valor: Boolean) {
         realm.writeBlocking {
             val query = query<Boleto>("_id==$0", boleto._id).first().find()
             query?.apply {
@@ -41,8 +39,6 @@ class RealmRepositoryImpl(
             }
         }
     }
-
-
 
     override fun getBoletos(): Flow<List<Boleto>> {
         return realm.query<Boleto>().asFlow().map { result ->
@@ -69,15 +65,18 @@ class RealmRepositoryImpl(
         ).find()
     }
 
-    override suspend fun deleteBoleto(id: ObjectId) {
-        realm.write {
-            val boleto = query<Boleto>("_id == $0", id).first().find()
-            try {
-                boleto?.let { delete(it) }
-            } catch (e: Exception) {
-                Log.d("realmRepoImpl", " ${e.message}")
-            }
-        }
+    override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {
+
+        val ganadoFlow = boletos.sumOf { it.premio }
+        val gastadoFlow = boletos.sumOf { it.precio }
+        val balanceFlow = ganadoFlow - gastadoFlow
+
+        emit(Triple(ganadoFlow, gastadoFlow, balanceFlow))
+    }
+
+    override suspend fun getSelected(): Flow<List<Boleto>> {
+        return realm.query<Boleto>("isSelected == $0", true).asFlow().map { it.list }
+
     }
 
     override suspend fun deleteAll() {
@@ -92,12 +91,5 @@ class RealmRepositoryImpl(
         }
     }
 
-    override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {
 
-        val ganadoFlow = boletos.sumOf { it.premio }
-        val gastadoFlow = boletos.sumOf { it.precio }
-        val balanceFlow = ganadoFlow - gastadoFlow
-
-        emit(Triple(ganadoFlow, gastadoFlow, balanceFlow))
-    }
 }
