@@ -1,9 +1,12 @@
 package com.example.mylotteryapp.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -50,9 +53,9 @@ import java.util.Date
 fun ItemBoleto(
     boleto: Boleto,
     formatter: SimpleDateFormat,
-    realmViewModel: RealmViewModel,
-
+    realmViewModel: RealmViewModel
     ) {
+
     val date = Date(boleto.fecha.epochSeconds * 1000)
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
@@ -67,7 +70,7 @@ fun ItemBoleto(
             .fillMaxWidth()
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 300,
+                    durationMillis = 200,
                     easing = FastOutSlowInEasing
                 )
             )
@@ -168,12 +171,15 @@ fun ItemBoleto(
 
                 )
             }
-
-            if (isExpanded) {
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = fadeIn(tween(600)),
+                exit = fadeOut()
+            ) {
                 ExpandedContent(
                     boleto = boleto,
-                    onConfirm = { show = true },
-                )
+                    onConfirm = { show = true }
+                    )
             }
         }
     }

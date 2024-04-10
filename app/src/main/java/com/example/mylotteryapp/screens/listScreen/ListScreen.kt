@@ -1,13 +1,18 @@
-package com.example.mylotteryapp.screens
+package com.example.mylotteryapp.screens.listScreen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.example.mylotteryapp.screens.ListBoletos
+import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import com.example.mylotteryapp.viewModels.ScannerViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -15,35 +20,43 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
-fun BoletosByDates(
+fun BoletosListScreen(
     navigator: DestinationsNavigator,
     realmViewModel: RealmViewModel,
+    scannerViewModel: ScannerViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val boletos = realmViewModel.boletos
+
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ,
         topBar = {
             TopBar(
-
-                boletos = realmViewModel.boletosEnRangoDeFechas,
+                boletos = boletos,
                 scrollBehavior,
                 realmViewModel
             )
         },
-        bottomBar = {
-            SortByDatesBottomBar(navigator, realmViewModel)
-        },
+        floatingActionButton =  {
+            ListScreenFAB(
+            realmViewModel = realmViewModel,
+            scannerViewModel = scannerViewModel,
+            navigator = navigator
+        ) },
+        floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 
-    ) {
+        ) {
 
         ListBoletos(
             realmViewModel = realmViewModel,
             paddingValues = it,
-            boletos = realmViewModel.boletosEnRangoDeFechas
+            boletos = boletos
 
         )
-
     }
+
 }

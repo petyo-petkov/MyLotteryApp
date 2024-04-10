@@ -1,16 +1,21 @@
 package com.example.mylotteryapp.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -35,18 +40,35 @@ fun ListBoletos(
             .padding(paddingValues),
         state = listState
     ) {
-        items(boletos, key = { it.numeroSerie }) { boleto ->
-
-                ItemBoleto(
-                    boleto = boleto,
-                    formatter = formatter,
-                    realmViewModel = realmViewModel,
+        items(
+            boletos.plus(GenericItem()),
+            key = { item ->
+                when (item) {
+                    is Boleto -> item.numeroSerie
+                    is GenericItem -> item.id
+                    else -> {}
+                }
+            }
+        ) { item ->
+            when (item) {
+                is Boleto -> {
+                    ItemBoleto(
+                        boleto = item,
+                        formatter = formatter,
+                        realmViewModel = realmViewModel,
                     )
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                    thickness = 0.5.dp,
-                    color = Color.Black
-                )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                        thickness = 0.5.dp,
+                        color = Color.Black
+                    )
+
+                }
+                is GenericItem -> {
+                    EmptyCard()
+                }
+
+            }
 
         }
 
@@ -54,3 +76,20 @@ fun ListBoletos(
 
 }
 
+data class GenericItem(val id: String = "generic")
+
+@Composable
+fun EmptyCard(){
+    Surface(
+        modifier = Modifier,
+        shape = RectangleShape
+
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(80.dp)
+        )
+    }
+
+}

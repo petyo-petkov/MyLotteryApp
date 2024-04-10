@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.screens.boletosListScreen
+package com.example.mylotteryapp.screens.listScreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically

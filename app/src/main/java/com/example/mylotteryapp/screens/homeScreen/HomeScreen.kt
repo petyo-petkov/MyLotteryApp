@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
@@ -35,13 +36,13 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-//        floatingActionButton = { FABHome(navigator, scannerViewModel) },
-//        floatingActionButtonPosition = FabPosition.Center,
-        bottomBar = { HomeScreenBottomBar(scannerViewModel, navigator) },
+        floatingActionButton = { HomeFAB(scannerViewModel, navigator) },
+        floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 
     ) {
         realmViewModel.getBoletos()
+        realmViewModel.getSelected()
 
         val boletos = realmViewModel.boletos
 

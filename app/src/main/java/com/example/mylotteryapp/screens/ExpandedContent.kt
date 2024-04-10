@@ -93,26 +93,12 @@ fun ExpandedContent(
                 }
             }
 
-
         }
         Column(
             modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            IconButton(
-//                onClick = { showDialog = true },
-//                modifier = Modifier
-//
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Default.Delete,
-//                    contentDescription = null,
-//                    tint = Color.Red
-//                )
-//
-//            }
-
 
             IconButton(
                 onClick = { onConfirm() },
@@ -128,6 +114,5 @@ fun ExpandedContent(
         }
 
     }
-
 
 }

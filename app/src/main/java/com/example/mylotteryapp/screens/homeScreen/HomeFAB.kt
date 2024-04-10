@@ -2,15 +2,18 @@ package com.example.mylotteryapp.screens.homeScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,45 +29,48 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreenBottomBar(
+fun HomeFAB(
     scannerViewModel: ScannerViewModel,
     navigator: DestinationsNavigator
-){
+) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
 
-    BottomAppBar(
+    ExtendedFloatingActionButton(
+        onClick = { },
         modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.tertiary,
-
+        shape = FloatingActionButtonDefaults.largeShape,
+        containerColor = MaterialTheme.colorScheme.tertiary
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .size(260.dp, 50.dp)
+            ,
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            FloatingActionButton(
+            ElevatedButton(
                 onClick = {
                     scannerViewModel.startScanning(context)
                     coroutine.launch {
                         delay(300)
                         navigator.navigate(BoletosListScreenDestination)
-                    }
-                },
-                modifier = Modifier.padding(end = 108.dp),
-                containerColor = MaterialTheme.colorScheme.secondary
+                    }                          },
+                modifier = Modifier,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                elevation = ButtonDefaults.elevatedButtonElevation(8.dp)
             ) {
-                Icon(Icons.Filled.Add, null, tint = Color.Black)
-
+                Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
             }
-
-            IconButton(
+            FilledIconButton(
                 onClick = { navigator.navigate(BoletosListScreenDestination) },
-                modifier = Modifier.padding(end = 16.dp)
-
+                modifier = Modifier.padding(start = 46.dp),
+                colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
             ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = Color.Black)
+               Icon(
+                   imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                   contentDescription = null,
+                   tint = Color.Black)
             }
         }
 
