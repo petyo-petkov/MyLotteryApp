@@ -174,7 +174,9 @@ fun ItemBoleto(
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = fadeIn(tween(600)),
-                exit = fadeOut()
+                exit = fadeOut(tween(
+                    durationMillis = 200
+                ))
             ) {
                 ExpandedContent(
                     boleto = boleto,

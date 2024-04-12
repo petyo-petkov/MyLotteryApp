@@ -34,7 +34,6 @@ class RealmViewModel(
                 boletos = it
             }
         }
-
     }
 
     fun getPremioPrecioBalance(boletos: List<Boleto>) {
@@ -49,7 +48,6 @@ class RealmViewModel(
     }
 
     fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): Double {
-
         val boletos = realmRepo.balanceMes(primerDia, ultimoDia)
         val ganado = boletos.sumOf { it.premio }
         val gastado = boletos.sumOf { it.precio }
@@ -68,11 +66,10 @@ class RealmViewModel(
     }
 
     fun isSelected(boleto: Boleto, valor: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             realmRepo.updateIsSelected(boleto, valor)
 
         }
-
     }
 
     fun updatePremio(boleto: Boleto, valor: Double) {

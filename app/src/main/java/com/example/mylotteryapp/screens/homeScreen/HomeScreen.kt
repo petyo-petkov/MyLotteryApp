@@ -32,7 +32,6 @@ fun HomeScreen(
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel
 ) {
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -43,9 +42,7 @@ fun HomeScreen(
     ) {
         realmViewModel.getBoletos()
         realmViewModel.getSelected()
-
         val boletos = realmViewModel.boletos
-
         realmViewModel.getPremioPrecioBalance(boletos)
 
         val gastado = realmViewModel.gastado
@@ -55,7 +52,6 @@ fun HomeScreen(
 
         val color = if (balance >= 0) {
             Color(0xFF558B2F)
-            //Color.Black
         } else {
             Color.Red
         }
@@ -115,7 +111,7 @@ fun HomeScreen(
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-                    BarChar(realmViewModel)
+                BarChar(realmViewModel)
 
             }
 

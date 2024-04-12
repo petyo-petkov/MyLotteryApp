@@ -80,7 +80,7 @@ fun BarChar(realmViewModel: RealmViewModel) {
                 series(
                     rememberLineComponent(
                         color = Color(0xFFE91E63),
-                        thickness = 16.dp,
+                        thickness = 24.dp,
                         shape = RoundedCornerShape(6.dp).toVicoShape(),
                     ),
                 ),

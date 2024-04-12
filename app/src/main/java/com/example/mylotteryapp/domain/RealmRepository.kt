@@ -12,9 +12,9 @@ interface RealmRepository {
 
     suspend fun updateIsSelected(boleto: Boleto, valor: Boolean)
 
-    fun getBoletos(): Flow<List<Boleto>>
+    suspend fun getBoletos(): Flow<List<Boleto>>
 
-    fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>>
+    suspend fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>>
 
     fun balanceMes(primerDia: RealmInstant,  ultimoDia: RealmInstant): List<Boleto>
 

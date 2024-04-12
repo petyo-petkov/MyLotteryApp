@@ -38,8 +38,6 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 )
-
-
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
                     dependenciesContainerBuilder = {
@@ -47,10 +45,10 @@ class MainActivity : ComponentActivity() {
                         dependency(realmViewModel)
 
                     }
-
                 )
 
             }
+
         }
     }
 }

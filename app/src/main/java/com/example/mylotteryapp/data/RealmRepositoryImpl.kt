@@ -15,7 +15,7 @@ class RealmRepositoryImpl(
 ) : RealmRepository {
 
     override suspend fun insertarBoleto(boleto: Boleto) {
-        realm.writeBlocking{
+        realm.writeBlocking {
             copyToRealm(boleto, UpdatePolicy.ALL)
         }
     }
@@ -40,7 +40,7 @@ class RealmRepositoryImpl(
         }
     }
 
-    override fun getBoletos(): Flow<List<Boleto>> {
+    override suspend fun getBoletos(): Flow<List<Boleto>> {
         return realm.query<Boleto>().asFlow().map { result ->
             result.list.sortedByDescending { boleto ->
                 boleto.fecha
@@ -48,7 +48,7 @@ class RealmRepositoryImpl(
         }
     }
 
-    override fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>> {
+    override suspend fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>> {
         return realm.query<Boleto>(
             "fecha BETWEEN { $0 , $1 }", startDay, endDay
         )
@@ -59,20 +59,20 @@ class RealmRepositoryImpl(
             }
     }
 
-    override fun balanceMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
+    override  fun balanceMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
         return realm.query<Boleto>(
             "fecha BETWEEN { $0 , $1 }", primerDia, ultimoDia
         ).find()
     }
 
-    override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> = flow {
+    override suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>> =
+        flow {
+            val ganadoFlow = boletos.sumOf { it.premio }
+            val gastadoFlow = boletos.sumOf { it.precio }
+            val balanceFlow = ganadoFlow - gastadoFlow
 
-        val ganadoFlow = boletos.sumOf { it.premio }
-        val gastadoFlow = boletos.sumOf { it.precio }
-        val balanceFlow = ganadoFlow - gastadoFlow
-
-        emit(Triple(ganadoFlow, gastadoFlow, balanceFlow))
-    }
+            emit(Triple(ganadoFlow, gastadoFlow, balanceFlow))
+        }
 
     override suspend fun getSelected(): Flow<List<Boleto>> {
         return realm.query<Boleto>("isSelected == $0", true).asFlow().map { it.list }
@@ -85,7 +85,7 @@ class RealmRepositoryImpl(
 
     override suspend fun deleteSelecionados() {
         realm.writeBlocking {
-           val query = query<Boleto>("isSelected == $0", true).find()
+            val query = query<Boleto>("isSelected == $0", true).find()
             delete(query)
 
         }
