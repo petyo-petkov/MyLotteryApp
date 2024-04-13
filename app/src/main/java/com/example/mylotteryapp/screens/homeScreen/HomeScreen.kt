@@ -73,12 +73,12 @@ fun HomeScreen(
             ) {
 
                 SmallCard(
-                    title = "Gastado",
+                    title = "He gastado",
                     content = "$gastado $euro",
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 SmallCard(
-                    title = "Ganado",
+                    title = "He ganado",
                     content = "$ganado $euro",
                     color = MaterialTheme.colorScheme.onSurface
                 )

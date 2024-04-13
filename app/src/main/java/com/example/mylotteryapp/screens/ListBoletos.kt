@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -82,7 +83,8 @@ data class GenericItem(val id: String = "generic")
 fun EmptyCard(){
     Surface(
         modifier = Modifier,
-        shape = RectangleShape
+        shape = RectangleShape,
+        color = MaterialTheme.colorScheme.background
 
     ) {
         Box(
