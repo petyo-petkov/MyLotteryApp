@@ -34,11 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.generated.destinations.BoletosByDatesDestination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun ListScreenFAB(
@@ -47,19 +44,8 @@ fun ListScreenFAB(
     navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
-
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
-
-// Bottom Sheet
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedTipo by remember { mutableStateOf(false) }
-    var selectedPrecio by remember { mutableStateOf(false) }
-    var selectedGanado by remember { mutableStateOf(false) }
-
-// DatePicker
-    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
-    val formatter = remember { SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH) }
-
 
     ExtendedFloatingActionButton(
         onClick = { },
@@ -96,22 +82,6 @@ fun ListScreenFAB(
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
             }
-
-//            AnimatedVisibility (
-//                visible = realmViewModel.boletosSelecionados.isNotEmpty(),
-//                enter = scaleIn() ,
-//                exit = scaleOut()
-//            ){
-//                IconButton(onClick = { showDialogBorrar = true }
-//                ) {
-//                    Icon(
-//                        imageVector =
-//                        Icons.Filled.Delete,
-//                        contentDescription = null,
-//                        tint = Color.Red
-//                    )
-//                }
-//            }
 
             FilledIconButton(
                 onClick = {
@@ -163,25 +133,10 @@ fun ListScreenFAB(
     BottomSheetDialog(
         realmViewModel,
         showBottomSheet = showBottomSheet,
-        selectedTipo = selectedTipo,
-        selectedPrecio = selectedPrecio,
-        selectedGanado = selectedGanado,
         onDismiss = { showBottomSheet = false },
-        rangoFechasChip = { showDatePickerDialog = true },
-        tipoChip = { selectedTipo = !selectedTipo },
-        precioChip = { selectedPrecio = !selectedPrecio },
-        ganadoChip = { selectedGanado = !selectedGanado }
+        navigator = navigator
+
     )
 
-    RangoDeFechasDialog(
-        realmViewModel = realmViewModel,
-        openDatePickerDialog = showDatePickerDialog,
-        formatter = formatter,
-        onDismiss = { showDatePickerDialog = false },
-        onConfirm = {
-            navigator.navigate(BoletosByDatesDestination)
-            showBottomSheet = false
-        }
-    )
 
 }

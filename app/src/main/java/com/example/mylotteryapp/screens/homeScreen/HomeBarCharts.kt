@@ -9,26 +9,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.crearBoletos.fechaToRealmInstant
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.rememberAxisLabelComponent
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.CartesianChartHost
-import com.patrykandpatrick.vico.compose.chart.layer.rememberColumnCartesianLayer
-import com.patrykandpatrick.vico.compose.chart.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.component.rememberLineComponent
-import com.patrykandpatrick.vico.compose.component.shape.toVicoShape
-import com.patrykandpatrick.vico.core.axis.AxisPosition
-import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
-import com.patrykandpatrick.vico.core.chart.layer.ColumnCartesianLayer.ColumnProvider.Companion.series
-import com.patrykandpatrick.vico.core.model.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.model.ExtraStore
-import com.patrykandpatrick.vico.core.model.columnSeries
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.shape.toVicoShape
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer.ColumnProvider.Companion.series
+import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun BarChar(realmViewModel: RealmViewModel) {
+fun BarChart(realmViewModel: RealmViewModel) {
 
     val data = mutableMapOf<String, Double>()
     val dateFormat = SimpleDateFormat("ddMMMyy", Locale.ENGLISH)
@@ -58,7 +57,7 @@ fun BarChar(realmViewModel: RealmViewModel) {
         columnSeries { series(data.values) }
         updateExtras { it[labelListKey] = data.keys.toList() }
     }
-    val axisFormatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { x, chartValues, _ ->
+    val axisFormatter = CartesianValueFormatter { x, chartValues, _ ->
         chartValues.model.extraStore[labelListKey][x.toInt()]
     }
 
@@ -72,6 +71,7 @@ fun BarChar(realmViewModel: RealmViewModel) {
     }
  */
 
+
     CartesianChartHost(
         modifier = Modifier.height(250.dp),
         chart =
@@ -82,6 +82,7 @@ fun BarChar(realmViewModel: RealmViewModel) {
                         color = Color(0xFFE91E63),
                         thickness = 24.dp,
                         shape = RoundedCornerShape(6.dp).toVicoShape(),
+
                     ),
                 ),
             ),

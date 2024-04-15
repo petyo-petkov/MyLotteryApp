@@ -18,6 +18,9 @@ class RealmViewModel(
 
     var isExpanded by mutableStateOf(false)
 
+    var tipoState by mutableStateOf(false)
+    var premioState by mutableStateOf(false)
+
     var boleto: Boleto by mutableStateOf(Boleto())
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())

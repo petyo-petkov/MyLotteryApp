@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,17 +27,17 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RangoDeFechasDialog(
     realmViewModel: RealmViewModel,
     openDatePickerDialog: Boolean,
-    formatter: SimpleDateFormat,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ){
-
+    val formatter = remember { SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH) }
 
     val startYear = Calendar.getInstance().get(Calendar.YEAR).minus(3)
     val endYear = Calendar.getInstance().get(Calendar.YEAR).plus(1)

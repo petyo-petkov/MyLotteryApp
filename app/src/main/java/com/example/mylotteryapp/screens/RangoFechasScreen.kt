@@ -21,12 +21,12 @@ fun BoletosByDates(
     realmViewModel: RealmViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
             TopBar(
-
                 boletos = realmViewModel.boletosEnRangoDeFechas,
                 scrollBehavior,
                 realmViewModel

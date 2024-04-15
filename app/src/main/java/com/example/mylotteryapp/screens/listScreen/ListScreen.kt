@@ -9,6 +9,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -26,7 +27,16 @@ fun BoletosListScreen(
     scannerViewModel: ScannerViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val boletos = realmViewModel.boletos
+
+    val boletos: List<Boleto> = if (realmViewModel.tipoState){
+        realmViewModel.boletos.sortedBy { it.tipo }
+    }
+    else if (realmViewModel.premioState){
+        realmViewModel.boletos.sortedByDescending { it.premio }
+    }
+    else{
+        realmViewModel.boletos
+    }
 
     Scaffold(
         modifier = Modifier

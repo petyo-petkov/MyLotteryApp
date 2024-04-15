@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -12,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -19,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import com.ramcosta.composedestinations.generated.destinations.BoletosByDatesDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,20 +40,18 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 fun BottomSheetDialog(
     realmViewModel: RealmViewModel,
     showBottomSheet: Boolean,
-    selectedTipo: Boolean,
-    selectedPrecio: Boolean,
-    selectedGanado: Boolean,
     onDismiss: () -> Unit,
-    rangoFechasChip: () -> Unit,
-    tipoChip: () -> Unit,
-    precioChip: () -> Unit,
-    ganadoChip: () -> Unit
+    navigator: DestinationsNavigator
 
-
-) {
+    ) {
     val sheetState = rememberModalBottomSheetState()
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
+    var selectedTipo by remember { mutableStateOf(false) }
+    var selectedGanado by remember { mutableStateOf(false) }
+
+    // DatePicker
+    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -57,59 +61,68 @@ fun BottomSheetDialog(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onSurface
         ) {
-//            var selectedTipo by remember { mutableStateOf(false) }
-//            var selectedFecha by remember { mutableStateOf(false) }
-//            var selectedGanado by remember { mutableStateOf(false) }
-
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(text = "Filtrar por:")
+                Text(
+                    text = "Filtrar por:",
+                    modifier = Modifier.padding(start = 16.dp)
+                )
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(6.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     FilterChip(
-                        onClick = { tipoChip() },
-                        label = {
-                            Text("Tipo Sorteo")
+                        onClick = {
+                            selectedTipo = !selectedTipo
+                            realmViewModel.tipoState = selectedTipo
+                            selectedGanado = false
+                            realmViewModel.premioState = false
                         },
+                        label = { Text("Tipo") },
                         selected = selectedTipo,
                         modifier = Modifier,
+                        leadingIcon = {
+                            if (selectedTipo)
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "check",
+                                    modifier = Modifier
+                                )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.background
                         )
                     )
                     FilterChip(
-                        onClick = { ganadoChip() },
-                        label = {
-                            Text("Ganado")
+                        onClick = {
+                            selectedGanado = !selectedGanado
+                            realmViewModel.premioState = selectedGanado
+                            selectedTipo = false
+                            realmViewModel.tipoState = false
                         },
+                        label = { Text("Premio") },
                         selected = selectedGanado,
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.background
-                        )
-                    )
-                    FilterChip(
-                        onClick = { precioChip() },
-                        label = {
-                            Text("Precio")
+                        leadingIcon = {
+                            if (selectedGanado)
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "check",
+                                    modifier = Modifier
+                                )
                         },
-                        selected = selectedPrecio,
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.background
                         )
                     )
                     AssistChip(
                         onClick = {
-                            rangoFechasChip()
+                            showDatePickerDialog = true
                         },
                         label = { Text("Fechas") },
 
@@ -156,6 +169,12 @@ fun BottomSheetDialog(
         onDismiss = { showDialogBorrar = false },
         onConfirm = { realmViewModel.deleteAllBoletos() },
         mensaje = "Borrar todos los boletos?"
+    )
+    RangoDeFechasDialog(
+        realmViewModel = realmViewModel,
+        openDatePickerDialog = showDatePickerDialog,
+        onDismiss = { showDatePickerDialog = false },
+        onConfirm = { navigator.navigate(BoletosByDatesDestination) }
     )
 
 }

@@ -58,19 +58,21 @@ fun HomeFAB(
                     }                          },
                 modifier = Modifier,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                elevation = ButtonDefaults.elevatedButtonElevation(8.dp)
+                elevation = ButtonDefaults.elevatedButtonElevation(2.dp)
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
             }
             FilledIconButton(
                 onClick = { navigator.navigate(BoletosListScreenDestination) },
-                modifier = Modifier.padding(start = 46.dp),
+                modifier = Modifier
+                    .padding(start = 46.dp),
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
+
             ) {
                Icon(
                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                    contentDescription = null,
-                   tint = Color.Black)
+                    tint = Color.Black)
             }
         }
 
