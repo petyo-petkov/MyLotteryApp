@@ -31,6 +31,7 @@ class RealmViewModel(
     var balance by mutableDoubleStateOf(0.0)
 
 
+
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getBoletos().collect {

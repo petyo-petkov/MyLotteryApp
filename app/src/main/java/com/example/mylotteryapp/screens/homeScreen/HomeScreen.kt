@@ -111,7 +111,8 @@ fun HomeScreen(
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-                BarChart(realmViewModel)
+                //BarChart(realmViewModel)
+                LineChart(realmViewModel)
 
             }
 
