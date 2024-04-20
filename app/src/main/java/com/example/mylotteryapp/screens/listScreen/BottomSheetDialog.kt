@@ -5,22 +5,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,7 +41,7 @@ fun BottomSheetDialog(
     onDismiss: () -> Unit,
     navigator: DestinationsNavigator
 
-    ) {
+) {
     val sheetState = rememberModalBottomSheetState()
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
@@ -52,6 +50,10 @@ fun BottomSheetDialog(
 
     // DatePicker
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
+
+    // Segmented button
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val options = listOf("Ultimos", "Tipo", "Premiado", "Fechas")
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -64,8 +66,10 @@ fun BottomSheetDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                /*
                 Text(
                     text = "Filtrar por:",
                     modifier = Modifier.padding(start = 16.dp)
@@ -128,6 +132,57 @@ fun BottomSheetDialog(
 
                         )
                 }
+
+                 */
+
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    options.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = options.size
+                            ),
+                            onClick = {
+                                selectedIndex = index
+                                when (index) {
+                                    0 -> {
+                                        realmViewModel.premioState = false
+                                        realmViewModel.tipoState = false
+                                    }
+
+                                    1 -> {
+                                        selectedTipo = true
+                                        realmViewModel.tipoState = selectedTipo
+                                        selectedGanado = false
+                                        realmViewModel.premioState = false
+                                    }
+
+                                    2 -> {
+                                        selectedGanado = true
+                                        realmViewModel.premioState = selectedGanado
+                                        selectedTipo = false
+                                        realmViewModel.tipoState = false
+                                    }
+
+                                    3 -> {
+                                        showDatePickerDialog = true
+                                    }
+                                }
+
+                            },
+                            selected = index == selectedIndex,
+                            colors = SegmentedButtonDefaults.colors(
+                                activeContainerColor = MaterialTheme.colorScheme.inversePrimary
+                            )
+                        ) {
+                            Text(label)
+                        }
+                    }
+                }
+
+
                 HorizontalDivider()
 
                 Row(
@@ -173,7 +228,10 @@ fun BottomSheetDialog(
     RangoDeFechasDialog(
         realmViewModel = realmViewModel,
         openDatePickerDialog = showDatePickerDialog,
-        onDismiss = { showDatePickerDialog = false },
+        onDismiss = {
+            showDatePickerDialog = false
+            selectedIndex = 0
+        },
         onConfirm = { navigator.navigate(BoletosByDatesDestination) }
     )
 

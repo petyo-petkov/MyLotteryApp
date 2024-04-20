@@ -24,6 +24,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = primo,
+    inversePrimary = cuarto,
     secondary = secundario,
     tertiary = tercero,
 

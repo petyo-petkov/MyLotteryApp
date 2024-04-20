@@ -34,7 +34,6 @@ import com.patrykandpatrick.vico.core.common.shape.Shape
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.text.Typography.euro
 
 @Composable
 fun BarChart(realmViewModel: RealmViewModel) {
