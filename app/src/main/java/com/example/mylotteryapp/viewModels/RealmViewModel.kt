@@ -31,6 +31,11 @@ class RealmViewModel(
     var balance by mutableDoubleStateOf(0.0)
 
 
+    fun onBackGesture(){
+        premioState = false
+        tipoState = false
+    }
+
 
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {

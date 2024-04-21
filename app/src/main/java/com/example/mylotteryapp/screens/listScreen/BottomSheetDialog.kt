@@ -45,15 +45,12 @@ fun BottomSheetDialog(
     val sheetState = rememberModalBottomSheetState()
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
-    var selectedTipo by remember { mutableStateOf(false) }
-    var selectedGanado by remember { mutableStateOf(false) }
-
-    // DatePicker
-    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
-
     // Segmented button
     var selectedIndex by remember { mutableIntStateOf(0) }
     val options = listOf("Ultimos", "Tipo", "Premiado", "Fechas")
+
+    // DatePicker
+    var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -93,16 +90,12 @@ fun BottomSheetDialog(
                                     }
 
                                     1 -> {
-                                        selectedTipo = true
-                                        realmViewModel.tipoState = selectedTipo
-                                        selectedGanado = false
+                                        realmViewModel.tipoState = true
                                         realmViewModel.premioState = false
                                     }
 
                                     2 -> {
-                                        selectedGanado = true
-                                        realmViewModel.premioState = selectedGanado
-                                        selectedTipo = false
+                                        realmViewModel.premioState = true
                                         realmViewModel.tipoState = false
                                     }
 

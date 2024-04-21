@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens.listScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -33,6 +34,15 @@ fun BoletosListScreen(
         else -> realmViewModel.boletos
     }
 
+    BackHandler(
+        enabled = true,
+        onBack = {
+            realmViewModel.onBackGesture()
+            navigator.popBackStack()
+        }
+    )
+
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -63,5 +73,6 @@ fun BoletosListScreen(
 
         )
     }
+
 
 }
