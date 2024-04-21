@@ -69,71 +69,11 @@ fun BottomSheetDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                /*
+
                 Text(
                     text = "Filtrar por:",
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-
-                Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    FilterChip(
-                        onClick = {
-                            selectedTipo = !selectedTipo
-                            realmViewModel.tipoState = selectedTipo
-                            selectedGanado = false
-                            realmViewModel.premioState = false
-                        },
-                        label = { Text("Tipo") },
-                        selected = selectedTipo,
-                        modifier = Modifier,
-                        leadingIcon = {
-                            if (selectedTipo)
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "check",
-                                    modifier = Modifier
-                                )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.background
-                        )
-                    )
-                    FilterChip(
-                        onClick = {
-                            selectedGanado = !selectedGanado
-                            realmViewModel.premioState = selectedGanado
-                            selectedTipo = false
-                            realmViewModel.tipoState = false
-                        },
-                        label = { Text("Premio") },
-                        selected = selectedGanado,
-                        leadingIcon = {
-                            if (selectedGanado)
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "check",
-                                    modifier = Modifier
-                                )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.background
-                        )
-                    )
-                    AssistChip(
-                        onClick = {
-                            showDatePickerDialog = true
-                        },
-                        label = { Text("Fechas") },
-
-                        )
-                }
-
-                 */
+                )
 
                 SingleChoiceSegmentedButtonRow(
                     modifier = Modifier.padding(12.dp)
@@ -146,7 +86,7 @@ fun BottomSheetDialog(
                             ),
                             onClick = {
                                 selectedIndex = index
-                                when (index) {
+                                when (selectedIndex) {
                                     0 -> {
                                         realmViewModel.premioState = false
                                         realmViewModel.tipoState = false
@@ -231,6 +171,8 @@ fun BottomSheetDialog(
         onDismiss = {
             showDatePickerDialog = false
             selectedIndex = 0
+            realmViewModel.premioState = false
+            realmViewModel.tipoState = false
         },
         onConfirm = { navigator.navigate(BoletosByDatesDestination) }
     )

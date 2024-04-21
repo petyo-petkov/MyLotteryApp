@@ -63,6 +63,8 @@ fun ListScreenFAB(
                 onClick = {
                     navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination)
+                    realmViewModel.premioState = false
+                    realmViewModel.tipoState = false
                 },
                 modifier = Modifier,
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)

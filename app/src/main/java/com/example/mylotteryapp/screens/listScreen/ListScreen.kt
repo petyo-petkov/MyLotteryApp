@@ -9,7 +9,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -28,21 +27,16 @@ fun BoletosListScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val boletos: List<Boleto> = if (realmViewModel.tipoState){
-        realmViewModel.boletos.sortedBy { it.tipo }
-    }
-    else if (realmViewModel.premioState){
-        realmViewModel.boletos.sortedByDescending { it.premio }
-    }
-    else{
-        realmViewModel.boletos
+    val boletos = when {
+        realmViewModel.tipoState -> realmViewModel.boletos.sortedBy { it.tipo }
+        realmViewModel.premioState -> realmViewModel.boletos.sortedByDescending { it.premio }
+        else -> realmViewModel.boletos
     }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-        ,
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopBar(
                 boletos = boletos,
@@ -50,16 +44,17 @@ fun BoletosListScreen(
                 realmViewModel
             )
         },
-        floatingActionButton =  {
+        floatingActionButton = {
             ListScreenFAB(
-            realmViewModel = realmViewModel,
-            scannerViewModel = scannerViewModel,
-            navigator = navigator
-        ) },
+                realmViewModel = realmViewModel,
+                scannerViewModel = scannerViewModel,
+                navigator = navigator
+            )
+        },
         floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 
-        ) {
+    ) {
 
         ListBoletos(
             realmViewModel = realmViewModel,
