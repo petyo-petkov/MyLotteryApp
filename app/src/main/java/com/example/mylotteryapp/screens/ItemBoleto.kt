@@ -47,15 +47,15 @@ import com.example.mylotteryapp.viewModels.RealmViewModel
 import io.realm.kotlin.internal.platform.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemBoleto(
     boleto: Boleto,
-    formatter: SimpleDateFormat,
     realmViewModel: RealmViewModel
-    ) {
-
+) {
+    val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val date = Date(boleto.fecha.epochSeconds * 1000)
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
@@ -138,8 +138,8 @@ fun ItemBoleto(
                 Column(
                     modifier = Modifier
                         .weight(4f)
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                    verticalArrangement = Arrangement.Center,
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
@@ -153,7 +153,14 @@ fun ItemBoleto(
                         fontSize = 20.sp,
                     )
                     Text(
-                        text = "${boleto.precio} ${Typography.euro}",
+                        text = "Precio ${boleto.precio} ${Typography.euro}",
+                        modifier = Modifier,
+                        fontSize = 12.sp,
+
+                        )
+
+                    Text(
+                        text = "Premio ${boleto.premio} ${Typography.euro}",
                         modifier = Modifier,
                         fontSize = 12.sp,
 
@@ -168,20 +175,21 @@ fun ItemBoleto(
                         .weight(1f)
                         .padding(horizontal = 16.dp)
                         .rotate(rotationState)
-
                 )
             }
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = fadeIn(tween(600)),
-                exit = fadeOut(tween(
-                    durationMillis = 200
-                ))
+                exit = fadeOut(
+                    tween(
+                        durationMillis = 200
+                    )
+                )
             ) {
                 ExpandedContent(
                     boleto = boleto,
                     onConfirm = { show = true }
-                    )
+                )
             }
         }
     }

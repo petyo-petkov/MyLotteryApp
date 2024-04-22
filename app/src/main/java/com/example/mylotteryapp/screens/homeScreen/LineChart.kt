@@ -1,6 +1,7 @@
 package com.example.mylotteryapp.screens.homeScreen
 
 import android.graphics.PorterDuff
+import android.text.Layout
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,12 +12,14 @@ import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.crearBoletos.fechaToRealmInstant
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisGuidelineComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontalLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
+import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
@@ -26,13 +29,16 @@ import com.patrykandpatrick.vico.compose.common.shader.color
 import com.patrykandpatrick.vico.compose.common.shader.component
 import com.patrykandpatrick.vico.compose.common.shader.verticalGradient
 import com.patrykandpatrick.vico.compose.common.shape.dashed
+import com.patrykandpatrick.vico.compose.common.shape.markerCornered
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.common.Dimensions
+import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shader.TopBottomShader
+import com.patrykandpatrick.vico.core.common.shape.Corner
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -80,26 +86,35 @@ fun LineChart(
 
     val verde = Color(0xFF43A047)
     val rojo = Color(0xFFF44336)
+    val markerColor = Color(0xFFFFD54F)
+
+    val marker = rememberDefaultCartesianMarker(
+        label = rememberTextComponent(
+            color = Color.Black,
+            background = rememberShapeComponent(
+                shape = Shape.markerCornered(Corner.FullyRounded), color = markerColor
+            ),
+            padding = Dimensions.of(8.dp, 4.dp),
+            textAlignment = Layout.Alignment.ALIGN_CENTER,
+            minWidth = TextComponent.MinWidth.fixed(36f)
+        ), guideline = rememberAxisGuidelineComponent(thickness = 0.8.dp)
+    )
+
 
     CartesianChartHost(
-        chart =
-        rememberCartesianChart(
+        chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                lines =
-                listOf(
+                lines = listOf(
                     rememberLineSpec(
-                        shader =
-                        TopBottomShader(
+                        shader = TopBottomShader(
                             DynamicShader.color(verde),
                             DynamicShader.color(rojo),
                         ),
-                        backgroundShader =
-                        TopBottomShader(
+                        backgroundShader = TopBottomShader(
                             DynamicShader.compose(
                                 DynamicShader.component(
                                     componentSize = 2.dp,
-                                    component =
-                                    rememberShapeComponent(
+                                    component = rememberShapeComponent(
                                         shape = Shape.Rectangle,
                                         color = verde,
                                         margins = Dimensions.of(horizontal = 0.5.dp),
@@ -115,19 +130,16 @@ fun LineChart(
                             DynamicShader.compose(
                                 DynamicShader.component(
                                     componentSize = 2.dp,
-                                    component =
-                                    rememberShapeComponent(
+                                    component = rememberShapeComponent(
                                         shape = Shape.Rectangle,
                                         color = rojo,
                                         margins = Dimensions.of(horizontal = 0.5.dp),
                                     ),
                                     checkeredArrangement = false,
-                                ),
-                                DynamicShader.verticalGradient(
+                                ), DynamicShader.verticalGradient(
                                     arrayOf(Color.Transparent, Color.Black),
                                     positions = floatArrayOf(0.1f, 1f)
-                                ),
-                                PorterDuff.Mode.DST_IN
+                                ), PorterDuff.Mode.DST_IN
                             ),
                         ),
                     ),
@@ -137,18 +149,15 @@ fun LineChart(
                 label = rememberAxisLabelComponent(color = Color.Black),
                 titleComponent = rememberTextComponent(
                     background = rememberShapeComponent(
-                        shape = Shape.Pill,
-                        color = MaterialTheme.colorScheme.background),
-                    padding = Dimensions.of(horizontal = 6.dp, vertical = 2.dp)
+                        shape = Shape.Pill, color = MaterialTheme.colorScheme.background
+                    ), padding = Dimensions.of(horizontal = 6.dp, vertical = 2.dp)
                 ),
                 title = "Euros  $euro",
                 axis = null,
                 tick = null,
-                guideline =
-                rememberLineComponent(
+                guideline = rememberLineComponent(
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape =
-                    remember {
+                    shape = remember {
                         Shape.dashed(
                             shape = Shape.Pill,
                             dashLength = 4.dp,
@@ -165,10 +174,12 @@ fun LineChart(
                 labelRotationDegrees = 0f
             ),
             decorations = listOf(
-                rememberHorizontalLine(y = {0f}, line = rememberLineComponent(color = Color.Red))
+                rememberHorizontalLine(y = { 0f }, line = rememberLineComponent(color = Color.Red))
             ),
         ),
         modelProducer = modelProducer,
-        modifier = Modifier.padding(horizontal = 6.dp)
+        marker = marker,
+        modifier = Modifier.padding(horizontal = 6.dp),
+
     )
 }

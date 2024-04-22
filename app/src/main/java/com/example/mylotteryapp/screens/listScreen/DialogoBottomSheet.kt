@@ -118,6 +118,7 @@ fun BottomSheetDialog(
 
                 HorizontalDivider()
 
+                // Boton Borrar Todos los boletos
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -158,7 +159,7 @@ fun BottomSheetDialog(
         onConfirm = { realmViewModel.deleteAllBoletos() },
         mensaje = "Borrar todos los boletos?"
     )
-    RangoDeFechasDialog(
+    DialogoRangoDeFechas(
         realmViewModel = realmViewModel,
         openDatePickerDialog = showDatePickerDialog,
         onDismiss = {

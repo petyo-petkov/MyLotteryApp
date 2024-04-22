@@ -106,7 +106,7 @@ fun HomeScreen(
 
             Surface(
                 modifier = Modifier
-                    .size(380.dp, 240.dp),
+                    .size(380.dp, 300.dp),
                 color = MaterialTheme.colorScheme.onBackground,
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp

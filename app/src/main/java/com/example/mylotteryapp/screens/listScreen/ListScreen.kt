@@ -34,15 +34,6 @@ fun BoletosListScreen(
         else -> realmViewModel.boletos
     }
 
-    BackHandler(
-        enabled = true,
-        onBack = {
-            realmViewModel.onBackGesture()
-            navigator.popBackStack()
-        }
-    )
-
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -74,5 +65,13 @@ fun BoletosListScreen(
         )
     }
 
+    // Limpia los estados al usar gesto de volver
+    BackHandler(
+        enabled = true,
+        onBack = {
+            realmViewModel.onBackGesture()
+            navigator.popBackStack()
+        }
+    )
 
 }

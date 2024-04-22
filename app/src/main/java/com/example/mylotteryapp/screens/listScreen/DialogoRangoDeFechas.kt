@@ -31,7 +31,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RangoDeFechasDialog(
+fun DialogoRangoDeFechas(
     realmViewModel: RealmViewModel,
     openDatePickerDialog: Boolean,
     onDismiss: () -> Unit,

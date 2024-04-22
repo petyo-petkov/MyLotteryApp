@@ -27,7 +27,7 @@ fun ExpandedContent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
@@ -42,7 +42,6 @@ fun ExpandedContent(
                     }
                     Text("Reintegro: ${boleto.reintegro}")
                     Text("Joker: ${boleto.joker}")
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 "Bonoloto" -> {
@@ -50,7 +49,6 @@ fun ExpandedContent(
                         Text("${index + 1}: $combi")
                     }
                     Text("Reintegro: ${boleto.reintegro}")
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 "Euromillones" -> {
@@ -60,7 +58,6 @@ fun ExpandedContent(
                         }
                     }
                     Text("El Millon: ${boleto.numeroElMillon}")
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 "El Gordo" -> {
@@ -69,7 +66,6 @@ fun ExpandedContent(
                             Text("${index + 1}: $combi + $clave")
                         }
                     }
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 "Euro Dreams" -> {
@@ -78,14 +74,12 @@ fun ExpandedContent(
                             Text("${index + 1}: $combi + $numeroDream")
                         }
                     }
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 "Loteria Nacional" -> {
                     Text("Numero: ${boleto.numeroLoteria}")
                     Text("Serie: ${boleto.serieLoteria}")
                     Text("Sorteo: ${boleto.sorteoLoteria}")
-                    Text("Premio: ${boleto.premio} ${Typography.euro}")
                 }
 
                 else -> {
