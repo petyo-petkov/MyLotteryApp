@@ -30,12 +30,18 @@ class RealmViewModel(
     var ganado by mutableDoubleStateOf(0.0)
     var balance by mutableDoubleStateOf(0.0)
 
+    fun ordenarBoletos() {
+        boletos = when {
+            tipoState -> boletos.sortedBy { it.tipo }
+            premioState -> boletos.sortedByDescending { it.premio }
+            else -> boletos
+        }
+    }
 
-    fun onBackGesture(){
+    fun onBackGesture() {
         premioState = false
         tipoState = false
     }
-
 
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -108,6 +114,5 @@ class RealmViewModel(
                 }
         }
     }
-
 
 }

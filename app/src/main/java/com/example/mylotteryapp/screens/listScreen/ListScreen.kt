@@ -28,11 +28,9 @@ fun BoletosListScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val boletos = when {
-        realmViewModel.tipoState -> realmViewModel.boletos.sortedBy { it.tipo }
-        realmViewModel.premioState -> realmViewModel.boletos.sortedByDescending { it.premio }
-        else -> realmViewModel.boletos
-    }
+    realmViewModel.ordenarBoletos()
+
+    val boletos = realmViewModel.boletos
 
     Scaffold(
         modifier = Modifier
@@ -64,6 +62,7 @@ fun BoletosListScreen(
 
         )
     }
+
 
     // Limpia los estados al usar gesto de volver
     BackHandler(

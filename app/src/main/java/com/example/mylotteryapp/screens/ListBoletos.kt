@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.RealmViewModel
 
-@SuppressLint("FrequentlyChangedStateReadInComposition", "UnrememberedMutableState")
+
 @Composable
 fun ListBoletos(
     realmViewModel: RealmViewModel,
@@ -25,7 +24,7 @@ fun ListBoletos(
     boletos: List<Boleto>
 
 ) {
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
+    val listState = rememberLazyListState()
 
     LazyColumn(
         modifier = Modifier
