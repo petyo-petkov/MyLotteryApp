@@ -43,11 +43,10 @@ fun ListBoletos(
             )
         }
         item {
-
             Spacer(modifier = Modifier.size(80.dp))
-
         }
 
     }
 
 }
+

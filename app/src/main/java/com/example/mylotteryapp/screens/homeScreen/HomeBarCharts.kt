@@ -1,7 +1,6 @@
 package com.example.mylotteryapp.screens.homeScreen
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,15 +20,13 @@ import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.of
-import com.patrykandpatrick.vico.compose.common.shader.verticalGradient
-import com.patrykandpatrick.vico.compose.common.shape.toVicoShape
+import com.patrykandpatrick.vico.compose.common.shape.rounded
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer.ColumnProvider.Companion.series
 import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
-import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -82,34 +79,33 @@ fun BarChart(realmViewModel: RealmViewModel) {
     val verde = Color(0xFF4CAF50)
     val rojo = Color(0xFFF44336)
 
+
     CartesianChartHost(
-        modifier = Modifier
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
         chart = rememberCartesianChart(
             rememberColumnCartesianLayer(
+                columnProvider =
                 series(
                     rememberLineComponent(
-                        color = Color(0xFFE91E63),
+                        color = verde,
                         thickness = 18.dp,
-                        shape = RoundedCornerShape(30.dp).toVicoShape(),
-                        dynamicShader = DynamicShader.verticalGradient(
-                            colors = arrayOf(verde, rojo), positions = floatArrayOf(0.4f, 1f)
-                        ),
+                        shape = Shape.rounded(20.dp)
+                    ),
 
-                        ),
+                    ),
+
                 ),
-            ),
+
             startAxis = rememberStartAxis(
                 label = rememberAxisLabelComponent(color = Color.Black),
                 titleComponent = rememberTextComponent(
                     background = rememberShapeComponent(
-                        shape = Shape.Pill,
-                        color = MaterialTheme.colorScheme.background),
-                    padding = Dimensions.of(horizontal = 6.dp, vertical = 2.dp)
+                        shape = Shape.Pill, color = MaterialTheme.colorScheme.background
+                    ), padding = Dimensions.of(horizontal = 6.dp, vertical = 2.dp)
                 ),
                 title = "Euros",
 
-            ),
+                ),
             bottomAxis = rememberBottomAxis(
                 label = rememberAxisLabelComponent(color = Color.Black),
                 valueFormatter = axisFormatter,

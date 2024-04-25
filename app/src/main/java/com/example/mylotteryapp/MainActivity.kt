@@ -21,7 +21,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyLotteryAppTheme(darkTheme = false) {
-
                 val scannerViewModel = viewModel<ScannerViewModel>(
                     factory = viewModelFactory {
                         ScannerViewModel(
@@ -46,6 +45,7 @@ class MainActivity : ComponentActivity() {
 
                     }
                 )
+
 
             }
 

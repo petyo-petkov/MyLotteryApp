@@ -102,8 +102,6 @@ fun HomeScreen(
                     color = color
                 )
             }
-
-
             Surface(
                 modifier = Modifier
                     .size(380.dp, 300.dp),
@@ -111,7 +109,7 @@ fun HomeScreen(
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-                //BarChart(realmViewModel)
+               // BarChart(realmViewModel)
                 LineChart(realmViewModel)
 
             }

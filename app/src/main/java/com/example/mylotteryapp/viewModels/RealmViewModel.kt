@@ -18,10 +18,7 @@ class RealmViewModel(
 
     var isExpanded by mutableStateOf(false)
 
-    var tipoState by mutableStateOf(false)
-    var premioState by mutableStateOf(false)
-
-    var boleto: Boleto by mutableStateOf(Boleto())
+    var boleto by mutableStateOf(Boleto())
     var boletos by mutableStateOf(emptyList<Boleto>())
     var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
     var boletosSelecionados by mutableStateOf(emptyList<Boleto>())
@@ -29,6 +26,9 @@ class RealmViewModel(
     var gastado by mutableDoubleStateOf(0.0)
     var ganado by mutableDoubleStateOf(0.0)
     var balance by mutableDoubleStateOf(0.0)
+
+    var tipoState by mutableStateOf(false)
+    var premioState by mutableStateOf(false)
 
     fun ordenarBoletos() {
         boletos = when {
