@@ -24,18 +24,9 @@ class RealmRepositoryImpl(
             val queryBoleto = query<Boleto>("_id==$0", boleto._id).first().find()
             queryBoleto?.apply {
                 premio = valor
-                if (valor > 0.0) esPremiado = true
+
             }
 
-        }
-    }
-
-    override suspend fun updateIsSelected(boleto: Boleto, valor: Boolean) {
-        realm.writeBlocking {
-            val query = query<Boleto>("_id==$0", boleto._id).first().find()
-            query?.apply {
-                isSelected = valor
-            }
         }
     }
 
@@ -45,7 +36,10 @@ class RealmRepositoryImpl(
         }
     }
 
-    override suspend fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>> {
+    override suspend fun rangoFechas(
+        startDay: RealmInstant,
+        endDay: RealmInstant
+    ): Flow<List<Boleto>> {
         return realm.query<Boleto>(
             "fecha BETWEEN { $0 , $1 }", startDay, endDay
         )
@@ -54,7 +48,7 @@ class RealmRepositoryImpl(
             }
     }
 
-    override  fun boletosDelMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
+    override fun boletosDelMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
         return realm.query<Boleto>(
             "fecha BETWEEN { $0 , $1 }", primerDia, ultimoDia
         ).find()
@@ -66,8 +60,8 @@ class RealmRepositoryImpl(
 
     override suspend fun deleteSelecionados(boletos: List<Boleto>) {
         realm.writeBlocking {
-            val query = query<Boleto>("_id == $0", boletos.map { it._id } ).find()
-            if (query.isNotEmpty()){
+            val query = query<Boleto>("_id == $0", boletos.map { it._id }).find()
+            if (query.isNotEmpty()) {
                 delete(query)
             }
 

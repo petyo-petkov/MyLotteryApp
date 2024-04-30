@@ -103,7 +103,7 @@ class RealmViewModel(
     }
 
     fun deleteSelecionados() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val boletos = boletosSelecionados.value
             if (boletos.isNotEmpty()) {
                 realmRepo.deleteSelecionados(boletos)

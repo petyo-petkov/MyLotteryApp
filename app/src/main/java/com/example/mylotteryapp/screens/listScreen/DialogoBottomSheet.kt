@@ -85,24 +85,15 @@ fun BottomSheetDialog(
                             onClick = {
                                 selectedIndex = index
                                 when (selectedIndex) {
-                                    0 -> {
-                                        realmViewModel.ordenarBoletos()
-                                        onDismiss()
-                                    }
 
-                                    1 -> {
-                                        realmViewModel.ordenarBoletos("TIPO_ASC")
-                                        onDismiss()
-                                    }
+                                    0 -> realmViewModel.ordenarBoletos()
 
-                                    2 -> {
-                                        realmViewModel.ordenarBoletos("PREMIO_DESC")
-                                        onDismiss()
-                                    }
+                                    1 -> realmViewModel.ordenarBoletos("TIPO_ASC")
 
-                                    3 -> {
-                                        showDatePickerDialog = true
-                                    }
+                                    2 -> realmViewModel.ordenarBoletos("PREMIO_DESC")
+
+                                    3 -> showDatePickerDialog = true
+
                                 }
 
                             },
