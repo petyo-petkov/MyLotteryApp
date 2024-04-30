@@ -1,88 +1,90 @@
 package com.example.mylotteryapp.viewModels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.round
 
 class RealmViewModel(
     private val realmRepo: RealmRepository
 ) : ViewModel() {
 
-    var isExpanded by mutableStateOf(false)
+    private val _boletos = MutableStateFlow(emptyList<Boleto>())
+    val boletos: StateFlow<List<Boleto>> = _boletos
 
-    var boleto by mutableStateOf(Boleto())
-    var boletos by mutableStateOf(emptyList<Boleto>())
-    var boletosEnRangoDeFechas by mutableStateOf(emptyList<Boleto>())
-    var boletosSelecionados by mutableStateOf(emptyList<Boleto>())
+    private val _boletosEnRangoDeFechas = MutableStateFlow(emptyList<Boleto>())
+    val boletosEnRangoDeFechas: StateFlow<List<Boleto>> = _boletosEnRangoDeFechas
 
-    var gastado by mutableDoubleStateOf(0.0)
-    var ganado by mutableDoubleStateOf(0.0)
-    var balance by mutableDoubleStateOf(0.0)
+    private val _boletosSelecionados = MutableStateFlow(emptyList<Boleto>())
+    val boletosSelecionados: StateFlow<List<Boleto>> = _boletosSelecionados
 
-    var tipoState by mutableStateOf(false)
-    var premioState by mutableStateOf(false)
+    private val _balanceState = MutableStateFlow(BalanceState())
+    val balanceState: StateFlow<BalanceState> = _balanceState
 
-    fun ordenarBoletos() {
-        boletos = when {
-            tipoState -> boletos.sortedBy { it.tipo }
-            premioState -> boletos.sortedByDescending { it.premio }
-            else -> boletos
+
+    fun ordenarBoletos(ordenacionState: String = "FECHA_DESC") {
+        viewModelScope.launch(Dispatchers.IO) {
+            _boletos.value = when (ordenacionState) {
+                "TIPO_ASC" -> _boletos.value.sortedBy { it.tipo }
+                "TIPO_DESC" -> _boletos.value.sortedByDescending { it.tipo }
+                "PREMIO_ASC" -> _boletos.value.sortedBy { it.premio }
+                "PREMIO_DESC" -> _boletos.value.sortedByDescending { it.premio }
+                else -> _boletos.value.sortedByDescending { it.fecha } // FECHA_DESC por defecto
+            }
         }
     }
 
-    fun onBackGesture() {
-        premioState = false
-        tipoState = false
+    fun stateCleaner() {
+        viewModelScope.launch(Dispatchers.IO) {
+            ordenarBoletos()  // deja la lista de boletos ordenada por fecha
+            _boletosEnRangoDeFechas.value =
+                emptyList()  // deja la lista de boletos en rango de fechas vacia
+            _boletosSelecionados.value = emptyList() // deja la lista de boletos seleccionados vacia
+        }
+
     }
 
     fun getBoletos() {
         viewModelScope.launch(Dispatchers.IO) {
             realmRepo.getBoletos().collect {
-                boletos = it
+                _boletos.value = it
             }
         }
     }
 
     fun getPremioPrecioBalance(boletos: List<Boleto>) {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getPremioPrecioBalance(boletos)
-                .collect { (ganadoFlow, gastadoFlow, balanceFlow) ->
-                    gastado = gastadoFlow
-                    ganado = ganadoFlow
-                    balance = balanceFlow
-                }
+            val ganado = boletos.sumOf { it.premio }
+            val gastado = boletos.sumOf { it.precio }
+            val balance = ganado - gastado
+            _balanceState.value = BalanceState(
+                ganado = Round(ganado),
+                gastado = Round(gastado),
+                balance = Round(balance),
+                balancePercent = (balance / ((ganado + gastado) / 2)) * 100
+            )
         }
     }
 
-    fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): Double {
-        val boletos = realmRepo.balanceMes(primerDia, ultimoDia)
-        val ganado = boletos.sumOf { it.premio }
-        val gastado = boletos.sumOf { it.precio }
-        val balance = ganado - gastado
-
-        return balance
-
+    fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): Balance {
+        return realmRepo.boletosDelMes(primerDia, ultimoDia).let { boletosDelMes ->
+            Balance(ganadoDelMes = boletosDelMes.sumOf { it.premio },
+                gastadoDelMes = boletosDelMes.sumOf { it.precio })
+        }
     }
 
-    fun getSelected() {
+    fun addOrRemoveSelecionados(boleto: Boleto, orden: Orden) {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.getSelected().collect {
-                boletosSelecionados = it
+            _boletosSelecionados.value = when (orden) {
+                Orden.ADD -> _boletosSelecionados.value + boleto
+                Orden.REMOVE -> _boletosSelecionados.value - boleto
             }
-        }
-    }
-
-    fun isSelected(boleto: Boleto, valor: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.updateIsSelected(boleto, valor)
 
         }
     }
@@ -102,17 +104,43 @@ class RealmViewModel(
 
     fun deleteSelecionados() {
         viewModelScope.launch {
-            realmRepo.deleteSelecionados()
+            val boletos = boletosSelecionados.value
+            if (boletos.isNotEmpty()) {
+                realmRepo.deleteSelecionados(boletos)
+                _boletosSelecionados.value = emptyList()
+
+            }
         }
     }
 
     fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
         viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.rangoFechas(startDay, endDay)
-                .collect {
-                    boletosEnRangoDeFechas = it
+            realmRepo.rangoFechas(startDay, endDay).collect { boletos ->
+                    _boletosEnRangoDeFechas.value = boletos.sortedByDescending { it.fecha }
                 }
         }
     }
 
+}
+
+data class BalanceState(
+    val ganado: Double = 0.0,
+    val gastado: Double = 0.0,
+    val balance: Double = 0.0,
+    val balancePercent: Double = 0.0
+)
+
+// redondea hasta las dos decimas ganado, gastado y balance
+private fun Round(dato: Double): Double {
+    return round(dato * 100) / 100
+}
+
+sealed class Orden {
+    data object ADD : Orden()
+    data object REMOVE : Orden()
+}
+
+data class Balance(val ganadoDelMes: Double, val gastadoDelMes: Double) {
+    val balance: Double
+        get() = ganadoDelMes - gastadoDelMes
 }

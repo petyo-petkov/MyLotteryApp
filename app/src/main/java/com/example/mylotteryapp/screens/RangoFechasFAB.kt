@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,6 +35,7 @@ fun RangoFechasFAB(
     realmViewModel: RealmViewModel,
     navigator: DestinationsNavigator
 ) {
+    val boletosSelecionados by realmViewModel.boletosSelecionados.collectAsState()
 
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
@@ -52,7 +54,7 @@ fun RangoFechasFAB(
             FilledIconButton(
                 onClick = {
                     navigator.popBackStack()
-                    realmViewModel.boletosEnRangoDeFechas = emptyList()
+                    realmViewModel.stateCleaner()
                 },
                 modifier = Modifier,
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
@@ -65,7 +67,7 @@ fun RangoFechasFAB(
             }
 
             AnimatedVisibility(
-                visible = realmViewModel.boletosSelecionados.isNotEmpty(),
+                visible = boletosSelecionados.isNotEmpty(),
                 enter = scaleIn(),
                 exit = scaleOut()
             ) {

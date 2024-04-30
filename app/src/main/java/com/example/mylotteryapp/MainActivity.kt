@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
 import com.example.mylotteryapp.viewModels.RealmViewModel
@@ -37,11 +38,13 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 )
+
                 DestinationsNavHost(
                     navGraph = NavGraphs.root,
                     dependenciesContainerBuilder = {
                         dependency(scannerViewModel)
                         dependency(realmViewModel)
+
 
                     }
                 )

@@ -13,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,14 +43,18 @@ fun HomeScreen(
 
     ) {
         realmViewModel.getBoletos()
-        realmViewModel.getSelected()
-        val boletos = realmViewModel.boletos
+        realmViewModel.ordenarBoletos()
+
+        val boletos by realmViewModel.boletos.collectAsState()
         realmViewModel.getPremioPrecioBalance(boletos)
 
-        val gastado = realmViewModel.gastado
-        val ganado = realmViewModel.ganado
-        val balance = realmViewModel.balance
-        val balancePercent = (balance / ((ganado + gastado) / 2)) * 100
+        val balanceState by realmViewModel.balanceState.collectAsState()
+        val ganado = balanceState.ganado
+        val gastado = balanceState.gastado
+        val balance = balanceState.balance
+        val balancePercent = balanceState.balancePercent
+
+
 
         val color = if (balance >= 0) {
             Color(0xFF558B2F)
@@ -109,7 +115,7 @@ fun HomeScreen(
                 shape = ShapeDefaults.Large,
                 shadowElevation = 6.dp
             ) {
-               // BarChart(realmViewModel)
+                //BarChart(realmViewModel)
                 LineChart(realmViewModel)
 
             }

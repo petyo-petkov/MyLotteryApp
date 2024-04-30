@@ -16,7 +16,6 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisGuidelineCom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
-import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontalLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
@@ -68,7 +67,7 @@ fun LineChart(
 
         val monthName = SimpleDateFormat("MMM", Locale.ENGLISH).format(startDate)
 
-        val balance = realmViewModel.getMounthBalance(startDay, endDay)
+        val balance = realmViewModel.getMounthBalance(startDay, endDay).balance
         data[monthName] = balance
 
     }
@@ -173,9 +172,9 @@ fun LineChart(
                 valueFormatter = axisFormatter,
                 labelRotationDegrees = 0f
             ),
-            decorations = listOf(
-                rememberHorizontalLine(y = { 0f }, line = rememberLineComponent(color = Color.Red))
-            ),
+//            decorations = listOf(
+//                rememberHorizontalLine(y = { 0f }, line = rememberLineComponent(color = Color.Black))
+//            ),
         ),
         modelProducer = modelProducer,
         marker = marker,

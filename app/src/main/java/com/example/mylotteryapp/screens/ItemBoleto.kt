@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.viewModels.Orden
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import io.realm.kotlin.internal.platform.WeakReference
 import java.text.SimpleDateFormat
@@ -55,14 +56,15 @@ fun ItemBoleto(
     boleto: Boleto,
     realmViewModel: RealmViewModel
 ) {
+    val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val date = Date(boleto.fecha.epochSeconds * 1000)
+
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f, label = ""
     )
     var selected by remember { mutableStateOf(false) }
-    val haptics = LocalHapticFeedback.current
     var show by rememberSaveable { mutableStateOf(false) }
 
     Card(
@@ -78,12 +80,14 @@ fun ItemBoleto(
                 onClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     isExpanded = !isExpanded
-                    realmViewModel.isExpanded = isExpanded
                 },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     selected = !selected
-                    realmViewModel.isSelected(boleto, selected)
+                    when {
+                        selected -> realmViewModel.addOrRemoveSelecionados(boleto, Orden.ADD)
+                        !selected -> realmViewModel.addOrRemoveSelecionados(boleto, Orden.REMOVE)
+                    }
                 }
             ),
         shape = RoundedCornerShape(0.dp),
@@ -200,7 +204,7 @@ fun ItemBoleto(
             realmViewModel.updatePremio(boleto, valor)
             show = false
             isExpanded = !isExpanded
-            realmViewModel.isExpanded = isExpanded
+
         }
     )
 

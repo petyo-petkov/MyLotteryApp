@@ -53,7 +53,7 @@ fun BarChart(realmViewModel: RealmViewModel) {
 
         val monthName = SimpleDateFormat("MMM", Locale.ENGLISH).format(startDate)
 
-        val balance = realmViewModel.getMounthBalance(startDay, endDay)
+        val balance = realmViewModel.getMounthBalance(startDay, endDay).balance
         data[monthName] = balance
     }
 
@@ -78,23 +78,23 @@ fun BarChart(realmViewModel: RealmViewModel) {
      */
     val verde = Color(0xFF4CAF50)
     val rojo = Color(0xFFF44336)
+    val colores = arrayOf(verde, rojo)
+
 
 
     CartesianChartHost(
         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
         chart = rememberCartesianChart(
             rememberColumnCartesianLayer(
-                columnProvider =
-                series(
+                columnProvider = series(
                     rememberLineComponent(
                         color = verde,
                         thickness = 18.dp,
-                        shape = Shape.rounded(20.dp)
-                    ),
+                        shape = Shape.rounded(20.dp),
 
                     ),
-
                 ),
+            ),
 
             startAxis = rememberStartAxis(
                 label = rememberAxisLabelComponent(color = Color.Black),
@@ -104,8 +104,7 @@ fun BarChart(realmViewModel: RealmViewModel) {
                     ), padding = Dimensions.of(horizontal = 6.dp, vertical = 2.dp)
                 ),
                 title = "Euros",
-
-                ),
+            ),
             bottomAxis = rememberBottomAxis(
                 label = rememberAxisLabelComponent(color = Color.Black),
                 valueFormatter = axisFormatter,

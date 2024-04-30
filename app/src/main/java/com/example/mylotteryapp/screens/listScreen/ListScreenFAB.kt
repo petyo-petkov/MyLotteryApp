@@ -1,5 +1,6 @@
 package com.example.mylotteryapp.screens.listScreen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -21,9 +22,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,8 +45,11 @@ fun ListScreenFAB(
     navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
+
+    val boletosSelecionados by realmViewModel.boletosSelecionados.collectAsState()
+
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     ExtendedFloatingActionButton(
         onClick = { },
@@ -63,8 +67,7 @@ fun ListScreenFAB(
                 onClick = {
                     navigator.popBackStack()
                     navigator.navigate(HomeScreenDestination)
-                    realmViewModel.premioState = false
-                    realmViewModel.tipoState = false
+                    realmViewModel.ordenarBoletos()
                 },
                 modifier = Modifier,
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
@@ -86,14 +89,12 @@ fun ListScreenFAB(
             }
 
             FilledIconButton(
-                onClick = {
-                    showBottomSheet = true
-                },
+                onClick = { showBottomSheet = !showBottomSheet },
                 modifier = Modifier,
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
             ) {
                 AnimatedVisibility(
-                    visible = realmViewModel.boletosSelecionados.isEmpty(),
+                    visible = boletosSelecionados.isEmpty(),
                     enter = scaleIn(),
                     exit = scaleOut()
                 ) {
@@ -104,11 +105,12 @@ fun ListScreenFAB(
                     )
                 }
                 AnimatedVisibility(
-                    visible = realmViewModel.boletosSelecionados.isNotEmpty(),
+                    visible = boletosSelecionados.isNotEmpty(),
                     enter = scaleIn(),
                     exit = scaleOut()
                 ) {
-                    IconButton(onClick = { showDialogBorrar = true }
+                    IconButton(
+                        onClick = { showDialogBorrar = !showDialogBorrar }
                     ) {
                         Icon(
                             imageVector =
@@ -121,15 +123,13 @@ fun ListScreenFAB(
 
             }
         }
-
+        Log.i("lista", "${boletosSelecionados.size}")
     }
 
     DialogoBorrar(
         show = showDialogBorrar,
         onDismiss = { showDialogBorrar = false },
-        onConfirm = {
-            realmViewModel.deleteSelecionados()
-        },
+        onConfirm = realmViewModel::deleteSelecionados,
         mensaje = "Borrar boletos selecionados"
     )
     BottomSheetDialog(

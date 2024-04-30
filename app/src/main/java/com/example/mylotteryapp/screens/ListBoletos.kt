@@ -24,7 +24,7 @@ fun ListBoletos(
     boletos: List<Boleto>
 
 ) {
-    val listState = rememberLazyListState()
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
 
     LazyColumn(
         modifier = Modifier
@@ -34,7 +34,10 @@ fun ListBoletos(
     ) {
         items(boletos, key = { it.numeroSerie }) { boleto ->
 
-            ItemBoleto(boleto = boleto, realmViewModel = realmViewModel)
+            ItemBoleto(
+                boleto = boleto,
+                realmViewModel = realmViewModel
+            )
 
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 4.dp),

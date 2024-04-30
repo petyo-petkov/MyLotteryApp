@@ -11,6 +11,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,9 +30,10 @@ fun TopBar(
 ) {
     realmViewModel.getPremioPrecioBalance(boletos)
 
-    val ganado = realmViewModel.ganado
-    val gastado = realmViewModel.gastado
-    val balance = realmViewModel.balance
+    val balanceState by realmViewModel.balanceState.collectAsState()
+    val ganado = balanceState.ganado
+    val gastado = balanceState.gastado
+    val balance = balanceState.balance
 
     TopAppBar(
         title = {

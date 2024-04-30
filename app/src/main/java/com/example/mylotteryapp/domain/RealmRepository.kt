@@ -16,14 +16,10 @@ interface RealmRepository {
 
     suspend fun rangoFechas(startDay: RealmInstant, endDay: RealmInstant): Flow<List<Boleto>>
 
-    fun balanceMes(primerDia: RealmInstant,  ultimoDia: RealmInstant): List<Boleto>
-
-    suspend fun getPremioPrecioBalance(boletos: List<Boleto>): Flow<Triple<Double, Double, Double>>
-
-    suspend fun getSelected(): Flow<List<Boleto>>
+    fun boletosDelMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto>
 
     suspend fun deleteAll()
 
-    suspend fun deleteSelecionados()
+    suspend fun deleteSelecionados(boletos: List<Boleto>)
 
 }

@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.example.mylotteryapp.screens.ListBoletos
@@ -30,7 +31,7 @@ fun BoletosListScreen(
 
     realmViewModel.ordenarBoletos()
 
-    val boletos = realmViewModel.boletos
+    val boletos = realmViewModel.boletos.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -38,7 +39,7 @@ fun BoletosListScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopBar(
-                boletos = boletos,
+                boletos = boletos.value,
                 scrollBehavior,
                 realmViewModel
             )
@@ -58,7 +59,7 @@ fun BoletosListScreen(
         ListBoletos(
             realmViewModel = realmViewModel,
             paddingValues = it,
-            boletos = boletos
+            boletos = boletos.value
 
         )
     }
@@ -68,9 +69,10 @@ fun BoletosListScreen(
     BackHandler(
         enabled = true,
         onBack = {
-            realmViewModel.onBackGesture()
+            realmViewModel.stateCleaner()
             navigator.popBackStack()
         }
     )
+
 
 }

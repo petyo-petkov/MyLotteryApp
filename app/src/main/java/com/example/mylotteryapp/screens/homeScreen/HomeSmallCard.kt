@@ -48,7 +48,6 @@ fun SmallCard(title: String, content:String, color: Color) {
                 modifier = Modifier
                     .weight(1f),
                 fontSize = 32.sp,
-                //style = MaterialTheme.typography.displaySmall,
                 color = color,
 
             )

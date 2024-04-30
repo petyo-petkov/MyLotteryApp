@@ -43,6 +43,7 @@ fun BottomSheetDialog(
 
 ) {
     val sheetState = rememberModalBottomSheetState()
+
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
 
     // Segmented button
@@ -68,7 +69,7 @@ fun BottomSheetDialog(
             ) {
 
                 Text(
-                    text = "Filtrar por:",
+                    text = "Ordenar:",
                     modifier = Modifier
                 )
 
@@ -85,18 +86,18 @@ fun BottomSheetDialog(
                                 selectedIndex = index
                                 when (selectedIndex) {
                                     0 -> {
-                                        realmViewModel.premioState = false
-                                        realmViewModel.tipoState = false
+                                        realmViewModel.ordenarBoletos()
+                                        onDismiss()
                                     }
 
                                     1 -> {
-                                        realmViewModel.tipoState = true
-                                        realmViewModel.premioState = false
+                                        realmViewModel.ordenarBoletos("TIPO_ASC")
+                                        onDismiss()
                                     }
 
                                     2 -> {
-                                        realmViewModel.premioState = true
-                                        realmViewModel.tipoState = false
+                                        realmViewModel.ordenarBoletos("PREMIO_DESC")
+                                        onDismiss()
                                     }
 
                                     3 -> {
@@ -114,7 +115,6 @@ fun BottomSheetDialog(
                         }
                     }
                 }
-
 
                 HorizontalDivider()
 
@@ -164,9 +164,9 @@ fun BottomSheetDialog(
         openDatePickerDialog = showDatePickerDialog,
         onDismiss = {
             showDatePickerDialog = false
+            onDismiss()
             selectedIndex = 0
-            realmViewModel.premioState = false
-            realmViewModel.tipoState = false
+            realmViewModel.ordenarBoletos()
         },
         onConfirm = { navigator.navigate(BoletosByDatesDestination) }
     )
