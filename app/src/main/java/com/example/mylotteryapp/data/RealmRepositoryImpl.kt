@@ -5,6 +5,7 @@ import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.query.RealmQuery
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -40,18 +41,13 @@ class RealmRepositoryImpl(
         startDay: RealmInstant,
         endDay: RealmInstant
     ): Flow<List<Boleto>> {
-        return realm.query<Boleto>(
-            "fecha BETWEEN { $0 , $1 }", startDay, endDay
-        )
-            .asFlow().map { result ->
-                result.list.sortedByDescending { it.fecha }
-            }
+        return queryRangoDeFechas(startDay, endDay).asFlow().map { result ->
+            result.list.sortedByDescending { it.fecha }
+        }
     }
 
     override fun boletosDelMes(primerDia: RealmInstant, ultimoDia: RealmInstant): List<Boleto> {
-        return realm.query<Boleto>(
-            "fecha BETWEEN { $0 , $1 }", primerDia, ultimoDia
-        ).find()
+        return queryRangoDeFechas(primerDia, ultimoDia).find()
     }
 
     override suspend fun deleteAll() {
@@ -66,6 +62,12 @@ class RealmRepositoryImpl(
             }
 
         }
+    }
+
+
+    // query rango de fechas
+    private fun queryRangoDeFechas(start: RealmInstant, end: RealmInstant): RealmQuery<Boleto> {
+        return realm.query<Boleto>("fecha BETWEEN { $0 , $1 }", start, end)
     }
 
 

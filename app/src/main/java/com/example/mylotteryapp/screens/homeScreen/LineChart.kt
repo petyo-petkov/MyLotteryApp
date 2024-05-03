@@ -5,7 +5,10 @@ import android.text.Layout
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -51,11 +54,13 @@ fun LineChart(
 
     val data = mutableMapOf<String, Double>()
     val dateFormat = SimpleDateFormat("ddMMMyy", Locale.ENGLISH)
-    val calendar = Calendar.getInstance()
+    val calendar = rememberSaveable { Calendar.getInstance() }
 
     for (i in Calendar.JANUARY..Calendar.DECEMBER) {
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        calendar.set(Calendar.MONTH, i)
+        with(calendar) {
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.MONTH, i)
+        }
 
         val startDate = calendar.time
         val startDay = fechaToRealmInstant(dateFormat.format(startDate))
@@ -75,10 +80,12 @@ fun LineChart(
     val labelListKey = remember { ExtraStore.Key<List<String>>() }
     val modelProducer = remember { CartesianChartModelProducer.build() }
 
+    val dataState by rememberUpdatedState(data)
     modelProducer.tryRunTransaction {
-        lineSeries { series(data.values) }
-        updateExtras { it[labelListKey] = data.keys.toList() }
+        lineSeries { series(dataState.values) }
+        updateExtras { it[labelListKey] = dataState.keys.toList() }
     }
+
     val axisFormatter = CartesianValueFormatter { x, chartValues, _ ->
         chartValues.model.extraStore[labelListKey][x.toInt()]
     }
@@ -172,13 +179,11 @@ fun LineChart(
                 valueFormatter = axisFormatter,
                 labelRotationDegrees = 0f
             ),
-//            decorations = listOf(
-//                rememberHorizontalLine(y = { 0f }, line = rememberLineComponent(color = Color.Black))
-//            ),
-        ),
+
+            ),
         modelProducer = modelProducer,
         marker = marker,
         modifier = Modifier.padding(horizontal = 6.dp),
 
-    )
+        )
 }

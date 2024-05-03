@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,7 +50,7 @@ fun ListScreenFAB(
     val boletosSelecionados by realmViewModel.boletosSelecionados.collectAsState()
 
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     ExtendedFloatingActionButton(
         onClick = { },

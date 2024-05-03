@@ -96,6 +96,8 @@ dependencies {
     implementation(libs.androidx.material3.android)
     ksp(libs.ksp.v200beta01)
 
+    // Gemini
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

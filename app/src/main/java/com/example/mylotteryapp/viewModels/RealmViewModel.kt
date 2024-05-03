@@ -42,10 +42,11 @@ class RealmViewModel(
 
     fun stateCleaner() {
         viewModelScope.launch(Dispatchers.IO) {
-            ordenarBoletos()  // deja la lista de boletos ordenada por fecha
+            ordenarBoletos()        // deja la lista de boletos ordenada por fecha
             _boletosEnRangoDeFechas.value =
-                emptyList()  // deja la lista de boletos en rango de fechas vacia
-            _boletosSelecionados.value = emptyList() // deja la lista de boletos seleccionados vacia
+                emptyList()         // deja la lista de boletos en rango de fechas vacia
+            _boletosSelecionados.value =
+                emptyList()         // deja la lista de boletos seleccionados vacia
         }
 
     }
@@ -72,10 +73,20 @@ class RealmViewModel(
         }
     }
 
-    fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): Balance {
+    fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
+        viewModelScope.launch(Dispatchers.IO) {
+            realmRepo.rangoFechas(startDay, endDay).collect { boletos ->
+                _boletosEnRangoDeFechas.value = boletos
+            }
+        }
+    }
+
+    fun getMounthBalance(primerDia: RealmInstant, ultimoDia: RealmInstant): BalanceMes {
         return realmRepo.boletosDelMes(primerDia, ultimoDia).let { boletosDelMes ->
-            Balance(ganadoDelMes = boletosDelMes.sumOf { it.premio },
-                gastadoDelMes = boletosDelMes.sumOf { it.precio })
+            BalanceMes(
+                ganadoDelMes = boletosDelMes.sumOf { it.premio },
+                gastadoDelMes = boletosDelMes.sumOf { it.precio }
+            )
         }
     }
 
@@ -113,14 +124,6 @@ class RealmViewModel(
         }
     }
 
-    fun sortByDates(startDay: RealmInstant, endDay: RealmInstant) {
-        viewModelScope.launch(Dispatchers.IO) {
-            realmRepo.rangoFechas(startDay, endDay).collect { boletos ->
-                    _boletosEnRangoDeFechas.value = boletos.sortedByDescending { it.fecha }
-                }
-        }
-    }
-
 }
 
 data class BalanceState(
@@ -140,7 +143,10 @@ sealed class Orden {
     data object REMOVE : Orden()
 }
 
-data class Balance(val ganadoDelMes: Double, val gastadoDelMes: Double) {
+data class BalanceMes(
+    val ganadoDelMes: Double,
+    val gastadoDelMes: Double
+) {
     val balance: Double
         get() = ganadoDelMes - gastadoDelMes
 }

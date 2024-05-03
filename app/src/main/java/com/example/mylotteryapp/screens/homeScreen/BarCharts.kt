@@ -35,6 +35,7 @@ import java.util.Locale
 @Composable
 fun BarChart(realmViewModel: RealmViewModel) {
 
+
     val data = mutableMapOf<String, Double>()
     val dateFormat = SimpleDateFormat("ddMMMyy", Locale.ENGLISH)
     val calendar = Calendar.getInstance()
@@ -55,6 +56,8 @@ fun BarChart(realmViewModel: RealmViewModel) {
 
         val balance = realmViewModel.getMounthBalance(startDay, endDay).balance
         data[monthName] = balance
+
+
     }
 
     val labelListKey = remember { ExtraStore.Key<List<String>>() }
@@ -92,7 +95,7 @@ fun BarChart(realmViewModel: RealmViewModel) {
                         thickness = 18.dp,
                         shape = Shape.rounded(20.dp),
 
-                    ),
+                        ),
                 ),
             ),
 

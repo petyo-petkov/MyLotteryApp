@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -23,14 +24,14 @@ fun BoletosByDates(
     realmViewModel: RealmViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val boletos = realmViewModel.boletosEnRangoDeFechas.collectAsState()
+    val boletos by realmViewModel.boletosEnRangoDeFechas.collectAsState()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
             TopBar(
-                boletos = boletos.value,
+                boletos = boletos,
                 scrollBehavior,
                 realmViewModel
             )
@@ -49,7 +50,7 @@ fun BoletosByDates(
         ListBoletos(
             realmViewModel = realmViewModel,
             paddingValues = it,
-            boletos = boletos.value
+            boletos = boletos
 
         )
         // Limpia los estados al usar gesto de volver

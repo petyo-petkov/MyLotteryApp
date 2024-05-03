@@ -215,7 +215,6 @@ fun ItemBoleto(
 @Composable
 fun loadImage(imageResourceId: Int): Painter {
     val imageCache = remember { mutableMapOf<Int, WeakReference<Painter>>() }
-
     val cachedImage = imageCache[imageResourceId]?.get()
     if (cachedImage != null) {
         return cachedImage
@@ -224,6 +223,7 @@ fun loadImage(imageResourceId: Int): Painter {
         imageCache[imageResourceId] = WeakReference(painter)
         return painter
     }
+
 }
 
 
