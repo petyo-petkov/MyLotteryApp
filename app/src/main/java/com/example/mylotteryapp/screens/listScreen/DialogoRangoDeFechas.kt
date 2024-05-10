@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -38,8 +37,6 @@ fun DialogoRangoDeFechas(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ){
-    val boletos = realmViewModel.boletos.collectAsState()
-
     val formatter = remember { SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH) }
 
     val startYear = Calendar.getInstance().get(Calendar.YEAR).minus(3)

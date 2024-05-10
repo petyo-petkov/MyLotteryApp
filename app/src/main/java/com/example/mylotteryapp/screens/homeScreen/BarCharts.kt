@@ -80,10 +80,6 @@ fun BarChart(realmViewModel: RealmViewModel) {
         }
      */
     val verde = Color(0xFF4CAF50)
-    val rojo = Color(0xFFF44336)
-    val colores = arrayOf(verde, rojo)
-
-
 
     CartesianChartHost(
         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),

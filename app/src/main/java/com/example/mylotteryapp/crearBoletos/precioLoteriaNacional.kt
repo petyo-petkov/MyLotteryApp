@@ -19,23 +19,26 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
     val diaSemana = calendario.get(Calendar.DAY_OF_WEEK)
     val dia = calendario.get(Calendar.DAY_OF_MONTH)
     val mes = calendario.get(Calendar.MONTH)
-    var precio = 0.0
+    val precio: Double
 
-    if (diaSemana == Calendar.THURSDAY) {
-        precio = 3.0
-    }
-    if (diaSemana == Calendar.SATURDAY) {
-        precio = if (dia in 17..25) {
-            15.0
-        }else{
-            6.0
-        }
-    }
-    if (dia == 6 && mes == 0) {
-        precio = 20.0
-    }
-    if (dia == 22 && mes == 11){
-        precio = 20.0
+    // Sorteos extraordinarios
+    when{
+        diaSemana == Calendar.THURSDAY -> precio = 3.0
+        dia == 6 && mes == 0 -> precio = 20.0    // El Niño
+        dia == 13 && mes == 0 -> precio = 15.0   // Extraordinario de invierno
+        dia == 21 && mes == 0 -> precio = 12.0   // Extraordinario de Enero
+        dia == 17 && mes == 1 -> precio = 15.0   // Extraordinario de San Valentin
+        dia == 23 && mes == 2 -> precio = 15.0   // Extraordinario dia del padre
+        dia == 6 && mes == 3 -> precio = 15.0    // Extraordinario AECC
+        dia == 5 && mes == 4 -> precio = 15.0    // Extraordinario dia de la madre
+        dia == 1 && mes == 5 -> precio = 15.0    // Extraordinario dia de la cruz roja
+        dia == 6 && mes == 6 -> precio = 20.0    // Extraordinario Vacaciones
+        dia == 13 && mes == 6 -> precio = 15.0   // Extraordinario Julio
+        dia == 3 && mes == 7 -> precio = 15.0    // Extraordinario Agosto
+        dia == 7 && mes == 8 -> precio = 15.0    // Extraordinario Septiembre
+
+        dia == 22 && mes == 11 -> precio = 20.0
+        else -> precio = 6.0
     }
 
     return precio

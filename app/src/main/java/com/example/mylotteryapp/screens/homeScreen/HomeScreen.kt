@@ -42,6 +42,7 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background
 
     ) {
+
         realmViewModel.getBoletos()
         realmViewModel.ordenarBoletos()
 
@@ -117,7 +118,6 @@ fun HomeScreen(
             ) {
                 //BarChart(realmViewModel)
                 LineChart(realmViewModel)
-
             }
 
         }

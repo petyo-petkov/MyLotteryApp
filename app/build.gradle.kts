@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.io.realm.kotlin)
     id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 kotlin {
@@ -91,12 +92,14 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
 
-
     implementation(libs.core)
     implementation(libs.androidx.material3.android)
     ksp(libs.ksp.v200beta01)
 
-    // Gemini
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.kotlinx.serialization.json)
 
 
     testImplementation(libs.junit)

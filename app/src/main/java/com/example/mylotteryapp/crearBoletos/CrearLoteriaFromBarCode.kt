@@ -8,26 +8,25 @@ import java.util.Locale
 fun crearLoteriaFromBarCode(data: String): Boleto {
 
     val formatter = SimpleDateFormat("ddMMMyyyy", Locale.ENGLISH)
-    val fechaInicio = Calendar.getInstance()
-    val serialNumber = data.slice(0..9).toLong()
-    val numeroLoteriaNacional = data.slice(11..15)
-    val serieLoteriaNacional = data.slice(7..9)
-    val sorteoLoteriaNacional = data.slice(2..3).toInt()
+    val calendario = Calendar.getInstance()
+    val serialNumber = data.substring(0, 10).toLong()
+    val numeroLoteriaNacional = data.substring(11, 16)
+    val serieLoteriaNacional = data.substring(7, 10)
+    val numeroSorteo = data.substring(2, 4).toInt()
 
-    when (data.first().toString()) {
-
-        "6" -> {
-            fechaInicio.set(2024, 0, 4)
-        }
-
-        "5" -> {
-            fechaInicio.set(2024, 0, 6)
-        }
-
+    when (data.substring(0, 1)) {
+        "6" -> calendario.set(2024, 0, 4) //primer sorteo jueves
+        "5" -> calendario.set(2024, 0, 6) //primer sorteo sabado
+        else -> throw IllegalArgumentException("Invalid lottery code")
     }
-    val diasTranscurridos = ((((sorteoLoteriaNacional - 1) / 2)) * 7)
-    val fechaSorteo = fechaInicio.apply { add(Calendar.DAY_OF_MONTH, diasTranscurridos) }
-    val fechaString = formatter.format(fechaSorteo.time)
+
+    val diasTranscurridos = ((((numeroSorteo - 1) / 2)) * 7)
+    val fechaSorteo = calendario.apply { add(Calendar.DAY_OF_MONTH, diasTranscurridos) }
+    val fechaString = when (numeroSorteo) {
+        36 -> "05MAY24"
+        else -> formatter.format(fechaSorteo.time)
+    }
+
     val fechaRealm = fechaToRealmInstant(fechaString)
     val precioLoteria = precioLoteriaNacional(fechaString)
 
@@ -37,7 +36,7 @@ fun crearLoteriaFromBarCode(data: String): Boleto {
         fecha = fechaRealm
         numeroLoteria = numeroLoteriaNacional
         serieLoteria = serieLoteriaNacional
-        sorteoLoteria = sorteoLoteriaNacional.toString()
+        sorteoLoteria = numeroSorteo.toString()
         precio = precioLoteria
         premio = 0.0
     }
