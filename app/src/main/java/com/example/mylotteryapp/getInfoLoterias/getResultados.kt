@@ -1,7 +1,9 @@
 package com.example.mylotteryapp.getInfoLoterias
 
 import android.util.Log
+import com.example.mylotteryapp.getInfoLoterias.modelos.bonoloto.Bonoloto
 import com.example.mylotteryapp.getInfoLoterias.modelos.euromillones.Euromillones
+import com.example.mylotteryapp.getInfoLoterias.modelos.loteriaNacional.LoteriaNacional
 import com.example.mylotteryapp.getInfoLoterias.modelos.primitva.Primitiva
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -18,6 +20,9 @@ suspend inline fun <reified T> getResultados(fechaInicio: String, fechaFin: Stri
     val gameID = when (T::class) {
         Euromillones::class -> "EMIL"
         Primitiva::class -> "LAPR"
+        LoteriaNacional::class -> "LNAC"
+        Bonoloto::class -> "BONO"
+
         else -> throw IllegalArgumentException("Unsupported game type: ${T::class}")
     }
     val url =
@@ -42,9 +47,12 @@ suspend inline fun <reified T> getResultados(fechaInicio: String, fechaFin: Stri
 
 }
 
+
 suspend fun main() {
-    val euro = getResultados<Euromillones>("20240501", "20240507")
-    val primi = getResultados<Primitiva>("20240501", "20240507")
-    println(primi[0].dia_semana)
-    println(euro[0].fecha_sorteo)
+
+    val fechaInicio = "20240501"
+    val fechaFin = "20240507"
+
+    val loteria = getResultados<Bonoloto>(fechaInicio, fechaFin)
+    println(loteria[0].fecha_sorteo)
 }

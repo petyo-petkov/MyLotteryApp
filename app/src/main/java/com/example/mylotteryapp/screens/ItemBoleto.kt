@@ -132,7 +132,7 @@ fun ItemBoleto(
 
                                 "Loteria Nacional" -> R.drawable.loteria_nacional
 
-                                else -> R.drawable.ic_launcher_foreground
+                                else -> R.drawable.logo
                             }
                         ),
                         contentDescription = null
