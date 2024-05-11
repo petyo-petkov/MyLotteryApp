@@ -3,7 +3,6 @@ package com.example.mylotteryapp.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.domain.RealmRepository
-import com.example.mylotteryapp.getInfoLoterias.getResultados
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers

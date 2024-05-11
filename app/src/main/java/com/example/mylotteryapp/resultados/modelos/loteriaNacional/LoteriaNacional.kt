@@ -1,0 +1,47 @@
+package com.example.mylotteryapp.resultados.modelos.loteriaNacional
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class LoteriaNacional(
+    val nombre: String,
+    val fecha_sorteo: String,
+    val num_sorteo: String,
+    val dia_semana: String,
+    val game_id: String,
+    val precioDecimo: Double,
+    val anyo: String,
+    val apertura: String,
+    val apuestas: String,
+    val cdc: String,
+    val cierre: String,
+    val contenidosRelacionados: ContenidosRelacionados,
+    val cuartosPremios: List<CuartoPremio>,
+    val escrutinio: List<Escrutinio>,
+    val estado: String,
+    val extraccionesDeCincoCifras: List<ExtraccionesDeCincoCifra>,
+    val extraccionesDeCuatroCifras: List<ExtraccionesDeCuatroCifra>,
+    val extraccionesDeDosCifras: List<ExtraccionesDeDosCifra>,
+    val extraccionesDeTresCifras: List<ExtraccionesDeTresCifra>,
+    val fondo_bote: String,
+    val id_sorteo: String,
+    val lugar: String,
+    val managedBySync: String,
+    val modelDraw: Int,
+    val mostrarConsignacion: Boolean,
+    val mostrarVentas: Boolean,
+    val premioEspecial: PremioEspecial,
+    val premio_bote: String,
+    val premio_especial: Int? = null,
+    val premios: String,
+    val primerPremio: PrimerPremio,
+    val primer_premio: Int,
+    val quintosPremios: List<QuintoPremio>,
+    val recaudacion: String,
+    val reintegros: List<Reintegro>,
+    val segundoPremio: SegundoPremio,
+    val tercerosPremios: List<TercerPremio>,
+    val tipoSorteo: String,
+    val tipoSorteoGeneral: String,
+    val urlListadoOficial: String
+)
