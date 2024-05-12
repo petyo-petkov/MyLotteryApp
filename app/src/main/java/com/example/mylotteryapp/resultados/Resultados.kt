@@ -1,12 +1,12 @@
 package com.example.mylotteryapp.resultados
 
 import android.util.Log
-import com.example.mylotteryapp.resultados.modelos.bonoloto.Bonoloto
-import com.example.mylotteryapp.resultados.modelos.elGordo.ElGordo
-import com.example.mylotteryapp.resultados.modelos.euroDreams.EuroDreams
-import com.example.mylotteryapp.resultados.modelos.euromillones.Euromillones
-import com.example.mylotteryapp.resultados.modelos.loteriaNacional.LoteriaNacional
-import com.example.mylotteryapp.resultados.modelos.primitva.Primitiva
+import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
+import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
+import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
+import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
+import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -16,8 +16,8 @@ import kotlinx.serialization.json.Json
 /**
  * Obtiene los resultados de un juego de lotería entre dos fechas.
  *
- * @param fechaInicio La fecha de inicio en formato "yyyymmdd".
- * @param fechaFin La fecha de fin en formato "yyyymmdd".
+ * @param desde La fecha de inicio en formato "yyyymmdd".
+ * @param hasta La fecha de fin en formato "yyyymmdd".
  * @return Una lista de resultados del juego especificado.
  */
 
@@ -27,12 +27,12 @@ suspend inline fun <reified T> resultados(
     client: HttpClient = HttpClient(CIO)
 ): List<T>{
     val gameID = when (T::class) {
-        Euromillones::class -> "EMIL"
-        Primitiva::class -> "LAPR"
-        LoteriaNacional::class -> "LNAC"
-        Bonoloto::class -> "BONO"
-        EuroDreams::class -> "EDMS"
-        ElGordo::class -> "ELGR"
+        ResultadosEuromillones::class -> "EMIL"
+        ResultadosPrimitiva::class -> "LAPR"
+        ResultadosLoteriaNacional::class -> "LNAC"
+        ResultadosBonoloto::class -> "BONO"
+        ResultadosEuroDreams::class -> "EDMS"
+        ResultadosElGordo::class -> "ELGR"
         else -> throw IllegalArgumentException("Unsupported game type: ${T::class}")
     }
     val url =
@@ -62,6 +62,6 @@ suspend fun main() {
     val desde = "20240501"
     val hasta = "20240507"
 
-    val loteria = resultados<LoteriaNacional>(desde, hasta)
+    val loteria = resultados<ResultadosLoteriaNacional>(desde, hasta)
     println(loteria[0].fecha_sorteo)
 }

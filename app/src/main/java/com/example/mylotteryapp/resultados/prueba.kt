@@ -1,19 +1,5 @@
 package com.example.mylotteryapp.resultados
 
-import android.util.Log
-import com.example.mylotteryapp.resultados.modelos.bonoloto.Bonoloto
-import com.example.mylotteryapp.resultados.modelos.elGordo.ElGordo
-import com.example.mylotteryapp.resultados.modelos.euroDreams.EuroDreams
-import com.example.mylotteryapp.resultados.modelos.euromillones.Euromillones
-import com.example.mylotteryapp.resultados.modelos.loteriaNacional.LoteriaNacional
-import com.example.mylotteryapp.resultados.modelos.primitva.Primitiva
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.json.Json
-
 
 //suspend fun main() {
 //

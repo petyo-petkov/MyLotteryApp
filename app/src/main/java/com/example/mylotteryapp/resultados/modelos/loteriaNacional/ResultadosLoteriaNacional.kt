@@ -3,7 +3,7 @@ package com.example.mylotteryapp.resultados.modelos.loteriaNacional
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoteriaNacional(
+data class ResultadosLoteriaNacional(
     val nombre: String,
     val fecha_sorteo: String,
     val num_sorteo: String,
