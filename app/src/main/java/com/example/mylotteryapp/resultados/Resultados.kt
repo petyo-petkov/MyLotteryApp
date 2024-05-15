@@ -7,12 +7,14 @@ import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDrea
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
+
 /**
  * Obtiene los resultados de un juego de lotería entre dos fechas.
  *
@@ -25,7 +27,7 @@ suspend inline fun <reified T> resultados(
     desde: String,
     hasta: String,
     client: HttpClient = HttpClient(CIO)
-): List<T>{
+): List<T> {
     val gameID = when (T::class) {
         ResultadosEuromillones::class -> "EMIL"
         ResultadosPrimitiva::class -> "LAPR"
@@ -56,12 +58,11 @@ suspend inline fun <reified T> resultados(
 }
 
 
-
-
-suspend fun main() {
-    val desde = "20240501"
-    val hasta = "20240507"
-
-    val loteria = resultados<ResultadosLoteriaNacional>(desde, hasta)
-    println(loteria[0].fecha_sorteo)
-}
+//suspend fun main() {
+//
+//    val desde = "20240513"
+//    val hasta = "20240514"
+//
+//    val loteria = resultados<ResultadosBonoloto>(desde, hasta)
+//    println(loteria[0].combinacion)
+//}

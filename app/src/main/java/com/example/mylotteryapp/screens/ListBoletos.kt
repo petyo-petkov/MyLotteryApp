@@ -33,7 +33,6 @@ fun ListBoletos(
         state = listState
     ) {
         items(boletos, key = { it.numeroSerie }) { boleto ->
-
             ItemBoleto(
                 boleto = boleto,
                 realmViewModel = realmViewModel
@@ -48,6 +47,8 @@ fun ListBoletos(
         item {
             Spacer(modifier = Modifier.size(80.dp))
         }
+
+
 
     }
 

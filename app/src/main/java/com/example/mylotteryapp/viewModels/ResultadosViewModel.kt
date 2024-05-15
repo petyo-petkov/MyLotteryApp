@@ -1,24 +1,18 @@
 package com.example.mylotteryapp.viewModels
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.resultados.resultados
 import kotlinx.coroutines.launch
 
-class ResultadosViewModel() : ViewModel() {
+class ResultadosViewModel(
+    val realmViewModel: RealmViewModel
+) : ViewModel() {
 
+    val boletos = realmViewModel.boletos.value
 
-    inline fun <reified T> getResultados(fechaInicio: String, fechaFin: String) {
-        viewModelScope.launch {
-            val result = resultados<T>(desde = "20240501", hasta = "20240506")
-
-
-        }
-
-
-
-
-    }
 
 
 }
+

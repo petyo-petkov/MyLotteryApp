@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,9 +44,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
+import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
+import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
+import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
+import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
+import com.example.mylotteryapp.resultados.resultados
 import com.example.mylotteryapp.viewModels.Orden
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import io.realm.kotlin.internal.platform.WeakReference
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -56,8 +65,10 @@ fun ItemBoleto(
     boleto: Boleto,
     realmViewModel: RealmViewModel
 ) {
+    val coroutine = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
+    val formatterResultados = rememberSaveable { SimpleDateFormat("yyyyMMdd", Locale.ENGLISH) }
     val date = Date(boleto.fecha.epochSeconds * 1000)
 
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -65,7 +76,9 @@ fun ItemBoleto(
         targetValue = if (isExpanded) 180f else 0f, label = ""
     )
     var selected by remember { mutableStateOf(false) }
-    var show by rememberSaveable { mutableStateOf(false) }
+    var showDialogoPremio by rememberSaveable { mutableStateOf(false) }
+    var showDialogoResultado by rememberSaveable { mutableStateOf(false) }
+    var result by rememberSaveable { mutableStateOf("") }
 
     Card(
         modifier = Modifier
@@ -113,8 +126,8 @@ fun ItemBoleto(
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .size(48.dp),
+                        .padding(horizontal = 24.dp)
+                        .size(50.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
@@ -142,7 +155,7 @@ fun ItemBoleto(
                 Column(
                     modifier = Modifier
                         .weight(4f)
-                        .padding(horizontal = 16.dp, vertical = 2.dp),
+                        .padding(vertical = 2.dp),
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -176,7 +189,7 @@ fun ItemBoleto(
                     imageVector = Icons.Filled.KeyboardArrowDown,
                     contentDescription = null,
                     modifier = Modifier
-                        .weight(1f)
+
                         .padding(horizontal = 16.dp)
                         .rotate(rotationState)
                 )
@@ -192,21 +205,36 @@ fun ItemBoleto(
             ) {
                 ExpandedContent(
                     boleto = boleto,
-                    onConfirm = { show = true }
+                    onEditarPremio = { showDialogoPremio = true },
+                    onGetResultado = {
+                        coroutine.launch {
+                            result = getResultado(
+                                boleto = boleto,
+                                fechaInicio = formatterResultados.format(date),
+                                fechaFin = formatterResultados.format(date))
+                        }
+                        showDialogoResultado = true
+                    }
                 )
             }
         }
     }
     DialogoPremio(
-        show = show,
-        onDismiss = { show = false },
+        show = showDialogoPremio,
+        onDismiss = { showDialogoPremio = false },
         onConfirm = { valor ->
             realmViewModel.updatePremio(boleto, valor)
-            show = false
+            showDialogoPremio = false
             isExpanded = !isExpanded
 
         }
     )
+
+    DialogoResultado(
+        show = showDialogoResultado,
+        onDismiss = { showDialogoResultado = false },
+        text = result ,
+        tipo = boleto.tipo)
 
 }
 
@@ -223,6 +251,40 @@ fun loadImage(imageResourceId: Int): Painter {
         imageCache[imageResourceId] = WeakReference(painter)
         return painter
     }
+
+}
+
+suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
+
+    val resultado: String
+    when (boleto.tipo) {
+        "Primitiva" -> {
+            val resultadoPrimitiva = resultados<ResultadosPrimitiva>(fechaInicio, fechaFin)
+            resultado = resultadoPrimitiva[0].combinacion
+        }
+        "Bonoloto" -> {
+            val resultadoBonoloto = resultados<ResultadosBonoloto>(fechaInicio, fechaFin)
+            resultado = resultadoBonoloto[0].combinacion
+        }
+        "Euromillones" -> {
+            val resultadoEuromillones = resultados<ResultadosEuromillones>(fechaInicio, fechaFin)
+            resultado = resultadoEuromillones[0].combinacion
+        }
+        "El Gordo" -> {
+            val resultadoElGordo = resultados<ResultadosElGordo>(fechaInicio, fechaFin)
+            resultado = resultadoElGordo[0].combinacion
+        }
+        "Euro Dreams" -> {
+            val resultadoEuroDreams = resultados<ResultadosEuroDreams>(fechaInicio, fechaFin)
+            resultado = resultadoEuroDreams[0].combinacion
+        }
+        "Loteria Nacional" -> {
+            val resultadoLoteriaNacional = resultados<ResultadosLoteriaNacional>(fechaInicio, fechaFin)
+            resultado = resultadoLoteriaNacional[0].primerPremio.decimo
+        }
+        else -> { resultado = "Boleto desconosido" }
+    }
+    return resultado
 
 }
 

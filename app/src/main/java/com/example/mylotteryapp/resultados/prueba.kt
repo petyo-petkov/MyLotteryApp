@@ -1,29 +1,30 @@
 package com.example.mylotteryapp.resultados
 
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
+import com.example.mylotteryapp.viewModels.RealmViewModel
+import kotlinx.coroutines.launch
 
-//suspend fun main() {
+
 //
-//    val fechaInicio = "20240301"
-//    val fechaFin = "20240507"
-//    val gameID = "ELGR"
+//@Composable
+//fun comprobar(
+//    boleto: Boleto
+//){
+//    LaunchedEffect(Unit) {
+//        val resultadoBonoloto = resultados<ResultadosBonoloto>("20240327", "20240327")
 //
-//    val client = HttpClient(CIO)
+//        println(resultadoBonoloto[0].combinacion)
+//        println(boleto.combinaciones)
 //
-//    val url =
-//        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fechaInicio&fechaFinInclusiva=$fechaFin"
-//
-//    val json = Json {
-//        coerceInputValues = true
-//        ignoreUnknownKeys = true
 //    }
-//    val response: HttpResponse = client.get(url)
-//    val dataString = response.bodyAsText()
 //
-//    val result: List<ElGordo> = json.decodeFromString(dataString)
 //
-//    for (i in result){
-//        println(i)
-//    }
 //
 //}
-

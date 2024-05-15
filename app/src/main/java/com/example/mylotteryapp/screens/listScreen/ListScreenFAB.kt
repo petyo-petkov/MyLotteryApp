@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.screens.listScreen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -124,7 +123,6 @@ fun ListScreenFAB(
 
             }
         }
-        Log.i("lista", "${boletosSelecionados.size}")
     }
 
     DialogoBorrar(

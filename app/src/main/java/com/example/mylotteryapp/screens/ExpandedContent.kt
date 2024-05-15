@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -20,20 +21,22 @@ import com.example.mylotteryapp.models.Boleto
 @Composable
 fun ExpandedContent(
     boleto: Boleto,
-    onConfirm: () -> Unit
+    onEditarPremio: () -> Unit,
+    onGetResultado: () -> Unit
 ) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 96.dp, end = 12.dp, bottom = 2.dp),
-        verticalAlignment = Alignment.Top,
+            .padding(start = 98.dp, end = 2.dp, top = 2.dp, bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
             modifier = Modifier
                 .weight(1f),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
         ) {
             when (boleto.tipo) {
                 "Primitiva" -> {
@@ -88,14 +91,22 @@ fun ExpandedContent(
             }
 
         }
-        Column(
-            modifier = Modifier,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            modifier = Modifier
         ) {
+            IconButton(
+                onClick = { onGetResultado() },
+                modifier = Modifier
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            }
 
             IconButton(
-                onClick = { onConfirm() },
+                onClick = { onEditarPremio() },
                 modifier = Modifier
             ) {
                 Icon(
@@ -108,5 +119,7 @@ fun ExpandedContent(
         }
 
     }
+
+
 
 }
