@@ -211,7 +211,8 @@ fun ItemBoleto(
                             result = getResultado(
                                 boleto = boleto,
                                 fechaInicio = formatterResultados.format(date),
-                                fechaFin = formatterResultados.format(date))
+                                fechaFin = formatterResultados.format(date)
+                            )
                         }
                         showDialogoResultado = true
                     }
@@ -233,8 +234,9 @@ fun ItemBoleto(
     DialogoResultado(
         show = showDialogoResultado,
         onDismiss = { showDialogoResultado = false },
-        text = result ,
-        tipo = boleto.tipo)
+        text = result,
+        tipo = boleto.tipo
+    )
 
 }
 
@@ -262,27 +264,40 @@ suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String):
             val resultadoPrimitiva = resultados<ResultadosPrimitiva>(fechaInicio, fechaFin)
             resultado = resultadoPrimitiva[0].combinacion
         }
+
         "Bonoloto" -> {
             val resultadoBonoloto = resultados<ResultadosBonoloto>(fechaInicio, fechaFin)
             resultado = resultadoBonoloto[0].combinacion
         }
+
         "Euromillones" -> {
             val resultadoEuromillones = resultados<ResultadosEuromillones>(fechaInicio, fechaFin)
             resultado = resultadoEuromillones[0].combinacion
         }
+
         "El Gordo" -> {
             val resultadoElGordo = resultados<ResultadosElGordo>(fechaInicio, fechaFin)
             resultado = resultadoElGordo[0].combinacion
         }
+
         "Euro Dreams" -> {
             val resultadoEuroDreams = resultados<ResultadosEuroDreams>(fechaInicio, fechaFin)
             resultado = resultadoEuroDreams[0].combinacion
         }
+
         "Loteria Nacional" -> {
-            val resultadoLoteriaNacional = resultados<ResultadosLoteriaNacional>(fechaInicio, fechaFin)
-            resultado = resultadoLoteriaNacional[0].primerPremio.decimo
+            val resultadoLoteriaNacional =
+                resultados<ResultadosLoteriaNacional>(fechaInicio, fechaFin)
+            val primerPremio = resultadoLoteriaNacional[0].primerPremio.decimo
+            val segundoPremio = resultadoLoteriaNacional[0].segundoPremio.decimo
+            //val tercerPremio: String? = resultadoLoteriaNacional[0].tercerosPremios[0].decimo
+            resultado = """
+                            Primer premio: $primerPremio
+                            Segundo Premio: $segundoPremio
+                        """.trimIndent()
         }
-        else -> { resultado = "Boleto desconosido" }
+        else -> resultado = "Boleto desconosido"
+
     }
     return resultado
 

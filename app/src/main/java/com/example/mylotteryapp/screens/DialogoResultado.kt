@@ -30,14 +30,7 @@ fun DialogoResultado(
                     Text(text = "Ok", color = Color.Black)
                 }
             },
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(
-                        text = "CANCELAR",
-                        color = MaterialTheme.colorScheme.onSurface
-                        )
-                }
-            },
+            dismissButton = {  },
             title = {
                 Text(
                     text = "Resultado sorteo $tipo: ",
