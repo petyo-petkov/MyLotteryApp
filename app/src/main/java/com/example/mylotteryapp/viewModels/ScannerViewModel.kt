@@ -11,7 +11,6 @@ import com.example.mylotteryapp.domain.ScannerRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -38,7 +37,7 @@ class ScannerViewModel(
                         if (result.isEmpty()) {
                             realmRepo.insertarBoleto(boleto)
                         } else {
-                            message(CoroutineScope(Dispatchers.IO), context)
+                            message(context)
                         }
 
                     }
@@ -49,14 +48,12 @@ class ScannerViewModel(
     }
 }
 
-private fun message(viewModelScope: CoroutineScope, context: Context) {
-    viewModelScope.launch {
-        withContext(Dispatchers.Main) {
-            Toast.makeText(
-                context,
-                "Ya existe èste boleto",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+private suspend fun message(context: Context) {
+    withContext(Dispatchers.Main) {
+        Toast.makeText(
+            context,
+            "Ya existe èste boleto",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

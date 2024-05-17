@@ -7,7 +7,6 @@ import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDrea
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
-import com.example.mylotteryapp.viewModels.RealmViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get

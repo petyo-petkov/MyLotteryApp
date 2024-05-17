@@ -14,6 +14,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import com.example.mylotteryapp.viewModels.ResultadosViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -25,7 +26,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun BoletosListScreen(
     navigator: DestinationsNavigator,
     realmViewModel: RealmViewModel,
-    scannerViewModel: ScannerViewModel
+    scannerViewModel: ScannerViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 

@@ -25,8 +25,6 @@ class ScannerRepositoryImpl(
                 .addOnCanceledListener { }
                 .addOnFailureListener {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                    Toast.makeText(context, "Escaneado fallido", Toast.LENGTH_LONG)
-                        .show()
                 }
             awaitClose { }
         }

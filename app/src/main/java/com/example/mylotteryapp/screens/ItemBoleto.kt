@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,19 +43,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boleto
-import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
-import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
-import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
-import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
-import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
-import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
-import com.example.mylotteryapp.resultados.resultados
 import com.example.mylotteryapp.viewModels.Orden
 import com.example.mylotteryapp.viewModels.RealmViewModel
+import com.example.mylotteryapp.viewModels.ResultadosViewModel
 import io.realm.kotlin.internal.platform.WeakReference
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -65,6 +60,9 @@ fun ItemBoleto(
     boleto: Boleto,
     realmViewModel: RealmViewModel
 ) {
+    val resultadoViewModel: ResultadosViewModel = viewModel()
+    val resultado by resultadoViewModel.resultado.collectAsState()
+
     val coroutine = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
@@ -78,7 +76,7 @@ fun ItemBoleto(
     var selected by remember { mutableStateOf(false) }
     var showDialogoPremio by rememberSaveable { mutableStateOf(false) }
     var showDialogoResultado by rememberSaveable { mutableStateOf(false) }
-    var result by rememberSaveable { mutableStateOf("") }
+
 
     Card(
         modifier = Modifier
@@ -207,13 +205,12 @@ fun ItemBoleto(
                     boleto = boleto,
                     onEditarPremio = { showDialogoPremio = true },
                     onGetResultado = {
-                        coroutine.launch {
-                            result = getResultado(
-                                boleto = boleto,
-                                fechaInicio = formatterResultados.format(date),
-                                fechaFin = formatterResultados.format(date)
-                            )
-                        }
+                        resultadoViewModel.fetchResultado(
+                            boleto,
+                            formatterResultados.format(date),
+                            formatterResultados.format(date)
+                        )
+
                         showDialogoResultado = true
                     }
                 )
@@ -234,9 +231,10 @@ fun ItemBoleto(
     DialogoResultado(
         show = showDialogoResultado,
         onDismiss = { showDialogoResultado = false },
-        text = result,
+        text = resultado,
         tipo = boleto.tipo
     )
+
 
 }
 
@@ -246,44 +244,37 @@ fun ItemBoleto(
 fun loadImage(imageResourceId: Int): Painter {
     val imageCache = remember { mutableMapOf<Int, WeakReference<Painter>>() }
     val cachedImage = imageCache[imageResourceId]?.get()
-    if (cachedImage != null) {
-        return cachedImage
-    } else {
-        val painter = painterResource(id = imageResourceId)
-        imageCache[imageResourceId] = WeakReference(painter)
-        return painter
+    when (cachedImage) {
+        null -> {
+            val image = painterResource(id = imageResourceId)
+            imageCache[imageResourceId] = WeakReference(image)
+            return image
+        }
+
+        else -> {
+            return cachedImage
+        }
     }
-
 }
-
+/*
 suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
 
-    val resultado: String
-    when (boleto.tipo) {
-        "Primitiva" -> {
-            val resultadoPrimitiva = resultados<ResultadosPrimitiva>(fechaInicio, fechaFin)
-            resultado = resultadoPrimitiva[0].combinacion
-        }
+    return when (boleto.tipo) {
+        "Primitiva" -> resultados<ResultadosPrimitiva>(fechaInicio, fechaFin)[0].combinacion
 
-        "Bonoloto" -> {
-            val resultadoBonoloto = resultados<ResultadosBonoloto>(fechaInicio, fechaFin)
-            resultado = resultadoBonoloto[0].combinacion
-        }
+        "Bonoloto" -> resultados<ResultadosBonoloto>(fechaInicio, fechaFin)[0].combinacion
 
-        "Euromillones" -> {
-            val resultadoEuromillones = resultados<ResultadosEuromillones>(fechaInicio, fechaFin)
-            resultado = resultadoEuromillones[0].combinacion
-        }
+        "Euromillones" -> resultados<ResultadosEuromillones>(
+            fechaInicio,
+            fechaFin
+        )[0].combinacion
 
-        "El Gordo" -> {
-            val resultadoElGordo = resultados<ResultadosElGordo>(fechaInicio, fechaFin)
-            resultado = resultadoElGordo[0].combinacion
-        }
+        "El Gordo" -> resultados<ResultadosElGordo>(fechaInicio, fechaFin)[0].combinacion
 
-        "Euro Dreams" -> {
-            val resultadoEuroDreams = resultados<ResultadosEuroDreams>(fechaInicio, fechaFin)
-            resultado = resultadoEuroDreams[0].combinacion
-        }
+        "Euro Dreams" -> resultados<ResultadosEuroDreams>(
+            fechaInicio,
+            fechaFin
+        )[0].combinacion
 
         "Loteria Nacional" -> {
             val resultadoLoteriaNacional =
@@ -291,17 +282,19 @@ suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String):
             val primerPremio = resultadoLoteriaNacional[0].primerPremio.decimo
             val segundoPremio = resultadoLoteriaNacional[0].segundoPremio.decimo
             //val tercerPremio: String? = resultadoLoteriaNacional[0].tercerosPremios[0].decimo
-            resultado = """
+            """
                             Primer premio: $primerPremio
                             Segundo Premio: $segundoPremio
                         """.trimIndent()
         }
-        else -> resultado = "Boleto desconosido"
+
+        else -> "Boleto desconosido"
 
     }
-    return resultado
 
 }
+
+ */
 
 
 

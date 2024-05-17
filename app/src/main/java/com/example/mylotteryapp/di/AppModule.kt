@@ -27,11 +27,10 @@ interface AppModule {
 class AppmoduleImpl(
     private val context: Context
 ) : AppModule {
-// Barcode Scanner
-    override val option: GmsBarcodeScannerOptions
-        get() = GmsBarcodeScannerOptions.Builder()
-            .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-            .build()
+    // Barcode Scanner
+    override val option: GmsBarcodeScannerOptions = GmsBarcodeScannerOptions.Builder()
+        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+        .build()
 
     override val scanner: GmsBarcodeScanner by lazy {
         GmsBarcodeScanning.getClient(context, option)
@@ -44,13 +43,16 @@ class AppmoduleImpl(
 
     // Realm
     override val realmConfig: RealmConfiguration by lazy {
-        RealmConfiguration.create(schema = setOf(
-            Boleto::class
-        ))
+        RealmConfiguration.create(
+            schema = setOf(
+                Boleto::class
+            )
+        )
     }
 
     override val realm: Realm by lazy {
         Realm.open(realmConfig)
+
     }
 
     override val realmRepository: RealmRepository by lazy {
