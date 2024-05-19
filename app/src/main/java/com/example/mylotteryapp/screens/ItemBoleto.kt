@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,7 +62,6 @@ fun ItemBoleto(
     val resultadoViewModel: ResultadosViewModel = viewModel()
     val resultado by resultadoViewModel.resultado.collectAsState()
 
-    val coroutine = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
     val formatterResultados = rememberSaveable { SimpleDateFormat("yyyyMMdd", Locale.ENGLISH) }
@@ -76,6 +74,9 @@ fun ItemBoleto(
     var selected by remember { mutableStateOf(false) }
     var showDialogoPremio by rememberSaveable { mutableStateOf(false) }
     var showDialogoResultado by rememberSaveable { mutableStateOf(false) }
+
+    // val coroutine = rememberCoroutineScope()
+    //var resultado by rememberSaveable { mutableStateOf("") }
 
 
     Card(
@@ -205,6 +206,11 @@ fun ItemBoleto(
                     boleto = boleto,
                     onEditarPremio = { showDialogoPremio = true },
                     onGetResultado = {
+//                        coroutine.launch(Dispatchers.IO) {
+//                            resultado = getResultado(boleto,
+//                                formatterResultados.format(date),
+//                                formatterResultados.format(date))
+//                        }
                         resultadoViewModel.fetchResultado(
                             boleto,
                             formatterResultados.format(date),
@@ -256,6 +262,7 @@ fun loadImage(imageResourceId: Int): Painter {
         }
     }
 }
+
 /*
 suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
 
@@ -295,6 +302,8 @@ suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String):
 }
 
  */
+
+
 
 
 

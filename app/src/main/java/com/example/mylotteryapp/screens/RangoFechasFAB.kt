@@ -26,14 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-
 
 @Composable
 fun RangoFechasFAB(
     realmViewModel: RealmViewModel,
-    navigator: DestinationsNavigator
+    navController: NavController
 ) {
     val boletosSelecionados by realmViewModel.boletosSelecionados.collectAsState()
 
@@ -53,7 +52,7 @@ fun RangoFechasFAB(
         ) {
             FilledIconButton(
                 onClick = {
-                    navigator.popBackStack()
+                    navController.popBackStack()
                     realmViewModel.stateCleaner()
                 },
                 modifier = Modifier,

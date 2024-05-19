@@ -32,17 +32,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.mylotteryapp.navigation.FirstScreen
 import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 
 @Composable
 fun ListScreenFAB(
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel,
-    navigator: DestinationsNavigator
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -65,8 +66,7 @@ fun ListScreenFAB(
         ) {
             FilledIconButton(
                 onClick = {
-                    navigator.popBackStack()
-                    navigator.navigate(HomeScreenDestination)
+                    navController.navigate(FirstScreen)
                     realmViewModel.ordenarBoletos()
                 },
                 modifier = Modifier,
@@ -135,7 +135,7 @@ fun ListScreenFAB(
         realmViewModel,
         showBottomSheet = showBottomSheet,
         onDismiss = { showBottomSheet = false },
-        navigator = navigator
+        navController = navController
 
     )
 

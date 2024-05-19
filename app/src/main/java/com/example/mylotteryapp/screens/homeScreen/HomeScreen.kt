@@ -19,25 +19,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.round
 import kotlin.text.Typography.euro
 
-@Destination<RootGraph>(start = true)
+
+
 @Composable
 fun HomeScreen(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        floatingActionButton = { HomeFAB(scannerViewModel, navigator) },
+        floatingActionButton = { HomeFAB(
+            scannerViewModel,
+            navController
+        ) },
+
         floatingActionButtonPosition = FabPosition.Center,
         containerColor = MaterialTheme.colorScheme.background
 

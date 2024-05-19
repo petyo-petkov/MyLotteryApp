@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class ResultadosViewModel : ViewModel() {
 
-    private val _resultado = MutableStateFlow<String>("")
+    private val _resultado = MutableStateFlow("")
     val resultado: StateFlow<String> = _resultado
 
     fun fetchResultado(boleto: Boleto, fechaInicio: String, fechaFin: String) {
@@ -28,7 +28,7 @@ class ResultadosViewModel : ViewModel() {
     }
 
 
-    suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
+    private suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
 
         when (boleto.tipo) {
             "Primitiva" -> return resultados<ResultadosPrimitiva>(

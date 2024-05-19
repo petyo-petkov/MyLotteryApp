@@ -11,17 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.example.mylotteryapp.viewModels.ResultadosViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>
 @Composable
 fun BoletosByDates(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     realmViewModel: RealmViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -40,7 +37,7 @@ fun BoletosByDates(
         floatingActionButton = {
             RangoFechasFAB(
                 realmViewModel = realmViewModel,
-                navigator = navigator
+                navController
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
@@ -59,7 +56,7 @@ fun BoletosByDates(
             enabled = true,
             onBack = {
                 realmViewModel.stateCleaner()
-                navigator.popBackStack()
+                navController.popBackStack()
             }
         )
 

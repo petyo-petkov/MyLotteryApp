@@ -27,10 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.mylotteryapp.navigation.BoletosByDatesScreen
 import com.example.mylotteryapp.screens.DialogoBorrar
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.ramcosta.composedestinations.generated.destinations.BoletosByDatesDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +39,7 @@ fun BottomSheetDialog(
     realmViewModel: RealmViewModel,
     showBottomSheet: Boolean,
     onDismiss: () -> Unit,
-    navigator: DestinationsNavigator
+    navController: NavController
 
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -159,7 +159,7 @@ fun BottomSheetDialog(
             selectedIndex = 0
             realmViewModel.ordenarBoletos()
         },
-        onConfirm = { navigator.navigate(BoletosByDatesDestination) }
+        onConfirm = { navController.navigate(BoletosByDatesScreen) }
     )
 
 }

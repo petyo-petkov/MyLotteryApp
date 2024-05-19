@@ -11,20 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.navigation.NavController
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.example.mylotteryapp.viewModels.ResultadosViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>
 @Composable
 fun BoletosListScreen(
-    navigator: DestinationsNavigator,
+    navController: NavController,
     realmViewModel: RealmViewModel,
     scannerViewModel: ScannerViewModel,
 ) {
@@ -49,7 +46,7 @@ fun BoletosListScreen(
             ListScreenFAB(
                 realmViewModel = realmViewModel,
                 scannerViewModel = scannerViewModel,
-                navigator = navigator
+                navController = navController
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
@@ -71,7 +68,7 @@ fun BoletosListScreen(
         enabled = true,
         onBack = {
             realmViewModel.stateCleaner()
-            navigator.popBackStack()
+            navController.popBackStack()
         }
     )
 

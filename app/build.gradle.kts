@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.io.realm.kotlin)
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
-    kotlin("plugin.serialization") version "1.9.24"
+    alias(libs.plugins.kotlin.serialization)
+    id("com.google.devtools.ksp") version "1.9.24-1.0.20"
 }
 
 kotlin {
@@ -54,7 +54,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.navigation.compose)
 
     // coroutine
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -92,9 +93,9 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
 
-    implementation(libs.core)
+    
     implementation(libs.androidx.material3.android)
-    ksp(libs.ksp.v200beta01)
+
 
     // Ktor
     implementation(libs.ktor.client.core)

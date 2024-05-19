@@ -22,16 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.mylotteryapp.navigation.SecondScreen
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.generated.destinations.BoletosListScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeFAB(
     scannerViewModel: ScannerViewModel,
-    navigator: DestinationsNavigator
+    navController: NavController
 ) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
@@ -44,8 +44,7 @@ fun HomeFAB(
     ) {
         Row(
             modifier = Modifier
-                .size(260.dp, 50.dp)
-            ,
+                .size(260.dp, 50.dp),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -54,8 +53,9 @@ fun HomeFAB(
                     scannerViewModel.startScanning(context)
                     coroutine.launch {
                         delay(300)
-                        navigator.navigate(BoletosListScreenDestination)
-                    }                          },
+                        navController.navigate(SecondScreen)
+                    }
+                },
                 modifier = Modifier,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                 elevation = ButtonDefaults.elevatedButtonElevation(2.dp)
@@ -63,16 +63,17 @@ fun HomeFAB(
                 Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
             }
             FilledIconButton(
-                onClick = { navigator.navigate(BoletosListScreenDestination) },
+                onClick = { navController.navigate(SecondScreen) },
                 modifier = Modifier
                     .padding(start = 46.dp),
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
 
             ) {
-               Icon(
-                   imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                   contentDescription = null,
-                    tint = Color.Black)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
             }
         }
 

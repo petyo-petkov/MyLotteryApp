@@ -6,14 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylotteryapp.navigation.AppNavigation
 import com.example.mylotteryapp.presentation.viewModelFactory
 import com.example.mylotteryapp.ui.theme.MyLotteryAppTheme
 import com.example.mylotteryapp.viewModels.RealmViewModel
-import com.example.mylotteryapp.viewModels.ResultadosViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.navigation.dependency
+
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -38,23 +36,14 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 )
-                val resultadosViewModel = viewModel<ResultadosViewModel>(
-                    factory = viewModelFactory {
-                        ResultadosViewModel()
-                    }
-                )
-
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    dependenciesContainerBuilder = {
-                        dependency(scannerViewModel)
-                        dependency(realmViewModel)
-                        dependency(resultadosViewModel)
+//                val resultadosViewModel = viewModel<ResultadosViewModel>(
+//                    factory = viewModelFactory {
+//                        ResultadosViewModel()
+//                    }
+//                )
 
 
-                    }
-                )
-
+                AppNavigation(realmViewModel, scannerViewModel)
 
             }
 
