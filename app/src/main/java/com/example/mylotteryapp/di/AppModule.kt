@@ -1,62 +1,50 @@
 package com.example.mylotteryapp.di
 
+import android.app.Application
 import android.content.Context
-import com.example.mylotteryapp.data.RealmRepositoryImpl
 import com.example.mylotteryapp.data.ScannerRepositoryImpl
-import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.domain.ScannerRepository
-import com.example.mylotteryapp.models.Boleto
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import io.realm.kotlin.Realm
-import io.realm.kotlin.RealmConfiguration
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
 
-interface AppModule {
-    val option: GmsBarcodeScannerOptions
-    val scanner: GmsBarcodeScanner
-    val scannerRepository: ScannerRepository
-    val realmConfig: RealmConfiguration
-    val realm: Realm
-    val realmRepository: RealmRepository
-
-}
-
-class AppmoduleImpl(
-    private val context: Context
-) : AppModule {
-    // Barcode Scanner
-    override val option: GmsBarcodeScannerOptions = GmsBarcodeScannerOptions.Builder()
-        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-        .build()
-
-    override val scanner: GmsBarcodeScanner by lazy {
-        GmsBarcodeScanning.getClient(context, option)
-
+    @Singleton
+    @Provides
+    fun provideContext(app: Application): Context {
+        return app.applicationContext
     }
 
-    override val scannerRepository: ScannerRepository by lazy {
-        ScannerRepositoryImpl(scanner, context)
+    @Singleton
+    @Provides
+    fun provideBarCodeOptions(): GmsBarcodeScannerOptions {
+        return GmsBarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+            .build()
     }
 
-    // Realm
-    override val realmConfig: RealmConfiguration by lazy {
-        RealmConfiguration.create(
-            schema = setOf(
-                Boleto::class
-            )
-        )
+    @Singleton
+    @Provides
+    fun provideBarCodeScanner(
+        context: Context,
+        options: GmsBarcodeScannerOptions
+    ): GmsBarcodeScanner {
+        return GmsBarcodeScanning.getClient(context, options)
     }
 
-    override val realm: Realm by lazy {
-        Realm.open(realmConfig)
-
-    }
-
-    override val realmRepository: RealmRepository by lazy {
-        RealmRepositoryImpl(realm)
+    @Provides
+    @Singleton
+    fun provideScannerRepository(scanner: GmsBarcodeScanner): ScannerRepository {
+        return ScannerRepositoryImpl(scanner)
     }
 
 }

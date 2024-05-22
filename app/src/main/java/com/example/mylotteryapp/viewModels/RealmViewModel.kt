@@ -4,14 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.math.round
-
-class RealmViewModel(
+@HiltViewModel
+class RealmViewModel @Inject constructor(
     private val realmRepo: RealmRepository
 ) : ViewModel() {
 

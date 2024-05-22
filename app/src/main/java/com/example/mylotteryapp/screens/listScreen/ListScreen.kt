@@ -1,6 +1,5 @@
 package com.example.mylotteryapp.screens.listScreen
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -11,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mylotteryapp.screens.ListBoletos
 import com.example.mylotteryapp.screens.TopBar
@@ -26,7 +26,6 @@ fun BoletosListScreen(
     scannerViewModel: ScannerViewModel,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
     realmViewModel.ordenarBoletos()
 
     val boletos = realmViewModel.boletos.collectAsState()
@@ -64,13 +63,13 @@ fun BoletosListScreen(
 
 
     // Limpia los estados al usar gesto de volver
-    BackHandler(
-        enabled = true,
-        onBack = {
-            realmViewModel.stateCleaner()
-            navController.popBackStack()
-        }
-    )
+//    BackHandler(
+//        enabled = true,
+//        onBack = {
+//            realmViewModel.stateCleaner()
+//            navController.popBackStack()
+//        }
+//    )
 
 
 }

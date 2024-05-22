@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.io.realm.kotlin)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp") version "1.9.24-1.0.20"
+    id ("dagger.hilt.android.plugin")
 }
 
 kotlin {
@@ -93,15 +94,21 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
 
-    
+
     implementation(libs.androidx.material3.android)
 
+    //Hilt
+    implementation (libs.hilt.android)
+    implementation(libs.firebase.crashlytics.buildtools)
+    ksp (libs.hilt.android.compiler)
+    ksp (libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
 
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.kotlinx.serialization.json)
-
+    
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

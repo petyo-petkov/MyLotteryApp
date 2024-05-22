@@ -42,7 +42,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mylotteryapp.R
 import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.viewModels.Orden
@@ -57,10 +57,10 @@ import java.util.Locale
 @Composable
 fun ItemBoleto(
     boleto: Boleto,
-    realmViewModel: RealmViewModel
+    realmViewModel: RealmViewModel,
+    resultadosViewModel: ResultadosViewModel = hiltViewModel()
 ) {
-    val resultadoViewModel: ResultadosViewModel = viewModel()
-    val resultado by resultadoViewModel.resultado.collectAsState()
+    val resultado by resultadosViewModel.resultado.collectAsState()
 
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
@@ -75,8 +75,6 @@ fun ItemBoleto(
     var showDialogoPremio by rememberSaveable { mutableStateOf(false) }
     var showDialogoResultado by rememberSaveable { mutableStateOf(false) }
 
-    // val coroutine = rememberCoroutineScope()
-    //var resultado by rememberSaveable { mutableStateOf("") }
 
 
     Card(
@@ -206,14 +204,8 @@ fun ItemBoleto(
                     boleto = boleto,
                     onEditarPremio = { showDialogoPremio = true },
                     onGetResultado = {
-//                        coroutine.launch(Dispatchers.IO) {
-//                            resultado = getResultado(boleto,
-//                                formatterResultados.format(date),
-//                                formatterResultados.format(date))
-//                        }
-                        resultadoViewModel.fetchResultado(
+                        resultadosViewModel.fetchResultado(
                             boleto,
-                            formatterResultados.format(date),
                             formatterResultados.format(date)
                         )
 
@@ -262,50 +254,3 @@ fun loadImage(imageResourceId: Int): Painter {
         }
     }
 }
-
-/*
-suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
-
-    return when (boleto.tipo) {
-        "Primitiva" -> resultados<ResultadosPrimitiva>(fechaInicio, fechaFin)[0].combinacion
-
-        "Bonoloto" -> resultados<ResultadosBonoloto>(fechaInicio, fechaFin)[0].combinacion
-
-        "Euromillones" -> resultados<ResultadosEuromillones>(
-            fechaInicio,
-            fechaFin
-        )[0].combinacion
-
-        "El Gordo" -> resultados<ResultadosElGordo>(fechaInicio, fechaFin)[0].combinacion
-
-        "Euro Dreams" -> resultados<ResultadosEuroDreams>(
-            fechaInicio,
-            fechaFin
-        )[0].combinacion
-
-        "Loteria Nacional" -> {
-            val resultadoLoteriaNacional =
-                resultados<ResultadosLoteriaNacional>(fechaInicio, fechaFin)
-            val primerPremio = resultadoLoteriaNacional[0].primerPremio.decimo
-            val segundoPremio = resultadoLoteriaNacional[0].segundoPremio.decimo
-            //val tercerPremio: String? = resultadoLoteriaNacional[0].tercerosPremios[0].decimo
-            """
-                            Primer premio: $primerPremio
-                            Segundo Premio: $segundoPremio
-                        """.trimIndent()
-        }
-
-        else -> "Boleto desconosido"
-
-    }
-
-}
-
- */
-
-
-
-
-
-
-

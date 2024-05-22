@@ -3,55 +3,60 @@ package com.example.mylotteryapp.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.ResultasdosRepository
 import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
 import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
 import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
-import com.example.mylotteryapp.resultados.resultados
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ResultadosViewModel : ViewModel() {
+@HiltViewModel
+class ResultadosViewModel @Inject constructor(
+    private val resultadosRepository: ResultasdosRepository
+) : ViewModel() {
 
     private val _resultado = MutableStateFlow("")
     val resultado: StateFlow<String> = _resultado
 
-    fun fetchResultado(boleto: Boleto, fechaInicio: String, fechaFin: String) {
+    fun fetchResultado(boleto: Boleto, fecha: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getResultado(boleto, fechaInicio, fechaFin)
+            val result = getResultado(boleto, fecha)
             _resultado.value = result
         }
     }
 
 
-    private suspend fun getResultado(boleto: Boleto, fechaInicio: String, fechaFin: String): String {
+    private suspend fun getResultado(boleto: Boleto, fecha: String): String {
 
         when (boleto.tipo) {
-            "Primitiva" -> return resultados<ResultadosPrimitiva>(
-                fechaInicio, fechaFin
+            "Primitiva" -> return resultadosRepository.resultados<ResultadosPrimitiva>(
+                fecha
             )[0].combinacion
 
-            "Bonoloto" -> return resultados<ResultadosBonoloto>(
-                fechaInicio, fechaFin
+            "Bonoloto" -> return resultadosRepository.resultados<ResultadosBonoloto>(
+                fecha
             )[0].combinacion
 
-            "Euromillones" -> return resultados<ResultadosEuromillones>(
-                fechaInicio, fechaFin
+            "Euromillones" -> return resultadosRepository.resultados<ResultadosEuromillones>(
+                fecha
             )[0].combinacion
 
-            "El Gordo" -> return resultados<ResultadosElGordo>(fechaInicio, fechaFin)[0].combinacion
+            "El Gordo" -> return resultadosRepository.resultados<ResultadosElGordo>(fecha)[0].combinacion
 
-            "Euro Dreams" -> return resultados<ResultadosEuroDreams>(
-                fechaInicio, fechaFin
+            "Euro Dreams" -> return resultadosRepository.resultados<ResultadosEuroDreams>(
+                fecha
             )[0].combinacion
 
             "Loteria Nacional" -> {
                 val resultadoLoteriaNacional =
-                    resultados<ResultadosLoteriaNacional>(fechaInicio, fechaFin)
+                    resultadosRepository.resultados<ResultadosLoteriaNacional>(fecha)
                 val primerPremio = resultadoLoteriaNacional[0].primerPremio.decimo
                 val segundoPremio = resultadoLoteriaNacional[0].segundoPremio.decimo
                 //val tercerPremio: String? = resultadoLoteriaNacional[0].tercerosPremios[0].decimo

@@ -9,8 +9,9 @@ import io.realm.kotlin.query.RealmQuery
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class RealmRepositoryImpl(
+class RealmRepositoryImpl @Inject constructor(
     private val realm: Realm
 ) : RealmRepository {
 
@@ -19,6 +20,7 @@ class RealmRepositoryImpl(
             copyToRealm(boleto, UpdatePolicy.ALL)
         }
     }
+
 
     override suspend fun updatePremio(boleto: Boleto, valor: Double) {
         realm.writeBlocking {

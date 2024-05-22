@@ -52,13 +52,13 @@ fun BoletosByDates(
 
         )
         // Limpia los estados al usar gesto de volver
-        BackHandler(
-            enabled = true,
-            onBack = {
-                realmViewModel.stateCleaner()
-                navController.popBackStack()
-            }
-        )
+//        BackHandler(
+//            enabled = true,
+//            onBack = {
+//                realmViewModel.stateCleaner()
+//                navController.popBackStack()
+//            }
+//        )
 
     }
 }

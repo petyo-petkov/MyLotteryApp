@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -16,26 +13,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mylotteryapp.navigation.SecondScreen
+import com.example.mylotteryapp.screens.ScannerButton
 import com.example.mylotteryapp.viewModels.ScannerViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeFAB(
     scannerViewModel: ScannerViewModel,
     navController: NavController
 ) {
-    val context = LocalContext.current
-    val coroutine = rememberCoroutineScope()
-
     ExtendedFloatingActionButton(
         onClick = { },
         modifier = Modifier,
@@ -48,20 +39,10 @@ fun HomeFAB(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ElevatedButton(
-                onClick = {
-                    scannerViewModel.startScanning(context)
-                    coroutine.launch {
-                        delay(300)
-                        navController.navigate(SecondScreen)
-                    }
-                },
-                modifier = Modifier,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                elevation = ButtonDefaults.elevatedButtonElevation(2.dp)
-            ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
-            }
+            // Scanner Button
+            ScannerButton(scannerViewModel, navController)
+
+            // Forward Button
             FilledIconButton(
                 onClick = { navController.navigate(SecondScreen) },
                 modifier = Modifier

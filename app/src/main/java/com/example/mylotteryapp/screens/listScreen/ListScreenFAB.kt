@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -30,11 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.mylotteryapp.navigation.FirstScreen
 import com.example.mylotteryapp.screens.DialogoBorrar
+import com.example.mylotteryapp.screens.ScannerButton
 import com.example.mylotteryapp.viewModels.RealmViewModel
 import com.example.mylotteryapp.viewModels.ScannerViewModel
 
@@ -45,8 +42,6 @@ fun ListScreenFAB(
     scannerViewModel: ScannerViewModel,
     navController: NavController
 ) {
-    val context = LocalContext.current
-
     val boletosSelecionados by realmViewModel.boletosSelecionados.collectAsState()
 
     var showDialogBorrar by rememberSaveable { mutableStateOf(false) }
@@ -64,6 +59,7 @@ fun ListScreenFAB(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Back Button
             FilledIconButton(
                 onClick = {
                     navController.navigate(FirstScreen)
@@ -79,15 +75,10 @@ fun ListScreenFAB(
                 )
             }
 
-            ElevatedButton(
-                onClick = { scannerViewModel.startScanning(context) },
-                modifier = Modifier,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
-                elevation = ButtonDefaults.elevatedButtonElevation(8.dp)
-            ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.Black)
-            }
+            // Scanner Button
+           ScannerButton(scannerViewModel, navController)
 
+            // Menu Button
             FilledIconButton(
                 onClick = { showBottomSheet = !showBottomSheet },
                 modifier = Modifier,

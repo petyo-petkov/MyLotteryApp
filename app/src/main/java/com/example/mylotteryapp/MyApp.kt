@@ -1,21 +1,9 @@
 package com.example.mylotteryapp
 
 import android.app.Application
-import com.example.mylotteryapp.di.AppModule
-import com.example.mylotteryapp.di.AppmoduleImpl
-import io.realm.kotlin.Realm
+import dagger.hilt.android.HiltAndroidApp
 
-class MyApp : Application() {
+@HiltAndroidApp
+class MyApp : Application()
 
-    companion object {
-        lateinit var appModule: AppModule
-        lateinit var realm: Realm
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        appModule = AppmoduleImpl(this)
-    }
-
-}
 

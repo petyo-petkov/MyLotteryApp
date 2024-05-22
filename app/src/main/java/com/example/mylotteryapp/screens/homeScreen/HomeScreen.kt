@@ -26,7 +26,6 @@ import kotlin.math.round
 import kotlin.text.Typography.euro
 
 
-
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -59,13 +58,10 @@ fun HomeScreen(
         val balancePercent = balanceState.balancePercent
 
 
-
-        val color = if (balance >= 0) {
-            Color(0xFF558B2F)
-        } else {
-            Color.Red
+        val color = when {
+            balance  >= 0 -> Color(0xFF558B2F)
+            else -> Color.Red
         }
-
 
         Column(
             modifier = Modifier
