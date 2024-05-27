@@ -19,7 +19,9 @@ fun ScannerButton(scannerViewModel: ScannerViewModel, navController: NavControll
     val context: Context = LocalContext.current
     ElevatedButton(
         onClick = {
-            scannerViewModel.startScanning(context)
+                scannerViewModel.startScanning(context)
+
+            //scannerViewModel.startScanning(context)
 //            coroutine.launch {
 //                        delay(300)
 //                        navController.navigate(SecondScreen)

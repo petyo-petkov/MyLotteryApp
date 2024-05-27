@@ -1,6 +1,7 @@
 package com.example.mylotteryapp.viewModels
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +30,7 @@ class ScannerViewModel @Inject constructor(
             scannerRepo.startScanning()
                 .collect { data ->
                     if (!data.isNullOrBlank()) {
-                        //Log.i("rawData", data)
+                        Log.i("rawData", data)
                         val boleto = crearBoleto(data)
 
                         val result =
@@ -37,7 +38,10 @@ class ScannerViewModel @Inject constructor(
                         if (result.isEmpty()) {
                             realmRepo.insertarBoleto(boleto)
                         } else {
-                            message(context)
+                            withContext(Dispatchers.Main){
+                                message(context)
+                            }
+
                         }
 
                     }
@@ -52,7 +56,8 @@ class ScannerViewModel @Inject constructor(
 private suspend fun message(context: Context) {
     withContext(Dispatchers.Main) {
         Toast.makeText(
-            context, "Ya existe èste boleto", Toast.LENGTH_SHORT
+            context,
+            "Ya existe èste boleto", Toast.LENGTH_SHORT
         ).show()
     }
 }

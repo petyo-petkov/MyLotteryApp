@@ -1,4 +1,4 @@
-package com.example.mylotteryapp.resultados
+package com.example.mylotteryapp.data
 
 import android.util.Log
 import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
@@ -12,22 +12,14 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import javax.inject.Inject
-
-/**
- * Obtiene los resultados de un juego de lotería entre dos fechas.
- *
- * @param fecha La fecha de inicio en formato "yyyymmdd".
- * @return Una lista de resultados del juego especificado.
- */
 
 class ResultasdosRepository @Inject constructor(
      val client: HttpClient
 ) {
-    suspend inline fun <reified T> resultados(
-        fecha: String,
+    suspend inline fun <reified T> resultados(fecha: String): List<T> {
 
-        ): List<T> {
         val gameID = when (T::class) {
             ResultadosEuromillones::class -> "EMIL"
             ResultadosPrimitiva::class -> "LAPR"
@@ -54,4 +46,23 @@ class ResultasdosRepository @Inject constructor(
         }
 
     }
+
+    /*
+    suspend fun getResultados(url: String): List<JsonObject> {
+        val json = Json {
+            coerceInputValues = true
+            ignoreUnknownKeys = true
+        }
+        return try {
+            val response: HttpResponse = client.get(url)
+            val dataString = response.bodyAsText()
+            json.decodeFromString(dataString)
+        } catch (e: Exception) {
+            Log.e("error resultados", e.message.toString())
+            throw e
+        }
+    }
+
+     */
+
 }

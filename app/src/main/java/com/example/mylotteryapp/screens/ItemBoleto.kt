@@ -60,7 +60,7 @@ fun ItemBoleto(
     realmViewModel: RealmViewModel,
     resultadosViewModel: ResultadosViewModel = hiltViewModel()
 ) {
-    val resultado by resultadosViewModel.resultado.collectAsState()
+    val resultadoSorteo by resultadosViewModel.resultado.collectAsState()
 
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
@@ -229,7 +229,7 @@ fun ItemBoleto(
     DialogoResultado(
         show = showDialogoResultado,
         onDismiss = { showDialogoResultado = false },
-        text = resultado,
+        text = resultadoSorteo,
         tipo = boleto.tipo
     )
 

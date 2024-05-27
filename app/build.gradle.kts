@@ -79,7 +79,7 @@ dependencies {
     // coroutine
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    //bar code scanner
+    //barcode scanner
     implementation(libs.play.services.code.scanner)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
@@ -108,6 +108,9 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.kotlinx.serialization.json)
+
+    // Gson
+    implementation(libs.gson)
     
 
     testImplementation(libs.junit)

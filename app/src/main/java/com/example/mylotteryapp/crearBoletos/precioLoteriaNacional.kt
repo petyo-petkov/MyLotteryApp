@@ -1,6 +1,13 @@
 package com.example.mylotteryapp.crearBoletos
 
 import android.icu.util.Calendar
+import android.util.Log
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,7 +29,7 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
     val precio: Double
 
     // Sorteos extraordinarios
-    when{
+    when {
         diaSemana == Calendar.THURSDAY -> precio = 3.0
         dia == 6 && mes == 0 -> precio = 20.0    // El Niño
         dia == 13 && mes == 0 -> precio = 15.0   // Extraordinario de invierno
@@ -44,3 +51,57 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
     return precio
 }
 
+suspend fun result(): List<JsonObject> {
+    val cliente = HttpClient()
+
+    val url = "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=LNAC&num=2"
+
+    val json = Json {
+        coerceInputValues = true
+        ignoreUnknownKeys = true
+    }
+
+    return try {
+        val response: HttpResponse = cliente.get(url)
+        val dataString = response.bodyAsText()
+        json.decodeFromString(dataString)
+    } catch (e: Exception) {
+        Log.e("error resultados", e.message.toString())
+        throw e
+    }
+
+
+}
+
+suspend fun foo(id: String): Sorteo {
+
+    val resultados = result()
+
+    var sorteoEncontrado: Sorteo? = null
+
+    for (it in resultados) {
+        val idSorteo = it["id_sorteo"].toString().substring(9, 11)
+        val fechaSorteo = it["fecha"].toString()
+        val precioSorteo = it["precio"].toString()
+
+        if (idSorteo == id) {
+            sorteoEncontrado = Sorteo(id = idSorteo, fecha = fechaSorteo, precio = precioSorteo)
+            break
+        }
+    }
+
+    return sorteoEncontrado!!
+
+}
+
+data class Sorteo(
+    val id: String,
+    val fecha: String,
+    val precio: String
+
+)
+
+//suspend fun main() {
+//    val result = foo("43")
+//    println(result)
+//}

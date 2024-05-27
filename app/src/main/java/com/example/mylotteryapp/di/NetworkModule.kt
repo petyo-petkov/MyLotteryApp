@@ -18,4 +18,5 @@ object NetworkModule {
     fun provideHttpClient(): HttpClient {
         return HttpClient(CIO)
     }
+
 }
