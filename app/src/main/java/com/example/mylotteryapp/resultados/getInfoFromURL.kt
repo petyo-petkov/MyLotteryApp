@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 
 
-suspend fun getInfoLoterias(url: String): List<JsonObject> {
+suspend fun getInfoFromURL(url: String): List<JsonObject> {
     val client = HttpClient()
     val json = Json {
         coerceInputValues = true

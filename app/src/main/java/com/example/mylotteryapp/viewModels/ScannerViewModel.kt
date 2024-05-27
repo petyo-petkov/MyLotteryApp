@@ -1,7 +1,6 @@
 package com.example.mylotteryapp.viewModels
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +29,7 @@ class ScannerViewModel @Inject constructor(
             scannerRepo.startScanning()
                 .collect { data ->
                     if (!data.isNullOrBlank()) {
-                        Log.i("rawData", data)
+                        //Log.i("rawData", data)
                         val boleto = crearBoleto(data)
 
                         val result =

@@ -3,7 +3,7 @@ package com.example.mylotteryapp.crearBoletos
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.ext.toRealmList
 
-fun crearBoleto(data: String): Boleto {
+suspend fun crearBoleto(data: String): Boleto {
 
     val info = data.split(";")
     var boleto = Boleto()
