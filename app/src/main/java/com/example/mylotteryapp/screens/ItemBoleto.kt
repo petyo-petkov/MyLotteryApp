@@ -61,10 +61,10 @@ fun ItemBoleto(
     resultadosViewModel: ResultadosViewModel = hiltViewModel()
 ) {
     val resultadoSorteo by resultadosViewModel.resultado.collectAsState()
+    val premio by resultadosViewModel.premio.collectAsState()
 
     val haptics = LocalHapticFeedback.current
     val formatter = rememberSaveable { SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH) }
-    val formatterResultados = rememberSaveable { SimpleDateFormat("yyyyMMdd", Locale.ENGLISH) }
     val date = Date(boleto.fecha.epochSeconds * 1000)
 
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -74,8 +74,6 @@ fun ItemBoleto(
     var selected by remember { mutableStateOf(false) }
     var showDialogoPremio by rememberSaveable { mutableStateOf(false) }
     var showDialogoResultado by rememberSaveable { mutableStateOf(false) }
-
-
 
     Card(
         modifier = Modifier
@@ -204,11 +202,7 @@ fun ItemBoleto(
                     boleto = boleto,
                     onEditarPremio = { showDialogoPremio = true },
                     onGetResultado = {
-                        resultadosViewModel.fetchResultado(
-                            boleto,
-                            formatterResultados.format(date)
-                        )
-
+                        resultadosViewModel.fetchPremios(boleto)
                         showDialogoResultado = true
                     }
                 )
@@ -229,7 +223,8 @@ fun ItemBoleto(
     DialogoResultado(
         show = showDialogoResultado,
         onDismiss = { showDialogoResultado = false },
-        text = resultadoSorteo,
+        combinacion = resultadoSorteo,
+        premio = premio,
         tipo = boleto.tipo
     )
 

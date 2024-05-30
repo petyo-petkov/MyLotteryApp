@@ -35,7 +35,7 @@ class Boleto : RealmObject {
 
     // loterias
     var numeroLoteria: String? = ""
-    var serieLoteria: String? = ""
+    var idSorteo: String? = ""
     var sorteoLoteria: String? = ""
 
 }

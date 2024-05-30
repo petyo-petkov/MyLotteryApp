@@ -1,8 +1,9 @@
 package com.example.mylotteryapp.resultados
 
+import com.example.mylotteryapp.data.ResultasdosRepository
 import kotlinx.serialization.json.JsonObject
 
-suspend fun getInfoByNumSorteo(numSorteo: String): InfoSorteo {
+suspend fun getInfoByNumSorteo(numSorteo: String, resultRepo: ResultasdosRepository): InfoSorteo {
 
     val urlProximosSorteos =
         "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=LNAC&num=6"
@@ -15,7 +16,7 @@ suspend fun getInfoByNumSorteo(numSorteo: String): InfoSorteo {
     var resultados: List<JsonObject>
     var resultadoEncontrado = true
 
-    resultados = getInfoFromURL(url = urlProximosSorteos)
+    resultados = resultRepo.getInfoFromURL(urlProximosSorteos)
 
     for (result in resultados) {
         val sorteoID = result.get("id_sorteo").toString()
@@ -31,7 +32,7 @@ suspend fun getInfoByNumSorteo(numSorteo: String): InfoSorteo {
         }
     }
     if (!resultadoEncontrado) {
-        resultados = getInfoFromURL(urlUltimosSorteos)
+        resultados = resultRepo.getInfoFromURL(urlUltimosSorteos)
         for (result in resultados) {
             val sorteoID = result.get("id_sorteo").toString()
             val sorteoNum = sorteoID.substring(8, 11)

@@ -1,9 +1,11 @@
 package com.example.mylotteryapp.crearBoletos
 
+import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.getInfoByNumSorteo
 import io.realm.kotlin.ext.toRealmList
 
-suspend fun crearBoleto(data: String): Boleto {
+suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto {
 
     val info = data.split(";")
     var boleto = Boleto()
@@ -96,7 +98,8 @@ suspend fun crearBoleto(data: String): Boleto {
                 numeroLoteriaNacional = info[4].substringAfter("=")
                 serieLoteriaNacional = info[6].substringAfter("=")
                 sorteoLoteriaNacional = info[2].substringAfter("=").slice(0..2)
-                precioBoleto = precioLoteriaNacional(fechaString)
+                //precioBoleto = precioLoteriaNacional(fechaString)
+                precioBoleto = getInfoByNumSorteo(sorteoLoteriaNacional, resultRepo).precioSorteo.toDouble()
             }
 
             else -> {}
@@ -118,12 +121,12 @@ suspend fun crearBoleto(data: String): Boleto {
             estrellas = estrellasEuromillones.toRealmList()
             numeroElMillon = numeroMillones
             numeroLoteria = numeroLoteriaNacional
-            serieLoteria = serieLoteriaNacional
+            idSorteo = serieLoteriaNacional
             sorteoLoteria = sorteoLoteriaNacional
         }
     } else if (data.length == 20){
 
-        boleto = crearLoteriaFromBarCode(data)
+        boleto = crearLoteriaFromBarCode(data, resultRepo)
 
     }
 
