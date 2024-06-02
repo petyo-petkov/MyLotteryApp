@@ -25,14 +25,6 @@ class ResultadosViewModel @Inject constructor(
     private val _premio = MutableStateFlow("")
     val premio: StateFlow<String> = _premio
 
-    /*
-    private val _premioLoteriaNacional = MutableStateFlow("")
-    val premioLoteriaNacional: StateFlow<String> = _premioLoteriaNacional
-
-    private val _premioPrimitiva = MutableStateFlow("")
-    val premioPrimitiva: StateFlow<String> = _premioPrimitiva
-
-
     // Resultados Loterias
     fun fetchTodosLosResultado(boleto: Boleto) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,45 +33,26 @@ class ResultadosViewModel @Inject constructor(
         }
     }
 
-    // Premio Loteria Nacional
-    fun fetchPremioLoteriaNacional(boleto: Boleto) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = resultadosRepository.getResultadoPorNumeroLoteria(boleto)
-            _premioLoteriaNacional.value = result
-        }
-    }
-
-    // Premio Primitiva
-    fun fetchPremioPrimitiva(boleto: Boleto) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = resultadosRepository.comprobarPremioPrimitiva(boleto)
-            _premioPrimitiva.value = result
-        }
-    }
-
-     */
-
     fun fetchPremios(boleto: Boleto) {
         viewModelScope.launch(Dispatchers.IO) {
             val fechaActual = LocalDateTime.now()
             val fechaBoleto = LocalDateTime.ofEpochSecond(
                 boleto.fecha.epochSeconds,
                 0,
-                ZoneOffset.ofHours(3)
+                ZoneOffset.ofHours(2)
             )
             val esAnterior = fechaBoleto.compareTo(fechaActual)
-            Log.i("esAnterior", esAnterior.toString())
             when {
-                fechaBoleto.compareTo(fechaActual) < -1 -> {
+                esAnterior <= 0 -> {
                     when (boleto.tipo) {
                         "Primitiva" -> {
                             _premio.value = resultadosRepository.comprobarPremioPrimitiva(boleto)
                             _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
                         }
                         "Loteria Nacional" -> {
-                            _premio.value =
-                                resultadosRepository.getResultadoPorNumeroLoteria(boleto)
+                            _premio.value = resultadosRepository.getResultadoPorNumeroLoteria(boleto).toString()
                             _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+
                         }
 
                         else -> {

@@ -7,7 +7,10 @@ import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
 import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosProximosSorteos
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LNAC
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LNAC
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
@@ -20,18 +23,18 @@ import java.util.Locale
 import javax.inject.Inject
 
 class ResultasdosRepository @Inject constructor(
-     val client: HttpClient
+    val client: HttpClient,
 ) {
-    // Obtiene la información de la API en formato JSON
+/*
     suspend fun getInfoFromURL(url: String): List<JsonObject> {
         val json = Json {
             coerceInputValues = true
             ignoreUnknownKeys = true
         }
-        return try {
+        try {
             val response: HttpResponse = client.get(url)
             val dataString = response.bodyAsText()
-            json.decodeFromString(dataString)
+            return Json.decodeFromString<List<JsonObject>>(dataString)
         } catch (e: Exception) {
             Log.e("error resultados", e.message.toString())
             throw e
@@ -39,9 +42,25 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-    // Obtiene los resultados de los sorteos segun el tipo de sorteo y la fecha
-    suspend inline fun <reified T> resultados(fecha: String): List<T> {
+ */
 
+    suspend inline fun <reified T> getInfoFromURL(url: String): List<T> {
+        val json = Json {
+            coerceInputValues = true
+            ignoreUnknownKeys = true
+        }
+        try {
+            val response: HttpResponse = client.get(url)
+            val dataString = response.bodyAsText()
+            return json.decodeFromString(dataString)
+        } catch (e: Exception) {
+            Log.e("ERROR en obtener resultados deasde $url", e.message.toString())
+            throw e
+        }
+
+    }
+
+    suspend inline fun <reified T> resultados(fecha: String): List<T> {
         val gameID = when (T::class) {
             ResultadosEuromillones::class -> "EMIL"
             ResultadosPrimitiva::class -> "LAPR"
@@ -54,22 +73,10 @@ class ResultasdosRepository @Inject constructor(
         val url =
             "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fecha&fechaFinInclusiva=$fecha"
 
-        val json = Json {
-            coerceInputValues = true
-            ignoreUnknownKeys = true
-        }
-        return try {
-            val response: HttpResponse = client.get(url)
-            val dataString = response.bodyAsText()
-            json.decodeFromString(dataString)
+        return getInfoFromURL<T>(url)
 
-        } catch (e: Exception) {
-            Log.e("error resultados", e.message.toString())
-            throw e
-        }
     }
 
-    // Ya veremos....
     suspend fun getTodosLosResultadoPorFecha(boleto: Boleto): String {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
@@ -92,25 +99,12 @@ class ResultasdosRepository @Inject constructor(
             "Euro Dreams" -> return resultados<ResultadosEuroDreams>(
                 fecha
             )[0].combinacion
+            "Loteria Nacional" -> return resultados<ResultadosLoteriaNacional>(
+                fecha)[0].primerPremio.decimo
 
             else -> return "Boleto desconocido"
         }
 
-    }
-
-    // Premio Loteria Nacional segun el numero
-    suspend fun getResultadoPorNumeroLoteria(boleto: Boleto): String {
-
-        val numero = boleto.numeroLoteria
-        val idSorteo = boleto.idSorteo!!
-        val url =
-            "https://www.loteriasyapuestas.es/servicios/premioDecimoWebParaVariosSorteos?decimo=$numero&serie=&fraccion=&importeComunEnCentimos=600&idSorteos=$idSorteo"
-        val result = getInfoFromURL(url)
-        println(result)
-        val premio = result[0]["premio"].toString()
-        println(premio)
-
-        return premio
     }
 
     suspend fun comprobarPremioPrimitiva(boleto: Boleto): String {
@@ -122,16 +116,13 @@ class ResultasdosRepository @Inject constructor(
         val resultadoPrimitiva = resultados<ResultadosPrimitiva>(fecha)
         val combinacionGanadora = resultadoPrimitiva[0].combinacion
 
-        // Extraer los números ganadores de la cadena
         val numerosGanadores = combinacionGanadora
-            .substringBefore(" C") // Ignora la parte de C y R
+            .substringBefore(" C")
             .split(" - ")
             .map { it.toInt() }
-            .toSet() // Usamos un set para facilitar la comparación
+            .toSet()
         val reintegro = combinacionGanadora.substringAfter("R(").substringBefore(")")
-        //val complementario = combinacionGanadora.substringAfter("C(").substringBefore(")")
 
-        // Comprobar cada combinación
         for (combinacion in misCombinaciones) {
             val numerosCombinacion = combinacion
                 .split(" ")
@@ -147,6 +138,61 @@ class ResultasdosRepository @Inject constructor(
         return premio
     }
 
+    suspend fun getResultadoPorNumeroLoteria(boleto: Boleto): Double {
+        val url =
+            "https://www.loteriasyapuestas.es/servicios/premioDecimoWebParaVariosSorteos?decimo=${boleto.numeroLoteria}&serie=&fraccion=&importeComunEnCentimos&idSorteos=${boleto.idSorteo}"
+        return getInfoFromURL<JsonObject>(url)[0]["premioEnCentimos"].toString().toDouble() / 100
+    }
+
+    suspend fun getInfoByNumSorteo(numSorteo: Int): InfoSorteo {
+        val proximosSorteos = getInfoFromURL<ResultadosProximosSorteos>(GET_PROXIMOS_SORTEOS_LNAC)
+        val ultimosSorteos = getInfoFromURL<ResultadosLoteriaNacional>(GET_ULTIMOS_SORTEOS_LNAC)
+
+        val resultProximo = proximosSorteos.find { sorteo ->
+            sorteo.id_sorteo.substring(7, 10).toInt() == numSorteo
+        }?.let { resultProximo ->
+            InfoSorteo(
+                idSorteo = resultProximo.id_sorteo,
+                fechaSorteo = resultProximo.fecha,
+                precioSorteo = resultProximo.precio.toDouble(),
+                gameID = resultProximo.game_id,
+                diaSemana = resultProximo.dia_semana,
+                numSorteo = numSorteo,
+                apertura = resultProximo.apertura,
+                cierre = resultProximo.cierre
+            )
+        }
+        val resultUltimo = ultimosSorteos.find { sorteo ->
+            sorteo.num_sorteo.toInt() == numSorteo
+        }?.let { result ->
+            InfoSorteo(
+                idSorteo = result.id_sorteo,
+                fechaSorteo = result.fecha_sorteo,
+                precioSorteo = result.precioDecimo,
+                gameID = result.game_id,
+                diaSemana = result.dia_semana,
+                numSorteo = numSorteo,
+                apertura = result.apertura,
+                cierre = result.cierre
+            )
+        }
+        return when {
+            resultUltimo != null -> resultUltimo
+            resultProximo != null -> resultProximo
+            else -> InfoSorteo()
+        }
+
+    }
+
 
 }
-
+data class InfoSorteo(
+    val numSorteo: Int = 0,
+    val idSorteo: String = "",
+    val fechaSorteo: String = "",
+    val precioSorteo: Double = 0.0,
+    val gameID: String = "",
+    val diaSemana: String = "",
+    val apertura: String = "",
+    val cierre: String = ""
+)

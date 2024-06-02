@@ -31,11 +31,11 @@ class Boleto : RealmObject {
 
     // euro millones
     var estrellas: RealmList<String> = realmListOf()
-    var numeroElMillon: String = ""
+    var numeroElMillon: String? = ""
 
     // loterias
     var numeroLoteria: String? = ""
     var idSorteo: String? = ""
-    var sorteoLoteria: String? = ""
+    var numSorteo: Int? = 0
 
 }

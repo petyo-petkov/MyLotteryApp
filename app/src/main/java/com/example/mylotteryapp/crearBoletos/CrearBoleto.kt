@@ -2,7 +2,6 @@ package com.example.mylotteryapp.crearBoletos
 
 import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
-import com.example.mylotteryapp.resultados.getInfoByNumSorteo
 import io.realm.kotlin.ext.toRealmList
 
 suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto {
@@ -93,18 +92,16 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 precioBoleto = ((combinacionesJugadas.size * 2.5) * numeroSorteosJugados)
             }
 
-            "P=10" -> {
-                tipoBoleto = "Loteria Nacional"
-                numeroLoteriaNacional = info[4].substringAfter("=")
-                serieLoteriaNacional = info[6].substringAfter("=")
-                sorteoLoteriaNacional = info[2].substringAfter("=").slice(0..2)
-                //precioBoleto = precioLoteriaNacional(fechaString)
-                precioBoleto = getInfoByNumSorteo(sorteoLoteriaNacional, resultRepo).precioSorteo.toDouble()
-            }
+//            "P=10" -> {
+//                tipoBoleto = "Loteria Nacional"
+//                numeroLoteriaNacional = info[4].substringAfter("=")
+//                serieLoteriaNacional = info[6].substringAfter("=")
+//                sorteoLoteriaNacional = info[2].substringAfter("=").slice(0..2)
+//                //precioBoleto = precioLoteriaNacional(fechaString)
+//                precioBoleto = resultRepo.getInfoByNumSorteo(sorteoLoteriaNacional.toInt()).precioSorteo.toDouble()
+//            }
 
             else -> {}
-
-
         }
 
         boleto = Boleto().apply {
@@ -120,9 +117,9 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             dreams = suenos.toRealmList()
             estrellas = estrellasEuromillones.toRealmList()
             numeroElMillon = numeroMillones
-            numeroLoteria = numeroLoteriaNacional
-            idSorteo = serieLoteriaNacional
-            sorteoLoteria = sorteoLoteriaNacional
+//            numeroLoteria = numeroLoteriaNacional
+//            idSorteo = serieLoteriaNacional
+//            numSorteo = sorteoLoteriaNacional.toInt()
         }
     } else if (data.length == 20){
 

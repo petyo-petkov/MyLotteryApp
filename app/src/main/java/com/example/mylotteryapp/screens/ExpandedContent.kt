@@ -81,7 +81,8 @@ fun ExpandedContent(
 
                 "Loteria Nacional" -> {
                     Text("Numero: ${boleto.numeroLoteria}")
-                    Text("Sorteo: ${boleto.sorteoLoteria}")
+                    Text("Sorteo: ${boleto.numSorteo}")
+                    Text("IdSorteo: ${boleto.idSorteo}")
                 }
 
                 else -> {

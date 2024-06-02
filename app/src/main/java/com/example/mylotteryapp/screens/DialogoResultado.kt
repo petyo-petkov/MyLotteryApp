@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlin.text.Typography.euro
 
 @Composable
 fun DialogoResultado(
@@ -48,12 +49,25 @@ fun DialogoResultado(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = combinacion,
+                    Column(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ){
+                        Text(
+                            text = "Combinación ganadora:",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text (
+                                text = combinacion,
                         style = MaterialTheme.typography.bodyLarge,
-                    )
+                        )
+                    }
                     Text(
-                        text = "Premio: $premio",
+                        text = when(premio.isEmpty()){
+                            true -> "No hay premio"
+                            false -> "Premio: $premio $euro"
+                        } ,
+
                         style = MaterialTheme.typography.bodyLarge,
                     )
 
