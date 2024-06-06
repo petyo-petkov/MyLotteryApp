@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+/*
 fun precioLoteriaNacional(fechaLoteria: String): Double {
 
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
@@ -50,3 +50,5 @@ fun precioLoteriaNacional(fechaLoteria: String): Double {
 
     return precio
 }
+
+ */

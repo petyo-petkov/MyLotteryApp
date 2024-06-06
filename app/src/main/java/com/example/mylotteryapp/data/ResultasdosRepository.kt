@@ -25,24 +25,6 @@ import javax.inject.Inject
 class ResultasdosRepository @Inject constructor(
     val client: HttpClient,
 ) {
-/*
-    suspend fun getInfoFromURL(url: String): List<JsonObject> {
-        val json = Json {
-            coerceInputValues = true
-            ignoreUnknownKeys = true
-        }
-        try {
-            val response: HttpResponse = client.get(url)
-            val dataString = response.bodyAsText()
-            return Json.decodeFromString<List<JsonObject>>(dataString)
-        } catch (e: Exception) {
-            Log.e("error resultados", e.message.toString())
-            throw e
-        }
-
-    }
-
- */
 
     suspend inline fun <reified T> getInfoFromURL(url: String): List<T> {
         val json = Json {
@@ -70,6 +52,7 @@ class ResultasdosRepository @Inject constructor(
             ResultadosElGordo::class -> "ELGR"
             else -> throw IllegalArgumentException("Unsupported game type: ${T::class}")
         }
+        // la fecha tiene que ser en el formato "20240528" ("yyyyMMdd")
         val url =
             "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fecha&fechaFinInclusiva=$fecha"
 
@@ -144,7 +127,7 @@ class ResultasdosRepository @Inject constructor(
         return getInfoFromURL<JsonObject>(url)[0]["premioEnCentimos"].toString().toDouble() / 100
     }
 
-    suspend fun getInfoByNumSorteo(numSorteo: Int): InfoSorteo {
+    suspend fun getInfoLNACbyNumSorteo(numSorteo: Int): InfoSorteo {
         val proximosSorteos = getInfoFromURL<ResultadosProximosSorteos>(GET_PROXIMOS_SORTEOS_LNAC)
         val ultimosSorteos = getInfoFromURL<ResultadosLoteriaNacional>(GET_ULTIMOS_SORTEOS_LNAC)
 

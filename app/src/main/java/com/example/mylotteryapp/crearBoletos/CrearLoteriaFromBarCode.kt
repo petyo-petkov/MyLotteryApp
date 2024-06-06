@@ -13,9 +13,8 @@ suspend fun crearLoteriaFromBarCode(data: String, resultRepo: ResultasdosReposit
     val numeroLoteriaNacional = data.substring(11, 16)
     val numeroSorteo = data.substring(1, 4).toInt()
 
-
     return try {
-        val infoLoteria = resultRepo.getInfoByNumSorteo(numeroSorteo)
+        val infoLoteria = resultRepo.getInfoLNACbyNumSorteo(numeroSorteo)
         val fechaLong = formatter.parse(infoLoteria.fechaSorteo)!!.time
         Boleto().apply {
             tipo = "Loteria Nacional"

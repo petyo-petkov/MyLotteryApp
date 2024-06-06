@@ -45,6 +45,9 @@ fun ExpandedContent(
                     }
                     Text("Reintegro: ${boleto.reintegro}")
                     Text("Joker: ${boleto.joker}")
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
+                    Text("Id Sorteo: ${boleto.idSorteo}")
+                    Text("cdc: ${boleto.cdc}")
                 }
 
                 "Bonoloto" -> {

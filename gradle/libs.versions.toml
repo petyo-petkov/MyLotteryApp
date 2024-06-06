@@ -1,7 +1,6 @@
 [versions]
 agp = "8.6.0-alpha04"
 firebaseCrashlyticsBuildtools = "3.0.0"
-gson = "2.11.0"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.48"
 hiltCompiler = "1.2.0"
@@ -20,7 +19,7 @@ activityCompose = "1.9.0"
 composeBom = "2024.05.00"
 playServicesCodeScanner = "16.1.0"
 lifecycleViewmodelCompose = "2.8.1"
-vico = "2.0.0-alpha.20"
+vico = "2.0.0-alpha.21"
 material3Android = "1.2.1"
 composeNavigation = "2.8.0-beta02"
 
@@ -30,7 +29,6 @@ androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref =
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompiler" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 firebase-crashlytics-buildtools = { module = "com.google.firebase:firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }

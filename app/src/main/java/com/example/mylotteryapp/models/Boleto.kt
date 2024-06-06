@@ -13,11 +13,14 @@ class Boleto : RealmObject {
     var _id: ObjectId = ObjectId()
     var tipo: String = ""
     var numeroSerie: Long = 0L
-    var fecha: RealmInstant = RealmInstant.MIN
+    var fecha: RealmInstant = RealmInstant.MAX
     var precio: Double = 0.0
     var premio: Double = 0.0
-
     var combinaciones: RealmList<String> = realmListOf()
+    var cdc: String? = ""
+    var idSorteo: String? = ""
+    var numSorteo: Int? = 0
+
     var reintegro: String? = ""
 
     // prmitiva
@@ -35,7 +38,6 @@ class Boleto : RealmObject {
 
     // loterias
     var numeroLoteria: String? = ""
-    var idSorteo: String? = ""
-    var numSorteo: Int? = 0
+
 
 }
