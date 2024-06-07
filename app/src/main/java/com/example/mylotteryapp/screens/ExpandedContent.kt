@@ -64,6 +64,8 @@ fun ExpandedContent(
                         }
                     }
                     Text("El Millon: ${boleto.numeroElMillon}")
+                    Text("Id Sorteo: ${boleto.idSorteo}")
+                    Text("cdc: ${boleto.cdc}")
                 }
 
                 "El Gordo" -> {

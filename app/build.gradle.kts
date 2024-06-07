@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.io.realm.kotlin)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.devtools.ksp") version "1.9.24-1.0.20"
+    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
     id ("dagger.hilt.android.plugin")
 }
 
@@ -54,9 +55,15 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.14"
+//    }
+//    composeCompiler{
+//        enableStrongSkippingMode = true
+//
+////        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+////        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
+//    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

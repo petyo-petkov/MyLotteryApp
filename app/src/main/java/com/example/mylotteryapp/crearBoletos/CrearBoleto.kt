@@ -3,10 +3,14 @@ package com.example.mylotteryapp.crearBoletos
 import android.util.Log
 import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
+import com.example.mylotteryapp.resultados.modelos.euromillones.proximos.ResultadoProximosEMIL
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
 import com.example.mylotteryapp.resultados.modelos.primitva.proximos.ResultadoProximosLAPR
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_EMIL
 import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LAPR
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_EMIL
 import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LAPR
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmInstant
@@ -56,13 +60,11 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=1" -> {
                 val infoProximosLAPR = resultRepo.getInfoFromURL<ResultadoProximosLAPR>(GET_PROXIMOS_SORTEOS_LAPR)
                 val infoUltimosLAPR = resultRepo.getInfoFromURL<ResultadosPrimitiva>(GET_ULTIMOS_SORTEOS_LAPR)
-
                 val cdcProximo = infoProximosLAPR.find { it.cdc == cdcSorteo }
                 val cdcUltimo = infoUltimosLAPR.find { it.cdc == cdcSorteo }
                 cdcProximo?.let {
                     fechaLong = formatter.parse(it.fecha)!!.time
                     idSorteoBoleto = it.id_sorteo
-
                 }
                 cdcUltimo?.let {
                     fechaLong = formatter.parse(it.fecha_sorteo)!!.time
@@ -92,6 +94,19 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=7" -> {
+                val infoProximosEMIL = resultRepo.getInfoFromURL<ResultadoProximosEMIL>(GET_PROXIMOS_SORTEOS_EMIL)
+                val infoUltimosEMIL = resultRepo.getInfoFromURL<ResultadosEuromillones>(GET_ULTIMOS_SORTEOS_EMIL)
+                val cdcProximo = infoProximosEMIL.find { it.cdc == cdcSorteo }
+                val cdcUltimo = infoUltimosEMIL.find { it.cdc == cdcSorteo }
+                cdcProximo?.let {
+                    fechaLong = formatter.parse(it.fecha)!!.time
+                    idSorteoBoleto = it.id_sorteo
+                }
+                cdcUltimo?.let {
+                    fechaLong = formatter.parse(it.fecha_sorteo)!!.time
+                    idSorteoBoleto = it.id_sorteo
+                }
+
                 tipoBoleto = "Euromillones"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(3).joinToString(" ")
