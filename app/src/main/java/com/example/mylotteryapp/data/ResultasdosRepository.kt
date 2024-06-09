@@ -7,7 +7,7 @@ import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
 import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
-import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosProximosSorteos
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.proximos.ResultadoProximosLNAC
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
 import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LNAC
 import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LNAC
@@ -82,8 +82,10 @@ class ResultasdosRepository @Inject constructor(
             "Euro Dreams" -> return resultados<ResultadosEuroDreams>(
                 fecha
             )[0].combinacion
+
             "Loteria Nacional" -> return resultados<ResultadosLoteriaNacional>(
-                fecha)[0].primerPremio.decimo
+                fecha
+            )[0].primerPremio.decimo
 
             else -> return "Boleto desconocido"
         }
@@ -127,14 +129,14 @@ class ResultasdosRepository @Inject constructor(
         return getInfoFromURL<JsonObject>(url)[0]["premioEnCentimos"].toString().toDouble() / 100
     }
 
-    suspend fun getInfoLNACbyNumSorteo(numSorteo: Int): InfoSorteo {
-        val proximosSorteos = getInfoFromURL<ResultadosProximosSorteos>(GET_PROXIMOS_SORTEOS_LNAC)
+    suspend fun getInfoLNACbyNumSorteo(numSorteo: Int): InfoSorteoLNAC {
+        val proximosSorteos = getInfoFromURL<ResultadoProximosLNAC>(GET_PROXIMOS_SORTEOS_LNAC)
         val ultimosSorteos = getInfoFromURL<ResultadosLoteriaNacional>(GET_ULTIMOS_SORTEOS_LNAC)
 
         val resultProximo = proximosSorteos.find { sorteo ->
             sorteo.id_sorteo.substring(7, 10).toInt() == numSorteo
         }?.let { resultProximo ->
-            InfoSorteo(
+            InfoSorteoLNAC(
                 idSorteo = resultProximo.id_sorteo,
                 fechaSorteo = resultProximo.fecha,
                 precioSorteo = resultProximo.precio.toDouble(),
@@ -148,7 +150,7 @@ class ResultasdosRepository @Inject constructor(
         val resultUltimo = ultimosSorteos.find { sorteo ->
             sorteo.num_sorteo.toInt() == numSorteo
         }?.let { result ->
-            InfoSorteo(
+            InfoSorteoLNAC(
                 idSorteo = result.id_sorteo,
                 fechaSorteo = result.fecha_sorteo,
                 precioSorteo = result.precioDecimo,
@@ -162,14 +164,15 @@ class ResultasdosRepository @Inject constructor(
         return when {
             resultUltimo != null -> resultUltimo
             resultProximo != null -> resultProximo
-            else -> InfoSorteo()
+            else -> InfoSorteoLNAC()
         }
 
     }
 
 
 }
-data class InfoSorteo(
+
+data class InfoSorteoLNAC(
     val numSorteo: Int = 0,
     val idSorteo: String = "",
     val fechaSorteo: String = "",
@@ -178,4 +181,9 @@ data class InfoSorteo(
     val diaSemana: String = "",
     val apertura: String = "",
     val cierre: String = ""
+)
+
+data class InfoSorteo(
+    val idSorteo: String,
+    val fecha: String,
 )

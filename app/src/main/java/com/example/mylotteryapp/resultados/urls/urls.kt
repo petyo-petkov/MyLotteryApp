@@ -15,3 +15,15 @@ const val GET_ULTIMOS_SORTEOS_LAPR = "https://www.loteriasyapuestas.es/servicios
 const val GET_PROXIMOS_SORTEOS_EMIL = "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=EMIL&num=2"
 const val GET_ULTIMO_SORTEO_EMIL = "https://www.loteriasyapuestas.es/servicios/buscadorUltimoSorteoCelebradoEuromillones"
 const val GET_ULTIMOS_SORTEOS_EMIL = "https://www.loteriasyapuestas.es/servicios/buscadorUltimosSorteosCelebradosEuromillones"
+
+// El Gordo
+const val GET_PROXIMOS_SORTEOS_ELGR = "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=ELGR&num=2"
+const val GET_ULTIMOS_SORTEOS_ELGR = "https://www.loteriasyapuestas.es/servicios/buscadorUltimosSorteosCelebradosGordoPrimitiva"
+
+// Bonoloto
+const val GET_PROXIMOS_SORTEOS_BONO = "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=BONO&num=2"
+const val GET_ULTIMOS_SORTEOS_BONO = "https://www.loteriasyapuestas.es/servicios/buscadorUltimosSorteosCelebradosBonoloto"
+
+// Euro Dreams
+const val GET_PROXIMOS_SORTEOS_EDMS = "https://www.loteriasyapuestas.es/servicios/proximosv3?game_id=EDMS&num=2"
+const val GET_ULTIMOS_SORTEOS_EDMS = "https://www.loteriasyapuestas.es/servicios/buscadorUltimosSorteosCelebradosEurodreams"

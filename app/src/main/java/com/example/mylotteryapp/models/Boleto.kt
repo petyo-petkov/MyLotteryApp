@@ -21,6 +21,7 @@ class Boleto : RealmObject {
     var idSorteo: String? = ""
     var numSorteo: Int? = 0
 
+
     var reintegro: String? = ""
 
     // prmitiva

@@ -1,9 +1,9 @@
-package com.example.mylotteryapp.resultados.modelos.loteriaNacional
+package com.example.mylotteryapp.resultados.modelos.loteriaNacional.proximos
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResultadosProximosSorteos(
+data class ResultadoProximosLNAC(
     val fecha: String,
     val dia_semana: String,
     val id_sorteo: String,

@@ -1,11 +1,9 @@
 package com.example.mylotteryapp.crearBoletos
 
-import io.realm.kotlin.types.RealmInstant
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-fun fechaToRealmInstant(date: String): RealmInstant{
-
+fun fechaToLong(date: String): Long {
     val meses = mapOf(
         "ENE" to "JAN",
         "FEB" to "FEB",
@@ -25,7 +23,6 @@ fun fechaToRealmInstant(date: String): RealmInstant{
     }
     val formatter = SimpleDateFormat("ddMMMyy", Locale.ENGLISH)
     val fechaLong = formatter.parse(fechaEng)!!.time
-    val realmInstant = RealmInstant.from(fechaLong / 1000, 0)
 
-    return realmInstant
+    return fechaLong
 }

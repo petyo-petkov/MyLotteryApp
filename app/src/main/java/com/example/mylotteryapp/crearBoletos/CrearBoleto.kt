@@ -1,24 +1,34 @@
 package com.example.mylotteryapp.crearBoletos
 
-import android.util.Log
 import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.modelos.bonoloto.ResultadosBonoloto
+import com.example.mylotteryapp.resultados.modelos.bonoloto.proximos.ResultadoProximosBONO
+import com.example.mylotteryapp.resultados.modelos.elGordo.ResultadosElGordo
+import com.example.mylotteryapp.resultados.modelos.elGordo.proximos.ResultadoProximosELGR
+import com.example.mylotteryapp.resultados.modelos.euroDreams.ResultadosEuroDreams
+import com.example.mylotteryapp.resultados.modelos.euroDreams.proximos.ResultadoProximosEDMS
 import com.example.mylotteryapp.resultados.modelos.euromillones.ResultadosEuromillones
 import com.example.mylotteryapp.resultados.modelos.euromillones.proximos.ResultadoProximosEMIL
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.proximos.ResultadoProximosLNAC
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
 import com.example.mylotteryapp.resultados.modelos.primitva.proximos.ResultadoProximosLAPR
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_BONO
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_EDMS
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_ELGR
 import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_EMIL
 import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LAPR
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LNAC
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_BONO
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_EDMS
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_ELGR
 import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_EMIL
 import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LAPR
+import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LNAC
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmInstant
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto {
@@ -31,17 +41,9 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
         val combinacionesJugadas = mutableListOf<String>()
         val partesCombinaciones = info[4].split(".").drop(1)
         val cdcSorteo = info[0].substringAfter("=").slice(0..4)
-//        val fechaString = info[2].substringAfter('=').slice(3..9)
-//        val fechaRealm = fechaToRealmInstant(fechaString)
-
-//        var fechaString = ""
+        val numeroSorteo = info[2].substringAfter("=").slice(0..2)
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
-//        val fechaLong = formatter.parse(fechaString)!!.time
         var fechaLong = 0L
-
-        val fechaDeEntradaFormatter = DateTimeFormatter.ofPattern("ddMMMyy")
-        val fechaDeSalidaFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-
         var tipoBoleto = ""
         var precioBoleto = 0.0
         val premioBoleto = 0.0
@@ -52,23 +54,30 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
         var estrellasEuromillones: List<String> = emptyList()
         var numeroMillones = ""
         var numeroLoteriaNacional = ""
-        var serieLoteriaNacional = ""
         var idSorteoBoleto = ""
 
 
         when (info[1]) {
             "P=1" -> {
-                val infoProximosLAPR = resultRepo.getInfoFromURL<ResultadoProximosLAPR>(GET_PROXIMOS_SORTEOS_LAPR)
-                val infoUltimosLAPR = resultRepo.getInfoFromURL<ResultadosPrimitiva>(GET_ULTIMOS_SORTEOS_LAPR)
-                val cdcProximo = infoProximosLAPR.find { it.cdc == cdcSorteo }
-                val cdcUltimo = infoUltimosLAPR.find { it.cdc == cdcSorteo }
-                cdcProximo?.let {
-                    fechaLong = formatter.parse(it.fecha)!!.time
-                    idSorteoBoleto = it.id_sorteo
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosLAPR>(GET_PROXIMOS_SORTEOS_LAPR)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosPrimitiva>(GET_ULTIMOS_SORTEOS_LAPR).find {
+                        it.id_sorteo.substring(7..9) == numeroSorteo
+                    }
+
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
                 }
-                cdcUltimo?.let {
-                    fechaLong = formatter.parse(it.fecha_sorteo)!!.time
-                    idSorteoBoleto = it.id_sorteo
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
                 }
                 tipoBoleto = "Primitiva"
                 jokerPrimitiva = info[7].substringAfter("=")
@@ -85,6 +94,26 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=2" -> {
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosBONO>(GET_PROXIMOS_SORTEOS_BONO)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosBonoloto>(GET_ULTIMOS_SORTEOS_BONO).find {
+                        it.id_sorteo.substring(7..9) == numeroSorteo
+                    }
+
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
+                }
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
+                }
                 tipoBoleto = "Bonoloto"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).joinToString(" ")
@@ -94,19 +123,26 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=7" -> {
-                val infoProximosEMIL = resultRepo.getInfoFromURL<ResultadoProximosEMIL>(GET_PROXIMOS_SORTEOS_EMIL)
-                val infoUltimosEMIL = resultRepo.getInfoFromURL<ResultadosEuromillones>(GET_ULTIMOS_SORTEOS_EMIL)
-                val cdcProximo = infoProximosEMIL.find { it.cdc == cdcSorteo }
-                val cdcUltimo = infoUltimosEMIL.find { it.cdc == cdcSorteo }
-                cdcProximo?.let {
-                    fechaLong = formatter.parse(it.fecha)!!.time
-                    idSorteoBoleto = it.id_sorteo
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosEMIL>(GET_PROXIMOS_SORTEOS_EMIL)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosEuromillones>(GET_ULTIMOS_SORTEOS_EMIL)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
                 }
-                cdcUltimo?.let {
-                    fechaLong = formatter.parse(it.fecha_sorteo)!!.time
-                    idSorteoBoleto = it.id_sorteo
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
                 }
-
                 tipoBoleto = "Euromillones"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(3).joinToString(" ")
@@ -120,6 +156,26 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=4" -> {
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosELGR>(GET_PROXIMOS_SORTEOS_ELGR)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosElGordo>(GET_ULTIMOS_SORTEOS_ELGR).find {
+                        it.id_sorteo.substring(7..9) == numeroSorteo
+                    }
+
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
+                }
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
+                }
                 tipoBoleto = "El Gordo"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(2).joinToString(" ")
@@ -131,6 +187,25 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=14" -> {
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosEDMS>(GET_PROXIMOS_SORTEOS_EDMS)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosEuroDreams>(GET_ULTIMOS_SORTEOS_EDMS).find {
+                        it.id_sorteo.substring(7..9) == numeroSorteo
+                    }
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
+                }
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
+                }
                 tipoBoleto = "Euro Dreams"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(2).joinToString(" ")
@@ -141,14 +216,36 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 precioBoleto = ((combinacionesJugadas.size * 2.5) * numeroSorteosJugados)
             }
 
-//            "P=10" -> {
-//                tipoBoleto = "Loteria Nacional"
-//                numeroLoteriaNacional = info[4].substringAfter("=")
-//                serieLoteriaNacional = info[6].substringAfter("=")
-//                precioBoleto = resultRepo.resultados<ResultadosLoteriaNacional>(
-//                    (LocalDate.parse(fechaString, fechaDeEntradaFormatter)).format(fechaDeSalidaFormatter)
-//                )[0].precioDecimo
-//            }
+            "P=10" -> {
+                val proximo =
+                    resultRepo.getInfoFromURL<ResultadoProximosLNAC>(GET_PROXIMOS_SORTEOS_LNAC)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                val ultimo =
+                    resultRepo.getInfoFromURL<ResultadosLoteriaNacional>(GET_ULTIMOS_SORTEOS_LNAC)
+                        .find {
+                            it.id_sorteo.substring(7..9) == numeroSorteo
+                        }
+                fechaLong = when {
+                    proximo != null -> formatter.parse(proximo.fecha)!!.time
+                    ultimo != null -> formatter.parse(ultimo.fecha_sorteo)!!.time
+                    else -> fechaToLong(info[2].substringAfter('=').slice(3..9))
+                }
+                idSorteoBoleto = when {
+                    proximo != null -> proximo.id_sorteo
+                    ultimo != null -> ultimo.id_sorteo
+                    else -> "0000001"
+                }
+                precioBoleto = when {
+                    proximo != null -> proximo.precio.toDouble()
+                    ultimo != null -> ultimo.precioDecimo
+                    else -> 0.0
+                }
+                tipoBoleto = "Loteria Nacional"
+                numeroLoteriaNacional = info[4].substringAfter("=")
+
+            }
 
             else -> {}
         }
@@ -171,8 +268,10 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             idSorteo = idSorteoBoleto
             numSorteo = info[2].substringAfter("=").slice(0..2).toInt()
 
+
         }
-    } else if (data.length == 20){
+
+    } else if (data.length == 20) {
 
         boleto = crearLoteriaFromBarCode(data, resultRepo)
 

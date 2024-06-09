@@ -47,7 +47,6 @@ fun ExpandedContent(
                     Text("Joker: ${boleto.joker}")
                     Text("Numero de sorteo: ${boleto.numSorteo}")
                     Text("Id Sorteo: ${boleto.idSorteo}")
-                    Text("cdc: ${boleto.cdc}")
                 }
 
                 "Bonoloto" -> {
@@ -65,7 +64,6 @@ fun ExpandedContent(
                     }
                     Text("El Millon: ${boleto.numeroElMillon}")
                     Text("Id Sorteo: ${boleto.idSorteo}")
-                    Text("cdc: ${boleto.cdc}")
                 }
 
                 "El Gordo" -> {
@@ -74,6 +72,9 @@ fun ExpandedContent(
                             Text("${index + 1}: $combi + $clave")
                         }
                     }
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
+                    Text("Id Sorteo: ${boleto.idSorteo}")
+
                 }
 
                 "Euro Dreams" -> {
