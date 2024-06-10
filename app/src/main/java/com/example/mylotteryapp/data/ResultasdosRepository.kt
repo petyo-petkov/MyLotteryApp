@@ -10,14 +10,18 @@ import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLot
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.proximos.ResultadoProximosLNAC
 import com.example.mylotteryapp.resultados.modelos.primitva.ResultadosPrimitiva
 import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_LNAC
+import com.example.mylotteryapp.resultados.urls.GET_PROXIMOS_SORTEOS_TODOS
 import com.example.mylotteryapp.resultados.urls.GET_ULTIMOS_SORTEOS_LNAC
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -39,6 +43,46 @@ class ResultasdosRepository @Inject constructor(
             Log.e("ERROR en obtener resultados deasde $url", e.message.toString())
             throw e
         }
+
+    }
+
+    suspend fun findSorteo(url: String, gameID: String, numSorteo: String): JsonObject? {
+        return getInfoFromURL<JsonObject>(url)
+            .find {
+                it.get("id_sorteo").toString().substring(8..10) == numSorteo && it.get("game_id")
+                    .toString().slice(1..4) == gameID
+            }
+    }
+
+    suspend fun getInfoSorteos(numSorteo: String, gameID: String): InfoSorteo {
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val formatterToLong = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        val hoy = LocalDate.now()
+        val hoyMenusTres = hoy.minusMonths(3)
+        val fechaInicio = hoyMenusTres.format(formatter)
+        val fechaFin = hoy.format(formatter)
+
+        val urlUltimos =
+            "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fechaInicio&fechaFinInclusiva=$fechaFin"
+
+        val proximos = findSorteo(GET_PROXIMOS_SORTEOS_TODOS, gameID, numSorteo)
+        val ultimos = findSorteo(urlUltimos, gameID, numSorteo)
+
+        val fecha = when {
+            ultimos != null -> ultimos.get("fecha_sorteo").toString().substring(1..19)
+            proximos != null -> proximos.get("fecha").toString().substring(1..19)
+            else -> "1980-12-04 16:45:00"
+        }
+        val fechaLong = formatterToLong.parse(fecha)!!.time
+
+        return InfoSorteo(
+            fecha = fechaLong,
+            idSorteo = when {
+                ultimos != null -> ultimos.get("id_sorteo").toString().slice(1..10)
+                proximos != null -> proximos.get("id_sorteo").toString().slice(1..10)
+                else -> "000"
+            }
+        )
 
     }
 
@@ -185,5 +229,5 @@ data class InfoSorteoLNAC(
 
 data class InfoSorteo(
     val idSorteo: String,
-    val fecha: String,
+    val fecha: Long,
 )
