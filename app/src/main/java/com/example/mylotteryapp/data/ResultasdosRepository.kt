@@ -54,7 +54,7 @@ class ResultasdosRepository @Inject constructor(
             }
     }
 
-    suspend fun getInfoSorteos(numSorteo: String, gameID: String): InfoSorteo {
+    suspend fun getIdSorteoYlaFecha(numSorteo: String, gameID: String): InfoSorteo {
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val formatterToLong = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
         val hoy = LocalDate.now()
@@ -67,6 +67,10 @@ class ResultasdosRepository @Inject constructor(
 
         val proximos = findSorteo(GET_PROXIMOS_SORTEOS_TODOS, gameID, numSorteo)
         val ultimos = findSorteo(urlUltimos, gameID, numSorteo)
+        val fecha1 = ultimos?.get("fecha_sorteo")
+        val fecha3 = formatterToLong.parse(fecha1.toString())!!.time
+        Log.i("fecha long", fecha3.toString())
+
 
         val fecha = when {
             ultimos != null -> ultimos.get("fecha_sorteo").toString().substring(1..19)
@@ -86,7 +90,7 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-    suspend inline fun <reified T> resultados(fecha: String): List<T> {
+    suspend inline fun <reified T> getInfoPorFechas(fechaInicio: String, fechaFin: String): List<T> {
         val gameID = when (T::class) {
             ResultadosEuromillones::class -> "EMIL"
             ResultadosPrimitiva::class -> "LAPR"
@@ -98,7 +102,7 @@ class ResultasdosRepository @Inject constructor(
         }
         // la fecha tiene que ser en el formato "20240528" ("yyyyMMdd")
         val url =
-            "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fecha&fechaFinInclusiva=$fecha"
+            "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fechaInicio&fechaFinInclusiva=$fechaFin"
 
         return getInfoFromURL<T>(url)
 
@@ -109,26 +113,26 @@ class ResultasdosRepository @Inject constructor(
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
 
         when (boleto.tipo) {
-            "Primitiva" -> return resultados<ResultadosPrimitiva>(
-                fecha
+            "Primitiva" -> return getInfoPorFechas<ResultadosPrimitiva>(
+                fecha, fecha
             )[0].combinacion
 
-            "Bonoloto" -> return resultados<ResultadosBonoloto>(
-                fecha
+            "Bonoloto" -> return getInfoPorFechas<ResultadosBonoloto>(
+                fecha, fecha
             )[0].combinacion
 
-            "Euromillones" -> return resultados<ResultadosEuromillones>(
-                fecha
+            "Euromillones" -> return getInfoPorFechas<ResultadosEuromillones>(
+                fecha, fecha
             )[0].combinacion
 
-            "El Gordo" -> return resultados<ResultadosElGordo>(fecha)[0].combinacion
+            "El Gordo" -> return getInfoPorFechas<ResultadosElGordo>(fecha, fecha)[0].combinacion
 
-            "Euro Dreams" -> return resultados<ResultadosEuroDreams>(
-                fecha
+            "Euro Dreams" -> return getInfoPorFechas<ResultadosEuroDreams>(
+                fecha, fecha
             )[0].combinacion
 
-            "Loteria Nacional" -> return resultados<ResultadosLoteriaNacional>(
-                fecha
+            "Loteria Nacional" -> return getInfoPorFechas<ResultadosLoteriaNacional>(
+                fecha, fecha
             )[0].primerPremio.decimo
 
             else -> return "Boleto desconocido"
@@ -142,7 +146,7 @@ class ResultasdosRepository @Inject constructor(
         var premio = ""
         val misCombinaciones = boleto.combinaciones
         val miReintegrio = boleto.reintegro
-        val resultadoPrimitiva = resultados<ResultadosPrimitiva>(fecha)
+        val resultadoPrimitiva = getInfoPorFechas<ResultadosPrimitiva>(fecha, fecha)
         val combinacionGanadora = resultadoPrimitiva[0].combinacion
 
         val numerosGanadores = combinacionGanadora
@@ -151,6 +155,7 @@ class ResultasdosRepository @Inject constructor(
             .map { it.toInt() }
             .toSet()
         val reintegro = combinacionGanadora.substringAfter("R(").substringBefore(")")
+        val complementario = combinacionGanadora.substringAfter("C(").substringBefore(")").toInt()
 
         for (combinacion in misCombinaciones) {
             val numerosCombinacion = combinacion
@@ -158,8 +163,13 @@ class ResultasdosRepository @Inject constructor(
                 .map { it.toInt() }
             val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
 
+
             premio = when {
-                (coincidencias.size >= 3) -> "Hay premio"
+                (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
+                (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
+                (coincidencias.size == 5) -> resultadoPrimitiva[0].escrutinio[3].premio
+                (coincidencias.size >= 5 && numerosCombinacion.contains(complementario)) -> resultadoPrimitiva[0].escrutinio[2].premio
+                (coincidencias.size == 6 ) -> resultadoPrimitiva[0].escrutinio[1].premio
                 (reintegro == miReintegrio) -> "Reintegro"
                 else -> "No hay premio"
             }
@@ -227,6 +237,7 @@ data class InfoSorteoLNAC(
     val cierre: String = ""
 )
 
+@Serializable
 data class InfoSorteo(
     val idSorteo: String,
     val fecha: Long,

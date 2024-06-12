@@ -54,6 +54,8 @@ fun ExpandedContent(
                         Text("${index + 1}: $combi")
                     }
                     Text("Reintegro: ${boleto.reintegro}")
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
+                    Text("Id Sorteo: ${boleto.idSorteo}")
                 }
 
                 "Euromillones" -> {
@@ -63,6 +65,7 @@ fun ExpandedContent(
                         }
                     }
                     Text("El Millon: ${boleto.numeroElMillon}")
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
                     Text("Id Sorteo: ${boleto.idSorteo}")
                 }
 
@@ -83,11 +86,13 @@ fun ExpandedContent(
                             Text("${index + 1}: $combi + $numeroDream")
                         }
                     }
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
+                    Text("Id Sorteo: ${boleto.idSorteo}")
                 }
 
                 "Loteria Nacional" -> {
                     Text("Numero: ${boleto.numeroLoteria}")
-                    Text("Sorteo: ${boleto.numSorteo}")
+                    Text("Numero de sorteo: ${boleto.numSorteo}")
                     Text("IdSorteo: ${boleto.idSorteo}")
                 }
 

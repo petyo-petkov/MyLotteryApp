@@ -31,7 +31,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
 
         when (info[1]) {
             "P=1" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "LAPR")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "LAPR")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Primitiva"
@@ -49,7 +49,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=2" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "BONO")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "BONO")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Bonoloto"
@@ -61,7 +61,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=7" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "EMIL")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "EMIL")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euromillones"
@@ -77,7 +77,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=4" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "ELGR")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "ELGR")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "El Gordo"
@@ -91,7 +91,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=14" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "EDMS")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "EDMS")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euro Dreams"
@@ -105,7 +105,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             }
 
             "P=10" -> {
-                val resultados = resultRepo.getInfoSorteos(numeroSorteo, "LNAC")
+                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "LNAC")
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Loteria Nacional"
