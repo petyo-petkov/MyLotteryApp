@@ -45,11 +45,15 @@ class ResultadosViewModel @Inject constructor(
                 esAnterior <= 0 -> {
                     when (boleto.tipo) {
                         "Primitiva" -> {
-                            _premio.value = resultadosRepository.comprobarPremioPrimitiva(boleto)
+                            _premio.value = resultadosRepository.comprobarPremioLAPR(boleto)
+                            _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+                        }
+                        "Euro Dreams" -> {
+                            _premio.value = resultadosRepository.comprobarPremioEDMS(boleto)
                             _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
                         }
                         "Loteria Nacional" -> {
-                            _premio.value = resultadosRepository.getResultadoPorNumeroLoteria(boleto).toString()
+                            _premio.value = resultadosRepository.getPremioLoteriaNacional(boleto).toString()
                             _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
 
                         }

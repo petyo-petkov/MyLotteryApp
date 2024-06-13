@@ -12,6 +12,7 @@ class Boleto : RealmObject {
     @PrimaryKey
     var _id: ObjectId = ObjectId()
     var tipo: String = ""
+    var gameID: String = ""
     var numeroSerie: Long = 0L
     var fecha: RealmInstant = RealmInstant.MAX
     var precio: Double = 0.0

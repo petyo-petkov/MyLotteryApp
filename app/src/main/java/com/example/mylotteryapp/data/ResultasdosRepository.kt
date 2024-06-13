@@ -61,17 +61,11 @@ class ResultasdosRepository @Inject constructor(
         val hoyMenusTres = hoy.minusMonths(3)
         val fechaInicio = hoyMenusTres.format(formatter)
         val fechaFin = hoy.format(formatter)
-
         val urlUltimos =
             "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=$gameID&celebrados=true&fechaInicioInclusiva=$fechaInicio&fechaFinInclusiva=$fechaFin"
 
         val proximos = findSorteo(GET_PROXIMOS_SORTEOS_TODOS, gameID, numSorteo)
         val ultimos = findSorteo(urlUltimos, gameID, numSorteo)
-        val fecha1 = ultimos?.get("fecha_sorteo")
-        val fecha3 = formatterToLong.parse(fecha1.toString())!!.time
-        Log.i("fecha long", fecha3.toString())
-
-
         val fecha = when {
             ultimos != null -> ultimos.get("fecha_sorteo").toString().substring(1..19)
             proximos != null -> proximos.get("fecha").toString().substring(1..19)
@@ -90,7 +84,11 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-    suspend inline fun <reified T> getInfoPorFechas(fechaInicio: String, fechaFin: String): List<T> {
+
+    suspend inline fun <reified T> getInfoPorFechas(
+        fechaInicio: String,
+        fechaFin: String
+    ): List<T> {
         val gameID = when (T::class) {
             ResultadosEuromillones::class -> "EMIL"
             ResultadosPrimitiva::class -> "LAPR"
@@ -140,7 +138,7 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-    suspend fun comprobarPremioPrimitiva(boleto: Boleto): String {
+    suspend fun comprobarPremioLAPR(boleto: Boleto): String {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
         var premio = ""
@@ -148,7 +146,6 @@ class ResultasdosRepository @Inject constructor(
         val miReintegrio = boleto.reintegro
         val resultadoPrimitiva = getInfoPorFechas<ResultadosPrimitiva>(fecha, fecha)
         val combinacionGanadora = resultadoPrimitiva[0].combinacion
-
         val numerosGanadores = combinacionGanadora
             .substringBefore(" C")
             .split(" - ")
@@ -162,14 +159,12 @@ class ResultasdosRepository @Inject constructor(
                 .split(" ")
                 .map { it.toInt() }
             val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
-
-
             premio = when {
                 (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
                 (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
                 (coincidencias.size == 5) -> resultadoPrimitiva[0].escrutinio[3].premio
                 (coincidencias.size >= 5 && numerosCombinacion.contains(complementario)) -> resultadoPrimitiva[0].escrutinio[2].premio
-                (coincidencias.size == 6 ) -> resultadoPrimitiva[0].escrutinio[1].premio
+                (coincidencias.size == 6) -> resultadoPrimitiva[0].escrutinio[1].premio
                 (reintegro == miReintegrio) -> "Reintegro"
                 else -> "No hay premio"
             }
@@ -177,7 +172,46 @@ class ResultasdosRepository @Inject constructor(
         return premio
     }
 
-    suspend fun getResultadoPorNumeroLoteria(boleto: Boleto): Double {
+    suspend fun comprobarPremioEDMS(boleto: Boleto): String {
+        val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
+        var premio = ""
+        val misCombinaciones = boleto.combinaciones
+        val miDreams = boleto.dreams
+        val resultadosEDMS = getInfoPorFechas<ResultadosEuroDreams>(fecha, fecha)
+        val combinacionGanadora = resultadosEDMS[0].combinacion
+        val numerosGanadores = combinacionGanadora
+            .substringBefore(" C")
+            .split(" - ")
+            .map { it.toInt() }
+            .toSet()
+        val dreamGanador = combinacionGanadora.substringAfter("C(").substringBefore(")").toInt()
+        for (combinacion in misCombinaciones) {
+            for (dream in miDreams) {
+                val numerosCombinacion = combinacion
+                    .split(" ")
+                    .map { it.toInt() }
+                val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
+                val isDream = dream.toInt() == dreamGanador
+                premio = when {
+                    (coincidencias.size == 2 && isDream) -> resultadosEDMS[0].escrutinio[5].premio
+                    (coincidencias.size == 3 && isDream) -> resultadosEDMS[0].escrutinio[4].premio
+                    (coincidencias.size == 4 && isDream) -> resultadosEDMS[0].escrutinio[3].premio
+                    (coincidencias.size == 5 && isDream) -> resultadosEDMS[0].escrutinio[2].premio
+                    (coincidencias.size == 6 ) -> resultadosEDMS[0].escrutinio[1].premio
+                    (coincidencias.size >= 6 && isDream) -> resultadosEDMS[0].escrutinio[0].premio
+                    else -> {
+                        "No hay premio"
+                    }
+                }
+
+            }
+        }
+        return premio
+    }
+
+
+    suspend fun getPremioLoteriaNacional(boleto: Boleto): Double {
         val url =
             "https://www.loteriasyapuestas.es/servicios/premioDecimoWebParaVariosSorteos?decimo=${boleto.numeroLoteria}&serie=&fraccion=&importeComunEnCentimos&idSorteos=${boleto.idSorteo}"
         return getInfoFromURL<JsonObject>(url)[0]["premioEnCentimos"].toString().toDouble() / 100

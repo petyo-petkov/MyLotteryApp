@@ -18,6 +18,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
         val numeroSorteo = info[2].substringAfter("=").slice(0..2)
         var fechaLong = 0L
         var tipoBoleto = ""
+        var gameId = ""
         var precioBoleto = 0.0
         val premioBoleto = 0.0
         var jokerPrimitiva = ""
@@ -35,6 +36,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Primitiva"
+                gameId = "LAPR"
                 jokerPrimitiva = info[7].substringAfter("=")
                 reintegroBoleto = info[6].substringAfter("=")
                 combinacionesJugadas.addAll(partesCombinaciones.map {
@@ -53,6 +55,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Bonoloto"
+                gameId = "BONO"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).joinToString(" ")
                 })
@@ -65,6 +68,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euromillones"
+                gameId = "EMIL"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(3).joinToString(" ")
                 })
@@ -81,6 +85,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "El Gordo"
+                gameId = "ELGR"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(2).joinToString(" ")
                 })
@@ -95,6 +100,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euro Dreams"
+                gameId = "EDMS"
                 combinacionesJugadas.addAll(partesCombinaciones.map {
                     it.substringAfter("=").chunked(2).dropLast(2).joinToString(" ")
                 })
@@ -109,6 +115,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 fechaLong = resultados.fecha
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Loteria Nacional"
+                gameId = "LNAC"
                 numeroLoteriaNacional = info[4].substringAfter("=")
 
             }
@@ -118,6 +125,7 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
 
         boleto = Boleto().apply {
             tipo = tipoBoleto
+            gameID = gameId
             numeroSerie = info[0].substringAfter("=").takeLast(10).toLong()
             fecha = RealmInstant.from(fechaLong / 1000, 0)
             precio = precioBoleto

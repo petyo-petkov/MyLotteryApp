@@ -15,20 +15,24 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RealmModule {
 
-    @Provides
-    @Singleton
-    fun providesRealmConfig(): RealmConfiguration {
-        return RealmConfiguration.create(
-            schema = setOf(
-                Boleto::class
-            )
-        )
-    }
+//    @Provides
+//    @Singleton
+//    fun providesRealmConfig(): RealmConfiguration {
+//        return RealmConfiguration
+//            .create(schema = setOf(Boleto::class))
+//    }
+
+    val config = RealmConfiguration.Builder(
+        schema = setOf(Boleto::class)
+    )
+        .schemaVersion(2)
+        .build()
+
 
     @Provides
     @Singleton
     fun providesRealm(): Realm {
-        return Realm.open(providesRealmConfig())
+        return Realm.open(config)
     }
 
     @Provides

@@ -18,6 +18,7 @@ suspend fun crearLoteriaFromBarCode(data: String, resultRepo: ResultasdosReposit
         val fechaLong = formatter.parse(infoLoteria.fechaSorteo)!!.time
         Boleto().apply {
             tipo = "Loteria Nacional"
+            gameID = "LNAC"
             numeroSerie = serialNumber
             fecha = RealmInstant.from(fechaLong / 1000, 0)
             numeroLoteria = numeroLoteriaNacional
