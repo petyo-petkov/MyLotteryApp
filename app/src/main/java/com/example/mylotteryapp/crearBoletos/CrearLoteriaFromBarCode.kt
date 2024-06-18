@@ -21,6 +21,8 @@ suspend fun crearLoteriaFromBarCode(data: String, resultRepo: ResultasdosReposit
             gameID = "LNAC"
             numeroSerie = serialNumber
             fecha = RealmInstant.from(fechaLong / 1000, 0)
+            apertura = infoLoteria.apertura
+            cierre = infoLoteria.cierre
             numeroLoteria = numeroLoteriaNacional
             idSorteo = infoLoteria.idSorteo
             numSorteo = numeroSorteo

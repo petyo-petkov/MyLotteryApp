@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,48 +28,56 @@ class ResultadosViewModel @Inject constructor(
     private val _premio = MutableStateFlow("")
     val premio: StateFlow<String> = _premio
 
-    // Resultados Loterias
-    fun fetchTodosLosResultado(boleto: Boleto) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
-            _resultado.value = result
-        }
-    }
 
     fun fetchPremios(boleto: Boleto) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fechaActual = LocalDateTime.now()
-            val fechaBoleto = LocalDateTime.ofEpochSecond(
-                boleto.fecha.epochSeconds,
-                0,
-                ZoneOffset.ofHours(2)
+//            val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+//            val fechaBoleto = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
+            val formatterResultados = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH)
+            val fechaBoletoDate = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(boleto.fecha.epochSeconds),
+                ZoneId.systemDefault()
             )
-            val esAnterior = fechaBoleto.compareTo(fechaActual)
+            val fechaBoleto = fechaBoletoDate.format(formatterResultados)
+
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val fechaActual = LocalDateTime.now()
+            val fechaCierre = LocalDateTime.parse(boleto.cierre, formatter)
+            val esAnterior = fechaCierre.isBefore(fechaActual)
             when {
-                esAnterior <= 0 -> {
-                    when (boleto.tipo) {
-                        "Primitiva" -> {
-                            _premio.value = resultadosRepository.comprobarPremioLAPR(boleto)
-                            _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+                esAnterior -> {
+                    when (boleto.gameID) {
+                        "LAPR" -> {
+                            _premio.value = resultadosRepository.comprobarPremioLAPR(boleto).premio
+                            _resultado.value =
+                                resultadosRepository.comprobarPremioLAPR(boleto).combinacion
                         }
-                        "Euro Dreams" -> {
-                            _premio.value = resultadosRepository.comprobarPremioEDMS(boleto)
-                            _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+
+                        "EDMS" -> {
+                            _premio.value = resultadosRepository.comprobarPremioEDMS(boleto).premio
+                            _resultado.value =
+                                resultadosRepository.comprobarPremioEDMS(boleto).combinacion
                         }
-                        "Loteria Nacional" -> {
-                            _premio.value = resultadosRepository.getPremioLoteriaNacional(boleto).toString()
-                            _resultado.value = resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+
+                        "LNAC" -> {
+                            _premio.value =
+                                resultadosRepository.getPremioLoteriaNacional(boleto).toString()
+                            _resultado.value =
+                                resultadosRepository.getInfoPorFechas<ResultadosLoteriaNacional>(
+                                    fechaBoleto,
+                                    fechaBoleto
+                                )[0].primerPremio.decimo
 
                         }
 
                         else -> {
                             _premio.value = "Por implementar..."
-                            _resultado.value =
-                                resultadosRepository.getTodosLosResultadoPorFecha(boleto)
+
                         }
                     }
 
                 }
+
                 else -> {
                     _premio.value = "Sorteo no celebrado"
                     _resultado.value = "No celebrado"

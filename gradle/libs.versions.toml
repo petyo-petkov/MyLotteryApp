@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.0-alpha05"
+agp = "8.6.0-alpha06"
 firebaseCrashlyticsBuildtools = "3.0.0"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.48"
@@ -14,14 +14,14 @@ kotlinxSerializationJsonVersion = "1.6.3"
 ktorClientCio = "2.3.10"
 ktorClientCore = "2.3.10"
 realm = "2.0.0"
-lifecycleRuntimeKtx = "2.8.1"
+lifecycleRuntimeKtx = "2.8.2"
 activityCompose = "1.9.0"
-composeBom = "2024.05.00"
+composeBom = "2024.06.00"
 playServicesCodeScanner = "16.1.0"
-lifecycleViewmodelCompose = "2.8.1"
+lifecycleViewmodelCompose = "2.8.2"
 vico = "2.0.0-alpha.21"
 material3Android = "1.2.1"
-composeNavigation = "2.8.0-beta02"
+composeNavigation = "2.8.0-beta03"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

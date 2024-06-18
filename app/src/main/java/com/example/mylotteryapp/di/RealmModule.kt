@@ -25,7 +25,7 @@ object RealmModule {
     val config = RealmConfiguration.Builder(
         schema = setOf(Boleto::class)
     )
-        .schemaVersion(2)
+        .schemaVersion(3)
         .build()
 
 

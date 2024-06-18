@@ -19,6 +19,7 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -67,8 +68,8 @@ class ResultasdosRepository @Inject constructor(
         val proximos = findSorteo(GET_PROXIMOS_SORTEOS_TODOS, gameID, numSorteo)
         val ultimos = findSorteo(urlUltimos, gameID, numSorteo)
         val fecha = when {
-            ultimos != null -> ultimos.get("fecha_sorteo").toString().substring(1..19)
-            proximos != null -> proximos.get("fecha").toString().substring(1..19)
+            ultimos != null -> ultimos.get("fecha_sorteo")?.jsonPrimitive?.content ?: "1980-12-04 16:45:00"
+            proximos != null -> proximos.get("fecha")?.jsonPrimitive?.content ?: "1980-12-04 16:45:00"
             else -> "1980-12-04 16:45:00"
         }
         val fechaLong = formatterToLong.parse(fecha)!!.time
@@ -76,9 +77,19 @@ class ResultasdosRepository @Inject constructor(
         return InfoSorteo(
             fecha = fechaLong,
             idSorteo = when {
-                ultimos != null -> ultimos.get("id_sorteo").toString().slice(1..10)
-                proximos != null -> proximos.get("id_sorteo").toString().slice(1..10)
-                else -> "000"
+                ultimos != null -> ultimos.get("id_sorteo")?.jsonPrimitive?.content ?: "ERR00001"
+                proximos != null -> proximos.get("id_sorteo")?.jsonPrimitive?.content ?: "ERR00001"
+                else -> "ERR00001"
+            },
+            apertura = when {
+                ultimos != null -> ultimos.get("fecha_sorteo")?.jsonPrimitive?.content ?: "1980-12-04 16:45:00"
+                proximos != null -> proximos.get("apertura")?.jsonPrimitive?.content ?: "ERR00001"
+                else -> "ERR00002"
+            },
+            cierre = when {
+                ultimos != null -> ultimos.get("fecha_sorteo")?.jsonPrimitive?.content ?: "1980-12-04 16:45:00"
+                proximos != null -> proximos.get("cierre")?.jsonPrimitive?.content ?: "ERR00001"
+                else -> "ERR00003"
             }
         )
 
@@ -106,39 +117,7 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-    suspend fun getTodosLosResultadoPorFecha(boleto: Boleto): String {
-        val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
-        val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
-
-        when (boleto.tipo) {
-            "Primitiva" -> return getInfoPorFechas<ResultadosPrimitiva>(
-                fecha, fecha
-            )[0].combinacion
-
-            "Bonoloto" -> return getInfoPorFechas<ResultadosBonoloto>(
-                fecha, fecha
-            )[0].combinacion
-
-            "Euromillones" -> return getInfoPorFechas<ResultadosEuromillones>(
-                fecha, fecha
-            )[0].combinacion
-
-            "El Gordo" -> return getInfoPorFechas<ResultadosElGordo>(fecha, fecha)[0].combinacion
-
-            "Euro Dreams" -> return getInfoPorFechas<ResultadosEuroDreams>(
-                fecha, fecha
-            )[0].combinacion
-
-            "Loteria Nacional" -> return getInfoPorFechas<ResultadosLoteriaNacional>(
-                fecha, fecha
-            )[0].primerPremio.decimo
-
-            else -> return "Boleto desconocido"
-        }
-
-    }
-
-    suspend fun comprobarPremioLAPR(boleto: Boleto): String {
+    suspend fun comprobarPremioLAPR(boleto: Boleto): InfoPremios {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
         var premio = ""
@@ -169,10 +148,10 @@ class ResultasdosRepository @Inject constructor(
                 else -> "No hay premio"
             }
         }
-        return premio
+        return InfoPremios(premio, combinacionGanadora)
     }
 
-    suspend fun comprobarPremioEDMS(boleto: Boleto): String {
+    suspend fun comprobarPremioEDMS(boleto: Boleto): InfoPremios {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
         var premio = ""
@@ -207,14 +186,15 @@ class ResultasdosRepository @Inject constructor(
 
             }
         }
-        return premio
+        return InfoPremios(premio, combinacionGanadora)
     }
 
 
     suspend fun getPremioLoteriaNacional(boleto: Boleto): Double {
         val url =
             "https://www.loteriasyapuestas.es/servicios/premioDecimoWebParaVariosSorteos?decimo=${boleto.numeroLoteria}&serie=&fraccion=&importeComunEnCentimos&idSorteos=${boleto.idSorteo}"
-        return getInfoFromURL<JsonObject>(url)[0]["premioEnCentimos"].toString().toDouble() / 100
+        val premio = getInfoFromURL<JsonObject>(url)[0].get("premioEnCentimos")?.jsonPrimitive?.content ?: "1"
+        return premio.toDouble() / 100
     }
 
     suspend fun getInfoLNACbyNumSorteo(numSorteo: Int): InfoSorteoLNAC {
@@ -259,7 +239,7 @@ class ResultasdosRepository @Inject constructor(
 
 
 }
-
+@Serializable
 data class InfoSorteoLNAC(
     val numSorteo: Int = 0,
     val idSorteo: String = "",
@@ -275,4 +255,13 @@ data class InfoSorteoLNAC(
 data class InfoSorteo(
     val idSorteo: String,
     val fecha: Long,
+    val apertura: String,
+    val cierre: String
+)
+
+@Serializable
+data class InfoPremios(
+    val premio: String,
+    val combinacion: String
+
 )

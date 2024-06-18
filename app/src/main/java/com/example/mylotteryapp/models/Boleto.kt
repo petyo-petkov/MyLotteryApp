@@ -15,13 +15,14 @@ class Boleto : RealmObject {
     var gameID: String = ""
     var numeroSerie: Long = 0L
     var fecha: RealmInstant = RealmInstant.MAX
+    var apertura: String? = ""
+    var cierre: String? = ""
     var precio: Double = 0.0
     var premio: Double = 0.0
     var combinaciones: RealmList<String> = realmListOf()
     var cdc: String? = ""
     var idSorteo: String? = ""
     var numSorteo: Int? = 0
-
 
     var reintegro: String? = ""
 

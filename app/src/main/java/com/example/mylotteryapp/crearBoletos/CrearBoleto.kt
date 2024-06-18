@@ -11,12 +11,14 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
     var boleto = Boleto()
 
     if (data.startsWith("A=")) {
-        val numeroSorteosJugados = info[2].substringAfter("=").last().digitToInt()
+        val numeroSorteosJugados = info[2].substringAfter(":").toInt()
         val combinacionesJugadas = mutableListOf<String>()
         val partesCombinaciones = info[4].split(".").drop(1)
         val cdcSorteo = info[0].substringAfter("=").slice(0..4)
         val numeroSorteo = info[2].substringAfter("=").slice(0..2)
         var fechaLong = 0L
+        var aperturaBoleto = ""
+        var cierreBoleto = ""
         var tipoBoleto = ""
         var gameId = ""
         var precioBoleto = 0.0
@@ -34,6 +36,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=1" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "LAPR")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Primitiva"
                 gameId = "LAPR"
@@ -53,6 +57,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=2" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "BONO")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Bonoloto"
                 gameId = "BONO"
@@ -66,6 +72,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=7" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "EMIL")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euromillones"
                 gameId = "EMIL"
@@ -83,6 +91,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=4" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "ELGR")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "El Gordo"
                 gameId = "ELGR"
@@ -98,6 +108,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=14" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "EDMS")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Euro Dreams"
                 gameId = "EDMS"
@@ -113,6 +125,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             "P=10" -> {
                 val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "LNAC")
                 fechaLong = resultados.fecha
+                aperturaBoleto = resultados.apertura
+                cierreBoleto = resultados.cierre
                 idSorteoBoleto = resultados.idSorteo
                 tipoBoleto = "Loteria Nacional"
                 gameId = "LNAC"
@@ -128,6 +142,8 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
             gameID = gameId
             numeroSerie = info[0].substringAfter("=").takeLast(10).toLong()
             fecha = RealmInstant.from(fechaLong / 1000, 0)
+            apertura = aperturaBoleto
+            cierre = cierreBoleto
             precio = precioBoleto
             premio = premioBoleto
             combinaciones = combinacionesJugadas.toRealmList()
