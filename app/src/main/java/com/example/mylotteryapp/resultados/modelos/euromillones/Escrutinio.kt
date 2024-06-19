@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Escrutinio(
-    val categoria: Int? = null,
-    val ganadores: String? = null,
-    val ganadores_eu: String? = null,
-    val premio: String? = null,
-    val tipo: String? = null
+    val categoria: Int,
+    val ganadores: String,
+    val ganadores_eu: String,
+    val premio: String,
+    val tipo: String
 )

@@ -151,6 +151,40 @@ class ResultasdosRepository @Inject constructor(
         return InfoPremios(premio, combinacionGanadora)
     }
 
+    suspend fun comprobarPremioBONO(boleto: Boleto): InfoPremios {
+        val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
+        var premio = ""
+        val misCombinaciones = boleto.combinaciones
+        val miReintegrio = boleto.reintegro
+        val resultadoBONO = getInfoPorFechas<ResultadosBonoloto>(fecha, fecha)
+        val combinacionGanadora = resultadoBONO[0].combinacion
+        val numerosGanadores = combinacionGanadora
+            .substringBefore(" C")
+            .split(" - ")
+            .map { it.toInt() }
+            .toSet()
+        val reintegro = combinacionGanadora.substringAfter("R(").substringBefore(")")
+        val complementario = combinacionGanadora.substringAfter("C(").substringBefore(")").toInt()
+
+        for (combinacion in misCombinaciones) {
+            val numerosCombinacion = combinacion
+                .split(" ")
+                .map { it.toInt() }
+            val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
+            premio = when {
+                (coincidencias.size == 6) -> resultadoBONO[0].escrutinio[0].premio
+                (coincidencias.size == 5 && numerosCombinacion.contains(complementario)) -> resultadoBONO[0].escrutinio[1].premio
+                (coincidencias.size == 5) -> resultadoBONO[0].escrutinio[2].premio
+                (coincidencias.size == 4 ) -> resultadoBONO[0].escrutinio[3].premio
+                (coincidencias.size == 3) -> resultadoBONO[0].escrutinio[4].premio
+                (reintegro == miReintegrio) -> resultadoBONO[0].escrutinio[5].premio
+                else -> "No hay premio"
+            }
+        }
+        return InfoPremios(premio, combinacionGanadora)
+    }
+
     suspend fun comprobarPremioEDMS(boleto: Boleto): InfoPremios {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
@@ -179,9 +213,7 @@ class ResultasdosRepository @Inject constructor(
                     (coincidencias.size == 5 && isDream) -> resultadosEDMS[0].escrutinio[2].premio
                     (coincidencias.size == 6 ) -> resultadosEDMS[0].escrutinio[1].premio
                     (coincidencias.size >= 6 && isDream) -> resultadosEDMS[0].escrutinio[0].premio
-                    else -> {
-                        "No hay premio"
-                    }
+                    else -> { "No hay premio" }
                 }
 
             }
@@ -189,6 +221,57 @@ class ResultasdosRepository @Inject constructor(
         return InfoPremios(premio, combinacionGanadora)
     }
 
+    suspend fun comprobarPremioEMIL(boleto: Boleto): InfoPremios {
+        val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
+        var premio = ""
+        val misCombinaciones = boleto.combinaciones
+        val misEstrellas = boleto.estrellas
+        val resultadosEMIL = getInfoPorFechas<ResultadosEuromillones>(fecha, fecha)
+        val combinacionGanadora = resultadosEMIL[0].combinacion
+        val numerosGanadores = combinacionGanadora
+            .split(" - ")
+            .slice(0..4)
+            .map { it.toInt() }
+            .toSet()
+        val estrellasGanadora = combinacionGanadora
+            .split(" - ")
+            .slice(5..6)
+            .map { it.toInt() }
+            .toSet()
+
+        for (combinacion in misCombinaciones) {
+            for (estrellas in misEstrellas) {
+                val numerosCombinacion = combinacion
+                    .split(" ")
+                    .map { it.toInt() }
+
+                val misEstrellasCombinacion = estrellas
+                    .split(" ")
+                    .map { it.toInt() }
+                val coincidenciasCombinacion = numerosCombinacion.filter { it in numerosGanadores }
+                val coincidenciasEstrellas = misEstrellasCombinacion.filter { it in estrellasGanadora }
+                premio = when {
+                    (coincidenciasCombinacion.size == 5 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[0].premio
+                    (coincidenciasCombinacion.size == 5 && coincidenciasEstrellas.size == 1) -> resultadosEMIL[0].escrutinio[1].premio
+                    (coincidenciasCombinacion.size == 5 ) -> resultadosEMIL[0].escrutinio[2].premio
+                    (coincidenciasCombinacion.size == 4 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[3].premio
+                    (coincidenciasCombinacion.size == 4 && coincidenciasEstrellas.size == 1) -> resultadosEMIL[0].escrutinio[4].premio
+                    (coincidenciasCombinacion.size == 3 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[5].premio
+                    (coincidenciasCombinacion.size == 4 ) -> resultadosEMIL[0].escrutinio[6].premio
+                    (coincidenciasCombinacion.size == 2 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[7].premio
+                    (coincidenciasCombinacion.size == 3 && coincidenciasEstrellas.size == 1) -> resultadosEMIL[0].escrutinio[8].premio
+                    (coincidenciasCombinacion.size == 3) -> resultadosEMIL[0].escrutinio[9].premio
+                    (coincidenciasCombinacion.size == 1 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[10].premio
+                    (coincidenciasCombinacion.size == 2 && coincidenciasEstrellas.size == 1) -> resultadosEMIL[0].escrutinio[11].premio
+                    (coincidenciasCombinacion.size == 2 ) -> resultadosEMIL[0].escrutinio[12].premio
+                    else -> { "No hay premio" }
+                }
+            }
+
+        }
+        return InfoPremios(premio, combinacionGanadora)
+    }
 
     suspend fun getPremioLoteriaNacional(boleto: Boleto): Double {
         val url =

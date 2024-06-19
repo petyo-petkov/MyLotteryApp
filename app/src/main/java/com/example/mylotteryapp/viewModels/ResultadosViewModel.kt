@@ -52,11 +52,21 @@ class ResultadosViewModel @Inject constructor(
                             _resultado.value =
                                 resultadosRepository.comprobarPremioLAPR(boleto).combinacion
                         }
+                        "BONO" -> {
+                            _premio.value = resultadosRepository.comprobarPremioBONO(boleto).premio
+                            _resultado.value =
+                                resultadosRepository.comprobarPremioBONO(boleto).combinacion
+                        }
 
                         "EDMS" -> {
                             _premio.value = resultadosRepository.comprobarPremioEDMS(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioEDMS(boleto).combinacion
+                        }
+                        "EMIL" -> {
+                            _premio.value = resultadosRepository.comprobarPremioEMIL(boleto).premio
+                            _resultado.value =
+                                resultadosRepository.comprobarPremioEMIL(boleto).combinacion
                         }
 
                         "LNAC" -> {
