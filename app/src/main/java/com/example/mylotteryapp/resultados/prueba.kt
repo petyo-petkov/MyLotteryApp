@@ -16,9 +16,9 @@ import java.util.Locale
 
 
  fun main() {
-     val combinacionGanadora = "03 - 11 - 33 - 34 - 36 - 01 - 12"
-
+     val combinacionGanadora = " 03 - 11 - 33 - 34 - 36 - 01 - 12"
      val numerosGanadores = combinacionGanadora
+         .substringAfter(" ")
          .split(" - ")
          .slice(0..4)
          .map { it.toInt() }

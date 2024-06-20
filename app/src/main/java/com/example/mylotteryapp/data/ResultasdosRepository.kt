@@ -139,12 +139,13 @@ class ResultasdosRepository @Inject constructor(
                 .map { it.toInt() }
             val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
             premio = when {
-                (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
-                (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
-                (coincidencias.size == 5) -> resultadoPrimitiva[0].escrutinio[3].premio
-                (coincidencias.size >= 5 && numerosCombinacion.contains(complementario)) -> resultadoPrimitiva[0].escrutinio[2].premio
+                (coincidencias.size == 6 && reintegro == miReintegrio) -> resultadoPrimitiva[0].escrutinio[0].premio
                 (coincidencias.size == 6) -> resultadoPrimitiva[0].escrutinio[1].premio
-                (reintegro == miReintegrio) -> "Reintegro"
+                (coincidencias.size == 5 && numerosCombinacion.contains(complementario)) -> resultadoPrimitiva[0].escrutinio[2].premio
+                (coincidencias.size == 5) -> resultadoPrimitiva[0].escrutinio[3].premio
+                (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
+                (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
+                (reintegro == miReintegrio) -> resultadoPrimitiva[0].escrutinio[6].premio
                 else -> "No hay premio"
             }
         }
@@ -179,7 +180,7 @@ class ResultasdosRepository @Inject constructor(
                 (coincidencias.size == 4 ) -> resultadoBONO[0].escrutinio[3].premio
                 (coincidencias.size == 3) -> resultadoBONO[0].escrutinio[4].premio
                 (reintegro == miReintegrio) -> resultadoBONO[0].escrutinio[5].premio
-                else -> "No hay premio"
+                else -> ""
             }
         }
         return InfoPremios(premio, combinacionGanadora)
@@ -213,7 +214,7 @@ class ResultasdosRepository @Inject constructor(
                     (coincidencias.size == 5 && isDream) -> resultadosEDMS[0].escrutinio[2].premio
                     (coincidencias.size == 6 ) -> resultadosEDMS[0].escrutinio[1].premio
                     (coincidencias.size >= 6 && isDream) -> resultadosEDMS[0].escrutinio[0].premio
-                    else -> { "No hay premio" }
+                    else -> ""
                 }
 
             }
@@ -230,6 +231,7 @@ class ResultasdosRepository @Inject constructor(
         val resultadosEMIL = getInfoPorFechas<ResultadosEuromillones>(fecha, fecha)
         val combinacionGanadora = resultadosEMIL[0].combinacion
         val numerosGanadores = combinacionGanadora
+            .substringAfter(" ")
             .split(" - ")
             .slice(0..4)
             .map { it.toInt() }
@@ -265,7 +267,7 @@ class ResultasdosRepository @Inject constructor(
                     (coincidenciasCombinacion.size == 1 && coincidenciasEstrellas.size == 2) -> resultadosEMIL[0].escrutinio[10].premio
                     (coincidenciasCombinacion.size == 2 && coincidenciasEstrellas.size == 1) -> resultadosEMIL[0].escrutinio[11].premio
                     (coincidenciasCombinacion.size == 2 ) -> resultadosEMIL[0].escrutinio[12].premio
-                    else -> { "No hay premio" }
+                    else -> ""
                 }
             }
 
@@ -276,7 +278,7 @@ class ResultasdosRepository @Inject constructor(
     suspend fun getPremioLoteriaNacional(boleto: Boleto): Double {
         val url =
             "https://www.loteriasyapuestas.es/servicios/premioDecimoWebParaVariosSorteos?decimo=${boleto.numeroLoteria}&serie=&fraccion=&importeComunEnCentimos&idSorteos=${boleto.idSorteo}"
-        val premio = getInfoFromURL<JsonObject>(url)[0].get("premioEnCentimos")?.jsonPrimitive?.content ?: "1"
+        val premio = getInfoFromURL<JsonObject>(url)[0].get("premioEnCentimos")?.jsonPrimitive?.content ?: ""
         return premio.toDouble() / 100
     }
 
