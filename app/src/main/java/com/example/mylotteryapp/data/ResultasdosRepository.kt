@@ -146,7 +146,7 @@ class ResultasdosRepository @Inject constructor(
                 (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
                 (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
                 (reintegro == miReintegrio) -> resultadoPrimitiva[0].escrutinio[6].premio
-                else -> "No hay premio"
+                else -> ""
             }
         }
         return InfoPremios(premio, combinacionGanadora)

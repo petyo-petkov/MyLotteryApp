@@ -3,6 +3,7 @@ package com.example.mylotteryapp.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylotteryapp.data.ResultasdosRepository
+import com.example.mylotteryapp.domain.RealmRepository
 import com.example.mylotteryapp.models.Boleto
 import com.example.mylotteryapp.resultados.modelos.loteriaNacional.ResultadosLoteriaNacional
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ResultadosViewModel @Inject constructor(
-    private val resultadosRepository: ResultasdosRepository
+    private val resultadosRepository: ResultasdosRepository,
+    private val realmRepository: RealmRepository,
 ) : ViewModel() {
 
     private val _resultado = MutableStateFlow("")
@@ -51,22 +53,26 @@ class ResultadosViewModel @Inject constructor(
                             _premio.value = resultadosRepository.comprobarPremioLAPR(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioLAPR(boleto).combinacion
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
                         }
                         "BONO" -> {
                             _premio.value = resultadosRepository.comprobarPremioBONO(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioBONO(boleto).combinacion
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
                         }
 
                         "EDMS" -> {
                             _premio.value = resultadosRepository.comprobarPremioEDMS(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioEDMS(boleto).combinacion
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
                         }
                         "EMIL" -> {
                             _premio.value = resultadosRepository.comprobarPremioEMIL(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioEMIL(boleto).combinacion
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
                         }
 
                         "LNAC" -> {
@@ -77,6 +83,7 @@ class ResultadosViewModel @Inject constructor(
                                     fechaBoleto,
                                     fechaBoleto
                                 )[0].primerPremio.decimo
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
 
                         }
 

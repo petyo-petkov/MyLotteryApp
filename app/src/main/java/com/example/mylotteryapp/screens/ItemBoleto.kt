@@ -225,7 +225,7 @@ fun ItemBoleto(
         onDismiss = { showDialogoResultado = false },
         combinacion = resultadoSorteo,
         premio = premio,
-        tipo = boleto.tipo
+        boleto = boleto
     )
 
 

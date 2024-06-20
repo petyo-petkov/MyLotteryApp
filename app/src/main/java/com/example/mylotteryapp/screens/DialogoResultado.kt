@@ -2,6 +2,8 @@ package com.example.mylotteryapp.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.mylotteryapp.models.Boleto
+import com.example.mylotteryapp.viewModels.RealmViewModel
 import kotlinx.coroutines.delay
 import kotlin.text.Typography.euro
 
@@ -25,9 +30,8 @@ fun DialogoResultado(
     show: Boolean,
     onDismiss: () -> Unit,
     combinacion: String,
-    tipo: String,
-    premio: String,
-
+    boleto: Boleto,
+    premio: String
     ) {
     AnimatedVisibility(
         visible = show,
@@ -45,7 +49,7 @@ fun DialogoResultado(
             dismissButton = { },
             title = {
                 Text(
-                    text = "Resultado sorteo $tipo: ",
+                    text = "Resultado sorteo ${boleto.tipo}: ",
                     style = MaterialTheme.typography.titleLarge
                 )
             },
@@ -57,8 +61,11 @@ fun DialogoResultado(
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
                         text = when(premio.isEmpty()){
-                            true -> "Resguardo $tipo NO PREMIADO "
-                            false -> "Premio: $premio $euro"
+                            true -> "Resguardo ${boleto.tipo} NO PREMIADO "
+                            false -> {
+                                "Premio: $premio $euro"
+
+                            }
                         },
                         style = MaterialTheme.typography.bodyLarge,
                     )
