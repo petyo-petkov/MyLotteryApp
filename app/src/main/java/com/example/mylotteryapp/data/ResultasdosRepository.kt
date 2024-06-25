@@ -95,7 +95,6 @@ class ResultasdosRepository @Inject constructor(
 
     }
 
-
     suspend inline fun <reified T> getInfoPorFechas(
         fechaInicio: String,
         fechaFin: String
@@ -186,6 +185,45 @@ class ResultasdosRepository @Inject constructor(
         return InfoPremios(premio, combinacionGanadora)
     }
 
+    suspend fun comprobarPremioELGR(boleto: Boleto): InfoPremios {
+        val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
+        val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
+        var premio = ""
+        val misCombinaciones = boleto.combinaciones
+        val miNumeroClave = boleto.numeroClave
+        val resultadosELGR = getInfoPorFechas<ResultadosElGordo>(fecha, fecha)
+        val combinacionGanadora = resultadosELGR[0].combinacion
+        val numerosGanadores = combinacionGanadora
+            .substringBefore(" R")
+            .split(" - ")
+            .map { it.toInt() }
+            .toSet()
+        val claveGanador = combinacionGanadora.substringAfter("R(").substringBefore(")").toInt()
+        for (combinacion in misCombinaciones) {
+            for (clave in miNumeroClave) {
+                val numerosCombinacion = combinacion
+                    .split(" ")
+                    .map { it.toInt() }
+                val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
+                val isClave = clave.toInt() == claveGanador
+                premio = when {
+                    (coincidencias.size == 5 && isClave) -> resultadosELGR[0].escrutinio[0].premio
+                    (coincidencias.size == 5 ) -> resultadosELGR[0].escrutinio[1].premio
+                    (coincidencias.size == 4 && isClave) -> resultadosELGR[0].escrutinio[2].premio
+                    (coincidencias.size == 4 ) -> resultadosELGR[0].escrutinio[3].premio
+                    (coincidencias.size == 3 && isClave) -> resultadosELGR[0].escrutinio[4].premio
+                    (coincidencias.size == 3 ) -> resultadosELGR[0].escrutinio[5].premio
+                    (coincidencias.size == 2 && isClave) -> resultadosELGR[0].escrutinio[6].premio
+                    (coincidencias.size == 2 ) -> resultadosELGR[0].escrutinio[7].premio
+                    (isClave ) -> resultadosELGR[0].escrutinio[8].premio
+                    else -> ""
+                }
+
+            }
+        }
+        return InfoPremios(premio, combinacionGanadora)
+    }
+
     suspend fun comprobarPremioEDMS(boleto: Boleto): InfoPremios {
         val formatterResultados = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val fecha = formatterResultados.format(Date(boleto.fecha.epochSeconds * 1000))
@@ -208,12 +246,12 @@ class ResultasdosRepository @Inject constructor(
                 val coincidencias = numerosCombinacion.filter { it in numerosGanadores }
                 val isDream = dream.toInt() == dreamGanador
                 premio = when {
-                    (coincidencias.size == 2 && isDream) -> resultadosEDMS[0].escrutinio[5].premio
-                    (coincidencias.size == 3 && isDream) -> resultadosEDMS[0].escrutinio[4].premio
-                    (coincidencias.size == 4 && isDream) -> resultadosEDMS[0].escrutinio[3].premio
-                    (coincidencias.size == 5 && isDream) -> resultadosEDMS[0].escrutinio[2].premio
+                    (coincidencias.size == 2 && isDream || coincidencias.size == 2) -> resultadosEDMS[0].escrutinio[5].premio
+                    (coincidencias.size == 3 && isDream || coincidencias.size == 3) -> resultadosEDMS[0].escrutinio[4].premio
+                    (coincidencias.size == 4 && isDream || coincidencias.size == 4) -> resultadosEDMS[0].escrutinio[3].premio
+                    (coincidencias.size == 5 && isDream || coincidencias.size == 5) -> resultadosEDMS[0].escrutinio[2].premio
                     (coincidencias.size == 6 ) -> resultadosEDMS[0].escrutinio[1].premio
-                    (coincidencias.size >= 6 && isDream) -> resultadosEDMS[0].escrutinio[0].premio
+                    (coincidencias.size >= 6 && isDream ) -> resultadosEDMS[0].escrutinio[0].premio
                     else -> ""
                 }
 
@@ -228,8 +266,10 @@ class ResultasdosRepository @Inject constructor(
         var premio = ""
         val misCombinaciones = boleto.combinaciones
         val misEstrellas = boleto.estrellas
+        val miMillon = boleto.numeroElMillon
         val resultadosEMIL = getInfoPorFechas<ResultadosEuromillones>(fecha, fecha)
         val combinacionGanadora = resultadosEMIL[0].combinacion
+        val numeroMillon = resultadosEMIL[0].millon.combinacion
         val numerosGanadores = combinacionGanadora
             .substringAfter(" ")
             .split(" - ")
@@ -272,7 +312,12 @@ class ResultasdosRepository @Inject constructor(
             }
 
         }
-        return InfoPremios(premio, combinacionGanadora)
+
+        return InfoPremios(
+           premio = if (miMillon == numeroMillon)
+               premio + resultadosEMIL[0].escrutinio_millon[0].premio
+           else premio,
+            combinacionGanadora)
     }
 
     suspend fun getPremioLoteriaNacional(boleto: Boleto): Double {

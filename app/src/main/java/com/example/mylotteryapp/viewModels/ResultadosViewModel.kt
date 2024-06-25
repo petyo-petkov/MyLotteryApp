@@ -74,6 +74,12 @@ class ResultadosViewModel @Inject constructor(
                                 resultadosRepository.comprobarPremioEMIL(boleto).combinacion
                             if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
                         }
+                        "ELGR" -> {
+                            _premio.value = resultadosRepository.comprobarPremioELGR(boleto).premio
+                            _resultado.value =
+                                resultadosRepository.comprobarPremioELGR(boleto).combinacion
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                        }
 
                         "LNAC" -> {
                             _premio.value =

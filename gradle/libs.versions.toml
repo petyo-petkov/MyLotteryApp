@@ -1,6 +1,6 @@
 [versions]
-agp = "8.6.0-alpha06"
-firebaseCrashlyticsBuildtools = "3.0.0"
+agp = "8.6.0-alpha07"
+firebaseCrashlyticsBuildtools = "3.0.2"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.48"
 hiltCompiler = "1.2.0"
