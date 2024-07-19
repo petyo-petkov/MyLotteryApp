@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Noticia(
     val tituloContenido: String,
     val tituloRelacion: String,
-    val urlContenido: String
+    val urlContenido: String = "",
 )
