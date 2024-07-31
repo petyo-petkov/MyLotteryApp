@@ -144,7 +144,7 @@ class ResultasdosRepository @Inject constructor(
                 (coincidencias.size == 5) -> resultadoPrimitiva[0].escrutinio[3].premio
                 (coincidencias.size == 4) -> resultadoPrimitiva[0].escrutinio[4].premio
                 (coincidencias.size == 3) -> resultadoPrimitiva[0].escrutinio[5].premio
-                (reintegro == miReintegrio) -> resultadoPrimitiva[0].escrutinio[6].premio
+                (reintegro == miReintegrio) -> boleto.precio.toString()
                 else -> ""
             }
         }
@@ -178,7 +178,7 @@ class ResultasdosRepository @Inject constructor(
                 (coincidencias.size == 5) -> resultadoBONO[0].escrutinio[2].premio
                 (coincidencias.size == 4 ) -> resultadoBONO[0].escrutinio[3].premio
                 (coincidencias.size == 3) -> resultadoBONO[0].escrutinio[4].premio
-                (reintegro == miReintegrio) -> resultadoBONO[0].escrutinio[5].premio
+                (reintegro == miReintegrio) -> boleto.precio.toString()
                 else -> ""
             }
         }
