@@ -24,6 +24,7 @@ fun ListBoletos(
     boletos: List<Boleto>
 
 ) {
+
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 0)
 
     LazyColumn(

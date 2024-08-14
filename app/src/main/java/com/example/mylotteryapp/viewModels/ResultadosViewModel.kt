@@ -53,32 +53,32 @@ class ResultadosViewModel @Inject constructor(
                             _premio.value = resultadosRepository.comprobarPremioLAPR(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioLAPR(boleto).combinacion
-                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, stringToDouble(_premio.value))
                         }
                         "BONO" -> {
                             _premio.value = resultadosRepository.comprobarPremioBONO(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioBONO(boleto).combinacion
-                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, stringToDouble(_premio.value))
                         }
 
                         "EDMS" -> {
                             _premio.value = resultadosRepository.comprobarPremioEDMS(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioEDMS(boleto).combinacion
-                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, stringToDouble(_premio.value))
                         }
                         "EMIL" -> {
                             _premio.value = resultadosRepository.comprobarPremioEMIL(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioEMIL(boleto).combinacion
-                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, stringToDouble(_premio.value))
                         }
                         "ELGR" -> {
                             _premio.value = resultadosRepository.comprobarPremioELGR(boleto).premio
                             _resultado.value =
                                 resultadosRepository.comprobarPremioELGR(boleto).combinacion
-                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, _premio.value.toDouble())
+                            if (_premio.value.isNotEmpty()) realmRepository.updatePremio(boleto, stringToDouble(_premio.value))
                         }
 
                         "LNAC" -> {
@@ -115,5 +115,7 @@ class ResultadosViewModel @Inject constructor(
 }
 
 
-
+private fun stringToDouble(premio: String): Double {
+    return premio.replace(",", ".").toDouble()
+}
 
