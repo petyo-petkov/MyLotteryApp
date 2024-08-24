@@ -4,6 +4,8 @@ import com.example.mylotteryapp.data.ResultasdosRepository
 import com.example.mylotteryapp.models.Boleto
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmInstant
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto {
 
@@ -122,12 +124,14 @@ suspend fun crearBoleto(data: String, resultRepo: ResultasdosRepository): Boleto
                 precioBoleto = ((combinacionesJugadas.size * 2.5) * numeroSorteosJugados)
             }
 
-            "P=10" -> {
-                val resultados = resultRepo.getIdSorteoYlaFecha(numeroSorteo, "LNAC")
-                fechaLong = resultados.fecha
-                aperturaBoleto = resultados.apertura
-                cierreBoleto = resultados.cierre
-                idSorteoBoleto = resultados.idSorteo
+            "P=5" -> {
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+                val infoLoteria = resultRepo.getInfoLNACbyNumSorteo(numeroSorteo.toInt())
+                fechaLong = formatter.parse(infoLoteria.fechaSorteo)!!.time
+                aperturaBoleto = infoLoteria.apertura
+                cierreBoleto = infoLoteria.cierre
+                idSorteoBoleto = infoLoteria.idSorteo
+                precioBoleto = infoLoteria.precioSorteo
                 tipoBoleto = "Loteria Nacional"
                 gameId = "LNAC"
                 numeroLoteriaNacional = info[4].substringAfter("=")

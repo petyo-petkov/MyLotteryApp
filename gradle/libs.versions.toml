@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.0-alpha06"
+agp = "8.7.0-alpha07"
 firebaseCrashlyticsBuildtools = "3.0.2"
 hiltAndroid = "2.49"
 hiltAndroidCompiler = "2.48"
@@ -16,11 +16,11 @@ ktorClientCore = "2.3.10"
 realm = "2.0.0"
 lifecycle = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.06.00"
+composeBom = "2024.08.00"
 playServicesCodeScanner = "16.1.0"
 vico = "2.0.0-alpha.21"
 material3Android = "1.2.1"
-composeNavigation = "2.8.0-beta07"
+composeNavigation = "2.8.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
